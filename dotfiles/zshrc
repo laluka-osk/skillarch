@@ -1,0 +1,4 @@
+ZSH_THEME="af-magic"
+DISABLE_MAGIC_FUNCTIONS="true"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=245"
+source /opt/lalucachy/dotfiles/aliases
