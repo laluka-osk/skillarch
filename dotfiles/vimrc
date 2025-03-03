@@ -1,0 +1,4 @@
+set mouse=""
+set number
+set paste
+syntax on

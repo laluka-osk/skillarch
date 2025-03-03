@@ -14,6 +14,12 @@ install-base: sanity-check
 	sudo pacman --noconfirm -S git vim tmux wget curl
 
 install-system: sanity-check
+	# Long lived data
+	if [ ! -d /DATA ]; then \
+		mkdir /tmp/DATA; \
+		sudo mv /tmp/DATA /DATA; \
+	fi
+
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 	sudo pacman-key --lsign-key 3056513887B78AEB
@@ -35,7 +41,7 @@ install-system: sanity-check
 	done
 
 install-shell: sanity-check
-	sudo pacman --noconfirm -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
+	# sudo pacman --noconfirm -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	# Install oh-my-zsh if not already installed
 	if [ ! -d ~/.oh-my-zsh ]; then \
 		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
@@ -71,6 +77,22 @@ install-shell: sanity-check
 		echo -e "source-file /opt/lalucachy/dotfiles/tmux.conf\n# Add your custom config here" | cat - ~/.tmux.conf > temp; \
 		mv temp ~/.tmux.conf; \
 	fi
+
+	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting; do \
+		zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; \
+	done
+
+	if [ ! -f ~/.vimrc ]; then \
+		touch ~/.vimrc; \
+	fi
+
+	if ! grep -q "source /opt/lalucachy/dotfiles/vimrc" ~/.vimrc; then \
+		echo -e "source /opt/lalucachy/dotfiles/vimrc\n# Add your custom config here" | cat - ~/.vimrc > temp; \
+		mv temp ~/.vimrc; \
+	fi
+
+install-colored-man-pages: sanity-check
+	sudo pacman --noconfirm -S colored-man-pages
 
 install-docker: sanity-check
 	sudo pacman --noconfirm -S docker docker-compose
@@ -122,5 +144,30 @@ install-terminal: sanity-check
 		mv temp ~/.config/kitty/kitty.conf; \
 	fi
 
-all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal
+install-mise: sanity-check
+	sudo pacman --noconfirm -S mise
+	mise use -g usage@latest
+	for package in pdm rust terraform golang python nodejs; do \
+		mise use -g $$package@latest; \
+	done
+	# Todo add all php shitty libs & build php
+
+install-cligoodies: sanity-check
+	sudo pacman --noconfirm -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat
+	if [ ! -d ~/.config/nvim ]; then \
+		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
+	fi
+	if [ ! -d ~/.config/nvim/lua/user ]; then \
+		mkdir -p ~/.config/nvim/lua/user; \
+	fi
+	if [ ! -f ~/.config/nvim/init.lua ]; then \
+		touch ~/.config/nvim/init.lua; \
+	fi
+	if ! grep -q 'vim.opt.mouse = ""' ~/.config/nvim/init.lua; then \
+		echo -e 'vim.opt.mouse = ""' | cat ~/.config/nvim/init.lua - > temp; \
+		mv temp ~/.config/nvim/init.lua; \
+	fi
+
+
+all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-cligoodies
 	echo "You are all set up! Enjoy ! 🌹"
