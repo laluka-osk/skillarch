@@ -2,8 +2,8 @@ help:
 	echo "Let's get help!"
 
 sanity-check:
-	# Ensure we are in /opt/lalucachy
-	if [ "$$(pwd)" != "/opt/lalucachy" ]; then \
+	@# Ensure we are in /opt/lalucachy
+	@if [ "$$(pwd)" != "/opt/lalucachy" ]; then \
 		echo "You must be in /opt/lalucachy to run this command"; \
 		exit 1; \
 	fi	
@@ -22,11 +22,11 @@ install-system: sanity-check
 	
 	# Append chaotic-aur lines if not present in /etc/pacman.conf
 	if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then \
-		echo "[chaotic-aur]" >> /etc/pacman.conf; \
-		echo "Include = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf; \
+		echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n# Add your custom config here" | cat - /etc/pacman.conf > temp; \
+		mv temp /etc/pacman.conf; \
 	fi
 	
-	sudo pacman --noconfirm -S yay
+	sudo pacman --noconfirm -S yay blueman picom flameshot dunst
 	yay --noconfirm -S cursor-bin python-pipx google-chrome
 	pipx ensurepath
 	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap trash-cli wafw00f yt-dlp semgrep; do \
@@ -43,7 +43,8 @@ install-shell: sanity-check
 	
 	# if "source /opt/lalucachy/dotfiles/zshrc" is not in ~/.zshrc, add it
 	if ! grep -q "source /opt/lalucachy/dotfiles/zshrc" ~/.zshrc; then \
-		echo "source /opt/lalucachy/dotfiles/zshrc" >> ~/.zshrc; \
+		echo -e "source /opt/lalucachy/dotfiles/zshrc\n# Add your custom config here" | cat - ~/.zshrc > temp; \
+		mv temp ~/.zshrc; \
 	fi
 	
 	if [ ! -d ~/.oh-my-zsh/plugins/zsh-completions ]; then \
@@ -67,7 +68,8 @@ install-shell: sanity-check
 	fi
 
 	if ! grep -q "source-file /opt/lalucachy/dotfiles/tmux.conf" ~/.tmux.conf; then \
-		echo "source-file /opt/lalucachy/dotfiles/tmux.conf" >> ~/.tmux.conf; \
+		echo -e "source-file /opt/lalucachy/dotfiles/tmux.conf\n# Add your custom config here" | cat - ~/.tmux.conf > temp; \
+		mv temp ~/.tmux.conf; \
 	fi
 
 install-docker: sanity-check
@@ -77,8 +79,8 @@ install-docker: sanity-check
 	sudo systemctl start docker
 
 install-i3: sanity-check
-	# sudo pacman --noconfirm -S i3-gaps i3blocks i3lock i3status dmenu
-
+	sudo pacman --noconfirm -S i3-gaps i3blocks i3lock i3status dmenu feh
+	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \
 		mkdir -p ~/.config/i3; \
@@ -89,7 +91,36 @@ install-i3: sanity-check
 		echo -e "include /opt/lalucachy/dotfiles/i3/config\n# Add your custom config here" | cat - ~/.config/i3/config > temp; \
 		mv temp ~/.config/i3/config; \
 	fi
+	if [ ! -f /etc/X11/xorg.conf.d/30-touchpad.conf ]; then \
+		sudo cp /opt/lalucachy/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
+	fi
 
 install-polybar: sanity-check
 	sudo pacman --noconfirm -S polybar
+
+	# If ~/.config/polybar/config.ini doesnt exist, create it
+	if [ ! -f ~/.config/polybar/config.ini ]; then \
+		mkdir -p ~/.config/polybar; \
+		touch ~/.config/polybar/config.ini; \
+	fi
+	# If "include-file = /opt/lalucachy/dotfiles/polybar/config.ini" not in ~/.config/polybar/config.ini, add it as the first line
+	if ! grep -q "include-file = /opt/lalucachy/dotfiles/polybar/config.ini" ~/.config/polybar/config.ini; then \
+		echo -e "include-file = /opt/lalucachy/dotfiles/polybar/config.ini\n# Add your custom config here" | cat - ~/.config/polybar/config.ini > temp; \
+		mv temp ~/.config/polybar/config.ini; \
+	fi
+
+install-terminal: sanity-check
+	sudo pacman --noconfirm -S kitty
+	if [ ! -f ~/.config/kitty/kitty.conf ]; then \
+		mkdir -p ~/.config/kitty/; \
+		touch ~/.config/kitty/kitty.conf; \
+	fi
 	
+	# If "include /opt/lalucachy/dotfiles/kitty/kitty.conf" not in ~/.config/kitty/kitty.conf, add it as the first line
+	if ! grep -q "include /opt/lalucachy/dotfiles/kitty/kitty.conf" ~/.config/kitty/kitty.conf; then \
+		echo -e "include /opt/lalucachy/dotfiles/kitty/kitty.conf\n# Add your custom config here" | cat - ~/.config/kitty/kitty.conf > temp; \
+		mv temp ~/.config/kitty/kitty.conf; \
+	fi
+
+all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal
+	echo "You are all set up! Enjoy ! 🌹"
