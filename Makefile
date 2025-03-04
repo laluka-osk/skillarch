@@ -16,8 +16,15 @@ install-base: sanity-check
 install-system: sanity-check
 	# Long lived data
 	if [ ! -d /DATA ]; then \
-		mkdir /tmp/DATA; \
+		mkdir -pv /tmp/DATA; \
 		sudo mv /tmp/DATA /DATA; \
+	fi
+
+	# Trash-bin per volume
+	if [ ! -d /DATA/.Trash ]; then \
+		mkdir -pv /tmp/.Trash/1000; \
+		sudo mv /tmp/.Trash /.Trash; \
+		sudo chmod +t /.Trash; \
 	fi
 
 	# Add chaotic-aur to pacman
@@ -32,10 +39,17 @@ install-system: sanity-check
 		mv temp /etc/pacman.conf; \
 	fi
 	
-	sudo pacman --noconfirm -S yay blueman picom flameshot dunst
+	sudo pacman --noconfirm -S yay blueman picom flameshot dunst trash-cli
+	if [ ! -f ~/.config/picom.conf ]; then \
+		touch ~/.config/picom.conf; \
+	fi
+	if ! grep -q "@include \"/opt/lalucachy/dotfiles/picom.conf\"" ~/.config/picom.conf; then \
+		echo -e "@include \"/opt/lalucachy/dotfiles/picom.conf\"\n# Add your custom config here" | cat - ~/.config/picom.conf > temp; \
+		mv temp ~/.config/picom.conf; \
+	fi
 	yay --noconfirm -S cursor-bin python-pipx google-chrome
 	pipx ensurepath
-	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap trash-cli wafw00f yt-dlp semgrep; do \
+	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do \
 		pipx install "$$package"; \
 		pipx inject "$$package" setuptools; \
 	done
@@ -153,7 +167,7 @@ install-mise: sanity-check
 	# Todo add all php shitty libs & build php
 
 install-cligoodies: sanity-check
-	sudo pacman --noconfirm -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat
+	sudo pacman --noconfirm -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile
 	if [ ! -d ~/.config/nvim ]; then \
 		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
 	fi
@@ -171,3 +185,6 @@ install-cligoodies: sanity-check
 
 all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-cligoodies
 	echo "You are all set up! Enjoy ! 🌹"
+
+# base-devel bison bzip2 ca-certificates cloc cmake curl dos2unix expect ffmpeg foremost fswebcam gcc gd gdb gettext git gnupg hashid hexyl htop hwinfo icu imagemagick inotify-tools iproute2 jq kdenlive leptonica libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip linux-tools-meta llvm lsb-release lsof ltrace make mariadb-libs meld mlocate ncurses neofetch net-tools ngrep nmap oniguruma openssh openssl pacman parallel perl-image-exiftool pkgconf postgresql-libs powerline powerline-fonts python python-pip python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tesseract tk tmate tmux tor traceroute tree ufw unzip vbindiff vim wget wl-clipboard xclip xmlsec xz yaml-cpp zip zlib fastgron
+# disable tor cups etc
