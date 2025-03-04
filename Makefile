@@ -188,3 +188,8 @@ all: install-base install-system install-shell install-docker install-i3 install
 
 # base-devel bison bzip2 ca-certificates cloc cmake curl dos2unix expect ffmpeg foremost fswebcam gcc gd gdb gettext git gnupg hashid hexyl htop hwinfo icu imagemagick inotify-tools iproute2 jq kdenlive leptonica libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip linux-tools-meta llvm lsb-release lsof ltrace make mariadb-libs meld mlocate ncurses neofetch net-tools ngrep nmap oniguruma openssh openssl pacman parallel perl-image-exiftool pkgconf postgresql-libs powerline powerline-fonts python python-pip python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tesseract tk tmate tmux tor traceroute tree ufw unzip vbindiff vim wget wl-clipboard xclip xmlsec xz yaml-cpp zip zlib fastgron
 # disable tor cups etc
+
+install-security: sanity-check
+	sudo pacman --noconfirm -S opensnitch
+	sudo systemctl enable opensnitchd.service
+	sudo systemctl start opensnitchd.service
