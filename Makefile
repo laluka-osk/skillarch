@@ -10,8 +10,8 @@ sanity-check:
 
 install-base: sanity-check
 	echo "installing stuff"
-	sudo pacman --noconfirm -Syu
-	sudo pacman --noconfirm -S git vim tmux wget curl
+	sudo pacman --noconfirm --needed -Syu
+	sudo pacman --noconfirm --needed -S git vim tmux wget curl
 
 install-system: sanity-check
 	# Long lived data
@@ -30,8 +30,8 @@ install-system: sanity-check
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 	sudo pacman-key --lsign-key 3056513887B78AEB
-	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
-	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+	sudo pacman --noconfirm --needed -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+	sudo pacman --noconfirm --needed -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 	
 	# Append chaotic-aur lines if not present in /etc/pacman.conf
 	if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then \
@@ -39,7 +39,26 @@ install-system: sanity-check
 		mv temp /etc/pacman.conf; \
 	fi
 	
-	sudo pacman --noconfirm -S yay blueman picom flameshot dunst trash-cli
+	sudo pacman --noconfirm --needed -S arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
+	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
+	code --install-extension bibhasdn.unique-lines
+	code --install-extension eriklynd.json-tools
+	code --install-extension mechatroner.rainbow-csv
+	code --install-extension mitchdenny.ecdc
+	code --install-extension ms-azuretools.vscode-docker
+	code --install-extension ms-python.debugpy
+	code --install-extension ms-python.python
+	code --install-extension ms-python.vscode-pylance
+	code --install-extension ms-vscode-remote.remote-containers
+	code --install-extension ms-vscode-remote.remote-ssh
+	code --install-extension ms-vscode-remote.remote-ssh-edit
+	code --install-extension ms-vscode.remote-explorer
+	code --install-extension ms-vsliveshare.vsliveshare
+	code --install-extension trailofbits.weaudit
+	code --install-extension yzane.markdown-pdf
+	code --install-extension zobo.php-intellisense
+	yay --noconfirm --needed -S cursor-bin fswebcam fastgron
+	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
 	if [ ! -f ~/.config/picom.conf ]; then \
 		touch ~/.config/picom.conf; \
 	fi
@@ -47,7 +66,7 @@ install-system: sanity-check
 		echo -e "@include \"/opt/lalucachy/dotfiles/picom.conf\"\n# Add your custom config here" | cat - ~/.config/picom.conf > temp; \
 		mv temp ~/.config/picom.conf; \
 	fi
-	yay --noconfirm -S cursor-bin python-pipx google-chrome
+	yay --noconfirm --needed -S python-pipx
 	pipx ensurepath
 	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do \
 		pipx install "$$package"; \
@@ -55,7 +74,7 @@ install-system: sanity-check
 	done
 
 install-shell: sanity-check
-	# sudo pacman --noconfirm -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
+	sudo pacman --noconfirm --needed -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	# Install oh-my-zsh if not already installed
 	if [ ! -d ~/.oh-my-zsh ]; then \
 		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
@@ -105,17 +124,14 @@ install-shell: sanity-check
 		mv temp ~/.vimrc; \
 	fi
 
-install-colored-man-pages: sanity-check
-	sudo pacman --noconfirm -S colored-man-pages
-
 install-docker: sanity-check
-	sudo pacman --noconfirm -S docker docker-compose
+	sudo pacman --noconfirm --needed -S docker docker-compose
 	sudo usermod -aG docker "$$USER"
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
 install-i3: sanity-check
-	sudo pacman --noconfirm -S i3-gaps i3blocks i3lock i3status dmenu feh
+	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3status dmenu feh
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \
@@ -132,7 +148,7 @@ install-i3: sanity-check
 	fi
 
 install-polybar: sanity-check
-	sudo pacman --noconfirm -S polybar
+	sudo pacman --noconfirm --needed -S polybar
 
 	# If ~/.config/polybar/config.ini doesnt exist, create it
 	if [ ! -f ~/.config/polybar/config.ini ]; then \
@@ -146,7 +162,7 @@ install-polybar: sanity-check
 	fi
 
 install-terminal: sanity-check
-	sudo pacman --noconfirm -S kitty
+	sudo pacman --noconfirm --needed -S kitty
 	if [ ! -f ~/.config/kitty/kitty.conf ]; then \
 		mkdir -p ~/.config/kitty/; \
 		touch ~/.config/kitty/kitty.conf; \
@@ -159,15 +175,18 @@ install-terminal: sanity-check
 	fi
 
 install-mise: sanity-check
-	sudo pacman --noconfirm -S mise
+	# Install mise and all php-build dependencies
+	sudo pacman --needed --noconfirm -S mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g usage@latest
-	for package in pdm rust terraform golang python nodejs; do \
-		mise use -g $$package@latest; \
-	done
-	# Todo add all php shitty libs & build php
+	for package in pdm rust terraform golang python nodejs; do mise use -g $$package@latest; done
+	# Install libs to build current latest, aka php 8.4.4
+	sudo pacman --needed --noconfirm -S libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	mise use -g php@latest; \
+	# WIP build compat php 7.4
+	# openssl-1.1; export PKG_CONFIG_PATH=/usr/lib/openssl-1.1/pkgconfig ; export LDFLAGS="-L/usr/lib/openssl-1.1" ; export CPPFLAGS="-I/usr/include/openssl-1.1"
 
-install-cligoodies: sanity-check
-	sudo pacman --noconfirm -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile
+install-goodies: sanity-check
+	sudo pacman --noconfirm --needed -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
 	if [ ! -d ~/.config/nvim ]; then \
 		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
 	fi
@@ -182,14 +201,45 @@ install-cligoodies: sanity-check
 		mv temp ~/.config/nvim/init.lua; \
 	fi
 
-
-all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-cligoodies
+all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-security install-offensive
 	echo "You are all set up! Enjoy ! 🌹"
 
-# base-devel bison bzip2 ca-certificates cloc cmake curl dos2unix expect ffmpeg foremost fswebcam gcc gd gdb gettext git gnupg hashid hexyl htop hwinfo icu imagemagick inotify-tools iproute2 jq kdenlive leptonica libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip linux-tools-meta llvm lsb-release lsof ltrace make mariadb-libs meld mlocate ncurses neofetch net-tools ngrep nmap oniguruma openssh openssl pacman parallel perl-image-exiftool pkgconf postgresql-libs powerline powerline-fonts python python-pip python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tesseract tk tmate tmux tor traceroute tree ufw unzip vbindiff vim wget wl-clipboard xclip xmlsec xz yaml-cpp zip zlib fastgron
-# disable tor cups etc
-
 install-security: sanity-check
-	sudo pacman --noconfirm -S opensnitch
-	sudo systemctl enable opensnitchd.service
-	sudo systemctl start opensnitchd.service
+	sudo pacman --noconfirm --needed -S opensnitch
+	# sudo systemctl enable opensnitchd.service
+	# sudo systemctl start opensnitchd.service
+	# disable tor cups
+
+install-offensive: sanity-check
+	sudo pacman --noconfirm --needed -S metasploit burpsuite fx lazygit fq
+	yay --noconfirm --needed -S ffuf gau pdtm-bin brutesprayx waybackurls
+	mise exec -- go install github.com/sw33tLie/sns@latest
+	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
+	pdtm -install-all
+	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"; \
+	
+	# Clone custom tools
+	if [ ! -d /opt/chisel ]; then git clone https://github.com/jpillora/chisel && sudo mv chisel /opt/chisel; fi
+	if [ ! -d /opt/phpggc ]; then git clone https://github.com/ambionics/phpggc && sudo mv phpggc /opt/phpggc; fi
+	if [ ! -d /opt/PyFuscation ]; then git clone https://github.com/CBHue/PyFuscation && sudo mv PyFuscation /opt/PyFuscation; fi
+	if [ ! -d /opt/CloudFlair ]; then git clone https://github.com/christophetd/CloudFlair && sudo mv CloudFlair /opt/CloudFlair; fi
+	if [ ! -d /opt/minos-static ]; then git clone https://github.com/minos-org/minos-static && sudo mv minos-static /opt/minos-static; fi
+	if [ ! -d /opt/exploit-database ]; then git clone https://github.com/offensive-security/exploit-database && sudo mv exploit-database /opt/exploit-database; fi
+	if [ ! -d /opt/exploitdb ]; then git clone https://gitlab.com/exploit-database/exploitdb && sudo mv exploitdb /opt/exploitdb; fi
+	if [ ! -d /opt/pty4all ]; then git clone https://github.com/laluka/pty4all && sudo mv pty4all /opt/pty4all; fi
+	if [ ! -d /opt/pypotomux ]; then git clone https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux; fi
+	
+	# Clone wordlists
+	if [ ! -d /opt/lists ]; then mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists; fi
+	if [ ! -f /opt/lists/rockyou.txt ]; then curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt; fi
+	if [ ! -d /opt/lists/PayloadsAllTheThings ]; then git clone https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings ; fi
+	if [ ! -d /opt/lists/fuzzing-templates ]; then git clone https://github.com/projectdiscovery/fuzzing-templates /opt/lists/fuzzing-templates ; fi
+	if [ ! -d /opt/lists/BruteX ]; then git clone https://github.com/1N3/BruteX /opt/lists/BruteX ; fi
+	if [ ! -d /opt/lists/IntruderPayloads ]; then git clone https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads ; fi
+	if [ ! -d /opt/lists/Probable-Wordlists ]; then git clone https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists ; fi
+	if [ ! -d /opt/lists/Open-Redirect-Payloads ]; then git clone https://github.com/cujanovic/Open-Redirect-Payloads /opt/lists/Open-Redirect-Payloads ; fi
+	if [ ! -d /opt/lists/SecLists ]; then git clone https://github.com/danielmiessler/SecLists /opt/lists/SecLists ; fi
+	if [ ! -d /opt/lists/Pwdb-Public ]; then git clone https://github.com/ignis-sec/Pwdb-Public /opt/lists/Pwdb-Public ; fi
+	if [ ! -d /opt/lists/Bug-Bounty-Wordlists ]; then git clone https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists ; fi
+	if [ ! -d /opt/lists/richelieu ]; then git clone https://github.com/tarraschk/richelieu /opt/lists/richelieu ; fi
+	if [ ! -d /opt/lists/webapp-wordlists ]; then git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists ; fi

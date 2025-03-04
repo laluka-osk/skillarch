@@ -25,7 +25,6 @@ alias vff='f() { file=$(grep -rE . "$1" 2>/dev/null | fzf | cut -d: -f1); if [ -
 alias git="GIT_SSL_NO_VERIFY=true git"
 alias clean-crash='sudo /bin/rm -rf /var/crash/*'
 alias clean-go='sudo /bin/rm -rf ~/go/'
-alias gog='google-chrome'
 alias carbo='docker run -ti fathyb/carbonyl'
 alias ipa='ip -br a | grep -vF DOWN | cut -d/ -f1'
 alias kill-click='sudo kill -9 $(get-pid-click)'
