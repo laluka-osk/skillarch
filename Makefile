@@ -131,7 +131,7 @@ install-docker: sanity-check
 	sudo systemctl start docker
 
 install-i3: sanity-check
-	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3status dmenu feh rofi
+	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \

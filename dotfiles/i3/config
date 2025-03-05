@@ -206,3 +206,4 @@ bindsym $mod+b exec blueman-manager
 bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && notify-send --icon=/dev/null --expire-time=500 "$(pactl get-source-mute @DEFAULT_SOURCE@)"
 
 bindsym $mod+Shift+l exec rofi -show power-menu -modi power-menu:rofi-power-menu
+bindsym $mod+l exec i3lock-fancy -f Bitstream-Vera-Serif -t 'Welcome back to LalukArk'
