@@ -13,3 +13,10 @@ make install-i3
 make install-polybar
 make install-security
 ```
+
+## Kudos
+
+- https://github.com/newmanls/rofi-themes-collection
+- https://github.com/regolith-linux/regolith-desktop
+- https://github.com/CachyOS/cachyos-desktop
+- 

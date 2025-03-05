@@ -39,7 +39,7 @@ install-system: sanity-check
 		mv temp /etc/pacman.conf; \
 	fi
 	
-	sudo pacman --noconfirm --needed -S arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
+	sudo pacman --noconfirm --needed -S arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	code --install-extension bibhasdn.unique-lines
 	code --install-extension eriklynd.json-tools
@@ -131,18 +131,31 @@ install-docker: sanity-check
 	sudo systemctl start docker
 
 install-i3: sanity-check
-	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3status dmenu feh
+	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3status dmenu feh rofi
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \
 		mkdir -p ~/.config/i3; \
 		touch ~/.config/i3/config; \
 	fi
-	# If include /opt/lalucachy/dotfiles/i3/config not in /home/lalu/.config/i3/config, add it as the first line
+
+	# If "include /opt/lalucachy/dotfiles/i3/config" not in /home/lalu/.config/i3/config, add it as the first line
 	if ! grep -q "include /opt/lalucachy/dotfiles/i3/config" ~/.config/i3/config; then \
 		echo -e "include /opt/lalucachy/dotfiles/i3/config\n# Add your custom config here" | cat - ~/.config/i3/config > temp; \
 		mv temp ~/.config/i3/config; \
 	fi
+
+	if [ ! -f ~/.config/rofi/config.rasi ]; then \
+		mkdir -p ~/.config/rofi; \
+		touch ~/.config/rofi/config.rasi; \
+	fi
+
+	# If "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"" not in ~/.config/rofi/config.rasi, add it as the first line
+	if ! grep -q "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"" ~/.config/rofi/config.rasi; then \
+		echo -e "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"\n// Add your custom config here" | cat - ~/.config/rofi/config.rasi > temp; \
+		mv temp ~/.config/rofi/config.rasi; \
+	fi
+
 	if [ ! -f /etc/X11/xorg.conf.d/30-touchpad.conf ]; then \
 		sudo cp /opt/lalucachy/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
 	fi
