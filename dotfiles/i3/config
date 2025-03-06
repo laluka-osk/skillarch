@@ -46,6 +46,10 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+# Brightness controls
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +20% && notify-send --icon=/dev/null --expire-time=500 "Brightness +20%"
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 20%- && notify-send --icon=/dev/null --expire-time=500 "Brightness -20%"
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
@@ -165,10 +169,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
+        # Pressing left will shrink the window's width.
+        # Pressing right will grow the window's width.
+        # Pressing up will shrink the window's height.
+        # Pressing down will grow the window's height.
         bindsym j resize shrink width 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
         bindsym l resize shrink height 10 px or 10 ppt
@@ -203,7 +207,8 @@ bindsym $mod+Shift+p exec flameshot full -p /tmp/
 bindsym $mod+s exec pavucontrol
 bindsym $mod+e exec emote
 bindsym $mod+b exec blueman-manager
+bindsym $mod+w exec nm-connection-editor
 bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && notify-send --icon=/dev/null --expire-time=500 "$(pactl get-source-mute @DEFAULT_SOURCE@)"
 
-bindsym $mod+Shift+l exec rofi -show power-menu -modi power-menu:rofi-power-menu
+bindsym $mod+Escape exec rofi -show power-menu -modi power-menu:rofi-power-menu
 bindsym $mod+l exec i3lock-fancy -f Bitstream-Vera-Serif -t 'Welcome back to LalukArk'
