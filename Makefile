@@ -1,19 +1,25 @@
-help:
-	echo "Let's get help!"
+.PHONY: help
+help: ## Show this help message
+	@echo 'Welcome to LalukArk! 🌹'
+	@echo ''
+	@echo 'Usage: make [target]'
+	@echo 'Targets:'
+	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@echo ''
 
-sanity-check:
+sanity-check: ## Simple sanity check
 	@# Ensure we are in /opt/lalucachy
 	@if [ "$$(pwd)" != "/opt/lalucachy" ]; then \
 		echo "You must be in /opt/lalucachy to run this command"; \
 		exit 1; \
 	fi	
 
-install-base: sanity-check
+install-base: sanity-check  ## Install base packages
 	echo "installing stuff"
 	sudo pacman --noconfirm --needed -Syu
 	sudo pacman --noconfirm --needed -S git vim tmux wget curl
 
-install-system: sanity-check
+install-system: sanity-check  ## Install system packages
 	# Long lived data
 	if [ ! -d /DATA ]; then \
 		mkdir -pv /tmp/DATA; \
@@ -73,7 +79,7 @@ install-system: sanity-check
 		pipx inject "$$package" setuptools; \
 	done
 
-install-shell: sanity-check
+install-shell: sanity-check  ## Install shell packages
 	sudo pacman --noconfirm --needed -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	# Install oh-my-zsh if not already installed
 	if [ ! -d ~/.oh-my-zsh ]; then \
@@ -124,13 +130,13 @@ install-shell: sanity-check
 		mv temp ~/.vimrc; \
 	fi
 
-install-docker: sanity-check
+install-docker: sanity-check  ## Install docker
 	sudo pacman --noconfirm --needed -S docker docker-compose
 	sudo usermod -aG docker "$$USER"
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
-install-i3: sanity-check
+install-i3: sanity-check  ## Install i3
 	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
@@ -160,7 +166,7 @@ install-i3: sanity-check
 		sudo cp /opt/lalucachy/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
 	fi
 
-install-polybar: sanity-check
+install-polybar: sanity-check  ## Install polybar
 	sudo pacman --noconfirm --needed -S polybar
 
 	# If ~/.config/polybar/config.ini doesnt exist, create it
@@ -174,7 +180,7 @@ install-polybar: sanity-check
 		mv temp ~/.config/polybar/config.ini; \
 	fi
 
-install-terminal: sanity-check
+install-terminal: sanity-check  ## Install terminal
 	sudo pacman --noconfirm --needed -S kitty
 	if [ ! -f ~/.config/kitty/kitty.conf ]; then \
 		mkdir -p ~/.config/kitty/; \
@@ -187,7 +193,7 @@ install-terminal: sanity-check
 		mv temp ~/.config/kitty/kitty.conf; \
 	fi
 
-install-mise: sanity-check
+install-mise: sanity-check  ## Install mise
 	# Install mise and all php-build dependencies
 	sudo pacman --needed --noconfirm -S mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g usage@latest
@@ -198,7 +204,7 @@ install-mise: sanity-check
 	# WIP build compat php 7.4
 	# openssl-1.1; export PKG_CONFIG_PATH=/usr/lib/openssl-1.1/pkgconfig ; export LDFLAGS="-L/usr/lib/openssl-1.1" ; export CPPFLAGS="-I/usr/include/openssl-1.1"
 
-install-goodies: sanity-check
+install-goodies: sanity-check  ## Install goodies
 	sudo pacman --noconfirm --needed -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
 	if [ ! -d ~/.config/nvim ]; then \
 		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
@@ -214,16 +220,7 @@ install-goodies: sanity-check
 		mv temp ~/.config/nvim/init.lua; \
 	fi
 
-all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-security install-offensive
-	echo "You are all set up! Enjoy ! 🌹"
-
-install-security: sanity-check
-	sudo pacman --noconfirm --needed -S opensnitch
-	# sudo systemctl enable opensnitchd.service
-	# sudo systemctl start opensnitchd.service
-	# disable tor cups
-
-install-offensive: sanity-check
+install-offensive: sanity-check  ## Install offensive tools
 	sudo pacman --noconfirm --needed -S metasploit burpsuite fx lazygit fq
 	yay --noconfirm --needed -S ffuf gau pdtm-bin brutesprayx waybackurls
 	mise exec -- go install github.com/sw33tLie/sns@latest
@@ -256,3 +253,12 @@ install-offensive: sanity-check
 	if [ ! -d /opt/lists/Bug-Bounty-Wordlists ]; then git clone https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists ; fi
 	if [ ! -d /opt/lists/richelieu ]; then git clone https://github.com/tarraschk/richelieu /opt/lists/richelieu ; fi
 	if [ ! -d /opt/lists/webapp-wordlists ]; then git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists ; fi
+
+install-security: sanity-check  ## Install security tools
+	sudo pacman --noconfirm --needed -S opensnitch
+	sudo systemctl disable --now nxserver.service
+	# OPT-IN opensnitch as an egress firewall
+	# sudo systemctl enable --now opensnitchd.service
+
+all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-security install-offensive
+	echo "You are all set up! Enjoy ! 🌹"
