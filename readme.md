@@ -30,3 +30,5 @@ make install
 - Add update process
 - Rethink the dotfiles sourcing approach VS git-based
 - nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
+- Hide golang storage in home, change basedir
+
