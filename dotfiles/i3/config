@@ -24,7 +24,7 @@ font pango:monospace 8
 exec --no-startup-id dex --autostart --environment i3
 exec_always --no-startup-id killall -q polybar; polybar
 exec_always --no-startup-id killall -q picom; picom
-exec_always --no-startup-id feh --bg-scale /opt/lalucachy/assets/lalucachy-draft.jpg
+exec_always --no-startup-id feh --bg-scale /opt/skillarch/assets/bg-0.jpg
 default_border none
 default_floating_border none
 
@@ -96,10 +96,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
+# bindsym $mod+h split h
 
 # split in vertical orientation
-bindsym $mod+v split v
+# bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -113,7 +113,7 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+f floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+BackSpace focus mode_toggle
+bindsym $mod+Shift+BackSpace focus mode_toggle
 
 # focus the parent container
 # bindsym $mod+q focus parent
@@ -199,8 +199,8 @@ bindsym $mod+r mode "resize"
 # }
 
 # Gaps
-gaps inner 2
-gaps outer 5
+gaps inner 5
+gaps outer 0
 
 bindsym $mod+p exec flameshot gui
 bindsym $mod+Shift+p exec flameshot full -p /tmp/
@@ -208,7 +208,10 @@ bindsym $mod+s exec pavucontrol
 bindsym $mod+e exec emote
 bindsym $mod+b exec blueman-manager
 bindsym $mod+w exec nm-connection-editor
-bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && notify-send --icon=/dev/null --expire-time=500 "$(pactl get-source-mute @DEFAULT_SOURCE@)"
+bindsym $mod+n exec nautilus
+bindsym $mod+v exec vlc
+bindsym $mod+BackSpace split toggle
+bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 bindsym $mod+Escape exec rofi -show power-menu -modi power-menu:rofi-power-menu
 bindsym $mod+l exec i3lock-fancy -f Bitstream-Vera-Serif -t 'Welcome back to LalukArk'

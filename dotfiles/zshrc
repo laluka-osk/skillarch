@@ -6,6 +6,6 @@ export EDITOR=/usr/bin/vim
 export PAGER=/usr/bin/bat
 export TERMINAL=/usr/bin/kitty
 export VISUAL=/usr/bin/eog
-# export TERM=linux
-source /opt/lalucachy/dotfiles/aliases
+source $ZSH/oh-my-zsh.sh
+source /opt/skillarch/dotfiles/aliases
 eval "$(register-python-argcomplete --no-defaults exegol)"

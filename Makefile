@@ -7,10 +7,13 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-sanity-check: ## Simple sanity check
-	@# Ensure we are in /opt/lalucachy
-	@if [ "$$(pwd)" != "/opt/lalucachy" ]; then \
-		echo "You must be in /opt/lalucachy to run this command"; \
+install: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-offensive install-security ## Install SkillArch
+	echo "You are all set up! Enjoy ! 🌹"
+
+sanity-check:
+	@# Ensure we are in /opt/skillarch
+	@if [ "$$(pwd)" != "/opt/skillarch" ]; then \
+		echo "You must be in /opt/skillarch to run this command"; \
 		exit 1; \
 	fi	
 
@@ -68,8 +71,8 @@ install-system: sanity-check  ## Install system packages
 	if [ ! -f ~/.config/picom.conf ]; then \
 		touch ~/.config/picom.conf; \
 	fi
-	if ! grep -q "@include \"/opt/lalucachy/dotfiles/picom.conf\"" ~/.config/picom.conf; then \
-		echo -e "@include \"/opt/lalucachy/dotfiles/picom.conf\"\n# Add your custom config here" | cat - ~/.config/picom.conf > temp; \
+	if ! grep -q "@include \"/opt/skillarch/dotfiles/picom.conf\"" ~/.config/picom.conf; then \
+		echo -e "@include \"/opt/skillarch/dotfiles/picom.conf\"\n# Add your custom config here" | cat - ~/.config/picom.conf > temp; \
 		mv temp ~/.config/picom.conf; \
 	fi
 	yay --noconfirm --needed -S python-pipx
@@ -86,9 +89,9 @@ install-shell: sanity-check  ## Install shell packages
 		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
 	fi
 	
-	# if "source /opt/lalucachy/dotfiles/zshrc" is not in ~/.zshrc, add it
-	if ! grep -q "source /opt/lalucachy/dotfiles/zshrc" ~/.zshrc; then \
-		echo -e "source /opt/lalucachy/dotfiles/zshrc\n# Add your custom config here" | cat - ~/.zshrc > temp; \
+	# if "source /opt/skillarch/dotfiles/zshrc" is not in ~/.zshrc, add it
+	if ! grep -q "source /opt/skillarch/dotfiles/zshrc" ~/.zshrc; then \
+		echo -e "source /opt/skillarch/dotfiles/zshrc\n# Add your custom config here" | cat - ~/.zshrc > temp; \
 		mv temp ~/.zshrc; \
 	fi
 	
@@ -112,8 +115,8 @@ install-shell: sanity-check  ## Install shell packages
 		touch ~/.tmux.conf; \
 	fi
 
-	if ! grep -q "source-file /opt/lalucachy/dotfiles/tmux.conf" ~/.tmux.conf; then \
-		echo -e "source-file /opt/lalucachy/dotfiles/tmux.conf\n# Add your custom config here" | cat - ~/.tmux.conf > temp; \
+	if ! grep -q "source-file /opt/skillarch/dotfiles/tmux.conf" ~/.tmux.conf; then \
+		echo -e "source-file /opt/skillarch/dotfiles/tmux.conf\n# Add your custom config here" | cat - ~/.tmux.conf > temp; \
 		mv temp ~/.tmux.conf; \
 	fi
 
@@ -125,8 +128,8 @@ install-shell: sanity-check  ## Install shell packages
 		touch ~/.vimrc; \
 	fi
 
-	if ! grep -q "source /opt/lalucachy/dotfiles/vimrc" ~/.vimrc; then \
-		echo -e "source /opt/lalucachy/dotfiles/vimrc\n# Add your custom config here" | cat - ~/.vimrc > temp; \
+	if ! grep -q "source /opt/skillarch/dotfiles/vimrc" ~/.vimrc; then \
+		echo -e "source /opt/skillarch/dotfiles/vimrc\n# Add your custom config here" | cat - ~/.vimrc > temp; \
 		mv temp ~/.vimrc; \
 	fi
 
@@ -145,9 +148,9 @@ install-i3: sanity-check  ## Install i3
 		touch ~/.config/i3/config; \
 	fi
 
-	# If "include /opt/lalucachy/dotfiles/i3/config" not in /home/lalu/.config/i3/config, add it as the first line
-	if ! grep -q "include /opt/lalucachy/dotfiles/i3/config" ~/.config/i3/config; then \
-		echo -e "include /opt/lalucachy/dotfiles/i3/config\n# Add your custom config here" | cat - ~/.config/i3/config > temp; \
+	# If "include /opt/skillarch/dotfiles/i3/config" not in /home/lalu/.config/i3/config, add it as the first line
+	if ! grep -q "include /opt/skillarch/dotfiles/i3/config" ~/.config/i3/config; then \
+		echo -e "include /opt/skillarch/dotfiles/i3/config\n# Add your custom config here" | cat - ~/.config/i3/config > temp; \
 		mv temp ~/.config/i3/config; \
 	fi
 
@@ -156,14 +159,14 @@ install-i3: sanity-check  ## Install i3
 		touch ~/.config/rofi/config.rasi; \
 	fi
 
-	# If "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"" not in ~/.config/rofi/config.rasi, add it as the first line
-	if ! grep -q "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"" ~/.config/rofi/config.rasi; then \
-		echo -e "@theme \"/opt/lalucachy/dotfiles/rofi/spotlight-dark.rasi\"\n// Add your custom config here" | cat - ~/.config/rofi/config.rasi > temp; \
+	# If "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"" not in ~/.config/rofi/config.rasi, add it as the first line
+	if ! grep -q "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"" ~/.config/rofi/config.rasi; then \
+		echo -e "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"\n// Add your custom config here" | cat - ~/.config/rofi/config.rasi > temp; \
 		mv temp ~/.config/rofi/config.rasi; \
 	fi
 
 	if [ ! -f /etc/X11/xorg.conf.d/30-touchpad.conf ]; then \
-		sudo cp /opt/lalucachy/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
+		sudo cp /opt/skillarch/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
 	fi
 
 install-polybar: sanity-check  ## Install polybar
@@ -174,9 +177,9 @@ install-polybar: sanity-check  ## Install polybar
 		mkdir -p ~/.config/polybar; \
 		touch ~/.config/polybar/config.ini; \
 	fi
-	# If "include-file = /opt/lalucachy/dotfiles/polybar/config.ini" not in ~/.config/polybar/config.ini, add it as the first line
-	if ! grep -q "include-file = /opt/lalucachy/dotfiles/polybar/config.ini" ~/.config/polybar/config.ini; then \
-		echo -e "include-file = /opt/lalucachy/dotfiles/polybar/config.ini\n# Add your custom config here" | cat - ~/.config/polybar/config.ini > temp; \
+	# If "include-file = /opt/skillarch/dotfiles/polybar/config.ini" not in ~/.config/polybar/config.ini, add it as the first line
+	if ! grep -q "include-file = /opt/skillarch/dotfiles/polybar/config.ini" ~/.config/polybar/config.ini; then \
+		echo -e "include-file = /opt/skillarch/dotfiles/polybar/config.ini\n# Add your custom config here" | cat - ~/.config/polybar/config.ini > temp; \
 		mv temp ~/.config/polybar/config.ini; \
 	fi
 
@@ -187,9 +190,9 @@ install-terminal: sanity-check  ## Install terminal
 		touch ~/.config/kitty/kitty.conf; \
 	fi
 	
-	# If "include /opt/lalucachy/dotfiles/kitty/kitty.conf" not in ~/.config/kitty/kitty.conf, add it as the first line
-	if ! grep -q "include /opt/lalucachy/dotfiles/kitty/kitty.conf" ~/.config/kitty/kitty.conf; then \
-		echo -e "include /opt/lalucachy/dotfiles/kitty/kitty.conf\n# Add your custom config here" | cat - ~/.config/kitty/kitty.conf > temp; \
+	# If "include /opt/skillarch/dotfiles/kitty/kitty.conf" not in ~/.config/kitty/kitty.conf, add it as the first line
+	if ! grep -q "include /opt/skillarch/dotfiles/kitty/kitty.conf" ~/.config/kitty/kitty.conf; then \
+		echo -e "include /opt/skillarch/dotfiles/kitty/kitty.conf\n# Add your custom config here" | cat - ~/.config/kitty/kitty.conf > temp; \
 		mv temp ~/.config/kitty/kitty.conf; \
 	fi
 
@@ -259,6 +262,3 @@ install-security: sanity-check  ## Install security tools
 	sudo systemctl disable --now nxserver.service
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
-
-all: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-offensive install-security
-	echo "You are all set up! Enjoy ! 🌹"
