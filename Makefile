@@ -195,9 +195,8 @@ install-mise: sanity-check  ## Install mise
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
-	mise use -g php@latest; \
-	# WIP build compat php 7.4
-	# openssl-1.1; export PKG_CONFIG_PATH=/usr/lib/openssl-1.1/pkgconfig ; export LDFLAGS="-L/usr/lib/openssl-1.1" ; export CPPFLAGS="-I/usr/include/openssl-1.1"
+	# TODO uncomment me
+	# mise use -g php@latest
 
 install-goodies: sanity-check  ## Install goodies
 	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
@@ -237,19 +236,20 @@ install-offensive: sanity-check  ## Install offensive tools
 	if [ ! -d /opt/pypotomux ]; then git clone https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux; fi
 	
 	# Clone wordlists
-	if [ ! -d /opt/lists ]; then mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists; fi
-	if [ ! -f /opt/lists/rockyou.txt ]; then curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt; fi
-	if [ ! -d /opt/lists/PayloadsAllTheThings ]; then git clone https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings ; fi
-	if [ ! -d /opt/lists/fuzzing-templates ]; then git clone https://github.com/projectdiscovery/fuzzing-templates /opt/lists/fuzzing-templates ; fi
-	if [ ! -d /opt/lists/BruteX ]; then git clone https://github.com/1N3/BruteX /opt/lists/BruteX ; fi
-	if [ ! -d /opt/lists/IntruderPayloads ]; then git clone https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads ; fi
-	if [ ! -d /opt/lists/Probable-Wordlists ]; then git clone https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists ; fi
-	if [ ! -d /opt/lists/Open-Redirect-Payloads ]; then git clone https://github.com/cujanovic/Open-Redirect-Payloads /opt/lists/Open-Redirect-Payloads ; fi
-	if [ ! -d /opt/lists/SecLists ]; then git clone https://github.com/danielmiessler/SecLists /opt/lists/SecLists ; fi
-	if [ ! -d /opt/lists/Pwdb-Public ]; then git clone https://github.com/ignis-sec/Pwdb-Public /opt/lists/Pwdb-Public ; fi
-	if [ ! -d /opt/lists/Bug-Bounty-Wordlists ]; then git clone https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists ; fi
-	if [ ! -d /opt/lists/richelieu ]; then git clone https://github.com/tarraschk/richelieu /opt/lists/richelieu ; fi
-	if [ ! -d /opt/lists/webapp-wordlists ]; then git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists ; fi
+	# TODO uncomment me
+	# if [ ! -d /opt/lists ]; then mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists; fi
+	# if [ ! -f /opt/lists/rockyou.txt ]; then curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt; fi
+	# if [ ! -d /opt/lists/PayloadsAllTheThings ]; then git clone https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings ; fi
+	# if [ ! -d /opt/lists/fuzzing-templates ]; then git clone https://github.com/projectdiscovery/fuzzing-templates /opt/lists/fuzzing-templates ; fi
+	# if [ ! -d /opt/lists/BruteX ]; then git clone https://github.com/1N3/BruteX /opt/lists/BruteX ; fi
+	# if [ ! -d /opt/lists/IntruderPayloads ]; then git clone https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads ; fi
+	# if [ ! -d /opt/lists/Probable-Wordlists ]; then git clone https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists ; fi
+	# if [ ! -d /opt/lists/Open-Redirect-Payloads ]; then git clone https://github.com/cujanovic/Open-Redirect-Payloads /opt/lists/Open-Redirect-Payloads ; fi
+	# if [ ! -d /opt/lists/SecLists ]; then git clone https://github.com/danielmiessler/SecLists /opt/lists/SecLists ; fi
+	# if [ ! -d /opt/lists/Pwdb-Public ]; then git clone https://github.com/ignis-sec/Pwdb-Public /opt/lists/Pwdb-Public ; fi
+	# if [ ! -d /opt/lists/Bug-Bounty-Wordlists ]; then git clone https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists ; fi
+	# if [ ! -d /opt/lists/richelieu ]; then git clone https://github.com/tarraschk/richelieu /opt/lists/richelieu ; fi
+	# if [ ! -d /opt/lists/webapp-wordlists ]; then git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists ; fi
 
 install-security: sanity-check  ## Install security tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
