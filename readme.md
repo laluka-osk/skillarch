@@ -27,7 +27,7 @@ make install
 - fix vbox copy paste
 - link ~/config/* to /opt/skillarch/config/*, mv .bak if exists
 - omz plugin check before enable (slowww)
-- nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
+- visual select kitty ?
 
 ## TODO Later
 
