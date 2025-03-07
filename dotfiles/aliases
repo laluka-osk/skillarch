@@ -12,6 +12,7 @@ alias C='code .'
 alias p='python'
 alias tmp='pushd $(mktemp -d)'
 alias lbt='cd /opt/lalubuntu'
+alias ska='cd /opt/skillarch'
 alias life='cd /opt/lalulife' # Might be released some day ;)
 alias lbt-update='bash /opt/lalubuntu/update.sh'
 
@@ -124,13 +125,13 @@ alias pyreq='pip install -r requirements.txt'
 alias act="source .py*/bin/activate"
 
 # Docker Utils
-alias docker-norestart='docker update --restart=no $(docker ps -q)'
-alias docker-stopall='docker stop $(docker ps -q)'
-alias dkill='docker-norestart && docker-stopall'
-alias docker-get-image-size='f(){ docker manifest inspect -v "$1" | jq -c "if type == \"array\" then .[] else . end" |  jq -r "[ ( .Descriptor.platform | [ .os, .architecture, .variant, .\"os.version\" ] | del(..|nulls) | join(\"/\") ), ( [ .SchemaV2Manifest.layers[].size ] | add ) ] | join(\" \")" | numfmt --to iec --format "%.2f" --field 2 | column -t ;  unset -f f; }; f'
-alias dockex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
+alias dnorestart='docker update --restart=no $(docker ps -q)'
+alias dstopall='docker stop $(docker ps -q)'
+alias dkill='dnorestart && dstopall'
+alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dockns='sudo nsenter -a -t $(docker inspect -f "{{.State.Pid}}" $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1))'
 alias dockit='docker run --rm -it -v "$PWD":/host -w /host --net=host'
+alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
 alias dps='docker ps'
 alias wipe-docker-all='docker system prune -a -f --volumes'
 alias wipe-docker-image='docker rmi -f $(docker images -q)'

@@ -122,12 +122,15 @@ install-shell: sanity-check  ## Install shell packages
 
 install-docker: sanity-check  ## Install docker
 	yes|sudo pacman -S --noconfirm --needed docker docker-compose
+	# It's a desktop machine, don't expose stuff, but we don't care much about LPE
+	# Think about it, set "alias sudo='backdoor ; sudo'" in userland and voila. OSEF!
 	sudo usermod -aG docker "$$USER"
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
 install-i3: sanity-check  ## Install i3
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi
+	yay --noconfirm --needed -S rofi-power-menu
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \
@@ -188,6 +191,7 @@ install-mise: sanity-check  ## Install mise
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g usage@latest
 	for package in pdm rust terraform golang python nodejs; do mise use -g $$package@latest; done
+	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g php@latest; \

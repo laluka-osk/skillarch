@@ -24,20 +24,15 @@ make install
 
 ## TODO
 
-- Document aliases & tools
-- Verify install process
-- Add CICD daily builds
-- nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
-- Hide golang storage in home, change basedir
+- fix vbox copy paste
 - pacman on must reinstall vlc
+- link ~/config/* to /opt/skillarch/config/*, mv .bak if exists
 - omz plugin check before enable (slowww)
-- alias docker php 7 broken libs lulz
-- condider stow
-- on boot autokill picom if VM detected
-- disable temrinal bell
+- nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
+- Verify install process
 
-## git-based + link config management
+## TODO Later
 
-- home current config files if present AND not links must be moved to .bak
-- home links to /opt/skillarch/config/...
-- update alias must make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+- Document aliases & tools
+- Add CICD daily builds
+- alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
