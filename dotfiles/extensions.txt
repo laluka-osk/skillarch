@@ -1,0 +1,16 @@
+bibhasdn.unique-lines
+eriklynd.json-tools
+mechatroner.rainbow-csv
+mitchdenny.ecdc
+ms-azuretools.vscode-docker
+ms-python.debugpy
+ms-python.python
+ms-python.vscode-pylance
+ms-vscode-remote.remote-containers
+ms-vscode-remote.remote-ssh
+ms-vscode-remote.remote-ssh-edit
+ms-vscode.remote-explorer
+ms-vsliveshare.vsliveshare
+trailofbits.weaudit
+yzane.markdown-pdf
+zobo.php-intellisense

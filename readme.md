@@ -32,6 +32,9 @@ make install
 - pacman on must reinstall vlc
 - omz plugin check before enable (slowww)
 - alias docker php 7 broken libs lulz
+- condider stow
+- on boot autokill picom if VM detected
+- disable temrinal bell
 
 ## git-based + link config management
 
