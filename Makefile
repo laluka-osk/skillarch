@@ -176,22 +176,15 @@ install-polybar: sanity-check  ## Install polybar
 
 install-terminal: sanity-check  ## Install terminal
 	yes|sudo pacman -S --noconfirm --needed kitty
-	if [ ! -f ~/.config/kitty/kitty.conf ]; then \
-		mkdir -p ~/.config/kitty/; \
-		touch ~/.config/kitty/kitty.conf; \
-	fi
-	
-	# If "include /opt/skillarch/dotfiles/kitty/kitty.conf" not in ~/.config/kitty/kitty.conf, add it as the first line
-	if ! grep -q "include /opt/skillarch/dotfiles/kitty/kitty.conf" ~/.config/kitty/kitty.conf; then \
-		echo -e "include /opt/skillarch/dotfiles/kitty/kitty.conf\n# Add your custom config here" | cat - ~/.config/kitty/kitty.conf > temp; \
-		mv temp ~/.config/kitty/kitty.conf; \
-	fi
+	if [ ! -d ~/.config/kitty ]; then mkdir -p ~/.config/kitty; fi
+	if [ ! -L ~/.config/kitty/kitty.conf ]; then mv ~/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/nvim/kitty.conf ~/.config/kitty/kitty.conf
 
 install-mise: sanity-check  ## Install mise
 	# Install mise and all php-build dependencies
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g usage@latest
-	for package in pdm rust terraform golang python nodejs; do mise use -g $$package@latest; done
+	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest"; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
@@ -200,19 +193,10 @@ install-mise: sanity-check  ## Install mise
 
 install-goodies: sanity-check  ## Install goodies
 	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
-	if [ ! -d ~/.config/nvim ]; then \
-		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
-	fi
-	if [ ! -d ~/.config/nvim/lua/user ]; then \
-		mkdir -p ~/.config/nvim/lua/user; \
-	fi
-	if [ ! -f ~/.config/nvim/init.lua ]; then \
-		touch ~/.config/nvim/init.lua; \
-	fi
-	if ! grep -q 'vim.opt.mouse = ""' ~/.config/nvim/init.lua; then \
-		echo -e 'vim.opt.mouse = ""' | cat ~/.config/nvim/init.lua - > temp; \
-		mv temp ~/.config/nvim/init.lua; \
-	fi
+	if [ ! -d ~/.config/nvim ]; then git clone https://github.com/LazyVim/starter ~/.config/nvim; fi
+	if [ ! -d ~/.config/nvim/lua/user ]; then mkdir -p ~/.config/nvim/lua/user; fi
+	if [ ! -L ~/.config/nvim/init.lua ]; then mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/nvim/init.lua ~/.config/nvim/init.lua
 
 install-offensive: sanity-check  ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq
