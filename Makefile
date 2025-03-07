@@ -49,7 +49,7 @@ install-system: sanity-check  ## Install system packages
 		sudo mv temp /etc/pacman.conf; \
 	fi
 	yes|sudo pacman -Syu
-	#yes|sudo pacman -R vlc || true # Conflict with vlc-lua-jit for obs shenanigans
+	yes|sudo pacman -R vlc || true # Conflict with vlc-lua-jit for obs shenanigans
 	yes|sudo pacman -S --noconfirm --needed arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine vlc-luajit obs-studio-browser signal-desktop veracrypt
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	xargs -n1 code --install-extension < dotfiles/extensions.txt
