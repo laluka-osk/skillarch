@@ -25,14 +25,13 @@ make install
 ## TODO
 
 - fix vbox copy paste
-- pacman on must reinstall vlc
 - link ~/config/* to /opt/skillarch/config/*, mv .bak if exists
 - omz plugin check before enable (slowww)
 - nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
-- Verify install process
 
 ## TODO Later
 
+- Autoinstall curl -sS https://raw.githubusercontent.com/laluka/skillarch/refs/heads/main/autoinstall.sh|bash
 - Document aliases & tools
 - Add CICD daily builds
 - alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
