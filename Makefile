@@ -19,8 +19,9 @@ sanity-check:
 
 install-base: sanity-check  ## Install base packages
 	echo "installing stuff"
-	sudo pacman --noconfirm --needed -Syu
-	sudo pacman --noconfirm --needed -S git vim tmux wget curl
+	yes|sudo pacman -Scc
+	yes|sudo pacman -Syu
+	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl
 
 install-system: sanity-check  ## Install system packages
 	# Long lived data
@@ -39,8 +40,8 @@ install-system: sanity-check  ## Install system packages
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 	sudo pacman-key --lsign-key 3056513887B78AEB
-	sudo pacman --noconfirm --needed -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
-	sudo pacman --noconfirm --needed -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 	
 	# Append chaotic-aur lines if not present in /etc/pacman.conf
 	if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then \
@@ -48,7 +49,7 @@ install-system: sanity-check  ## Install system packages
 		sudo mv temp /etc/pacman.conf; \
 	fi
 	
-	sudo pacman --noconfirm --needed -S arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
+	yes|sudo pacman -S --noconfirm --needed arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	code --install-extension bibhasdn.unique-lines
 	code --install-extension eriklynd.json-tools
@@ -66,7 +67,8 @@ install-system: sanity-check  ## Install system packages
 	code --install-extension trailofbits.weaudit
 	code --install-extension yzane.markdown-pdf
 	code --install-extension zobo.php-intellisense
-	yay --noconfirm --needed -S cursor-bin fswebcam fastgron
+	yay --noconfirm --needed -S fswebcam fastgron
+	# TODO fix cursor-bin
 	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
 	if [ ! -f ~/.config/picom.conf ]; then \
 		touch ~/.config/picom.conf; \
@@ -83,12 +85,12 @@ install-system: sanity-check  ## Install system packages
 	done
 
 install-shell: sanity-check  ## Install shell packages
-	sudo pacman --noconfirm --needed -S zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
+	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	# Install oh-my-zsh if not already installed
 	if [ ! -d ~/.oh-my-zsh ]; then \
-		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
+		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; \
 	fi
-	
+	sudo chsh -s /usr/bin/zsh "$$USER"
 	# if "source /opt/skillarch/dotfiles/zshrc" is not in ~/.zshrc, add it
 	if ! grep -q "source /opt/skillarch/dotfiles/zshrc" ~/.zshrc; then \
 		echo -e "source /opt/skillarch/dotfiles/zshrc\n# Add your custom config here" | cat - ~/.zshrc > temp; \
@@ -129,18 +131,18 @@ install-shell: sanity-check  ## Install shell packages
 	fi
 
 	if ! grep -q "source /opt/skillarch/dotfiles/vimrc" ~/.vimrc; then \
-		echo -e "source /opt/skillarch/dotfiles/vimrc\n# Add your custom config here" | cat - ~/.vimrc > temp; \
+		echo -e "source /opt/skillarch/dotfiles/vimrc\n; Add your custom config here" | cat - ~/.vimrc > temp; \
 		mv temp ~/.vimrc; \
 	fi
 
 install-docker: sanity-check  ## Install docker
-	sudo pacman --noconfirm --needed -S docker docker-compose
+	yes|sudo pacman -S --noconfirm --needed docker docker-compose
 	sudo usermod -aG docker "$$USER"
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
 install-i3: sanity-check  ## Install i3
-	sudo pacman --noconfirm --needed -S i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi
+	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 	# If /home/lalu/.config/i3/config doesnt exist, create it
 	if [ ! -f ~/.config/i3/config ]; then \
@@ -170,7 +172,7 @@ install-i3: sanity-check  ## Install i3
 	fi
 
 install-polybar: sanity-check  ## Install polybar
-	sudo pacman --noconfirm --needed -S polybar
+	yes|sudo pacman -S --noconfirm --needed polybar
 
 	# If ~/.config/polybar/config.ini doesnt exist, create it
 	if [ ! -f ~/.config/polybar/config.ini ]; then \
@@ -184,7 +186,7 @@ install-polybar: sanity-check  ## Install polybar
 	fi
 
 install-terminal: sanity-check  ## Install terminal
-	sudo pacman --noconfirm --needed -S kitty
+	yes|sudo pacman -S --noconfirm --needed kitty
 	if [ ! -f ~/.config/kitty/kitty.conf ]; then \
 		mkdir -p ~/.config/kitty/; \
 		touch ~/.config/kitty/kitty.conf; \
@@ -198,17 +200,17 @@ install-terminal: sanity-check  ## Install terminal
 
 install-mise: sanity-check  ## Install mise
 	# Install mise and all php-build dependencies
-	sudo pacman --needed --noconfirm -S mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g usage@latest
 	for package in pdm rust terraform golang python nodejs; do mise use -g $$package@latest; done
 	# Install libs to build current latest, aka php 8.4.4
-	sudo pacman --needed --noconfirm -S libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise use -g php@latest; \
 	# WIP build compat php 7.4
 	# openssl-1.1; export PKG_CONFIG_PATH=/usr/lib/openssl-1.1/pkgconfig ; export LDFLAGS="-L/usr/lib/openssl-1.1" ; export CPPFLAGS="-I/usr/include/openssl-1.1"
 
 install-goodies: sanity-check  ## Install goodies
-	sudo pacman --noconfirm --needed -S git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
+	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
 	if [ ! -d ~/.config/nvim ]; then \
 		git clone https://github.com/LazyVim/starter ~/.config/nvim; \
 	fi
@@ -224,11 +226,13 @@ install-goodies: sanity-check  ## Install goodies
 	fi
 
 install-offensive: sanity-check  ## Install offensive tools
-	sudo pacman --noconfirm --needed -S metasploit burpsuite fx lazygit fq
-	yay --noconfirm --needed -S ffuf gau pdtm-bin brutesprayx waybackurls
+	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq
+	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
+	
 	mise exec -- go install github.com/sw33tLie/sns@latest
 	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
-	pdtm -install-all
+	mise exec -- go install github.com/x90skysn3k/brutespray@latest
+	zsh -c "source ~/.zshrc && pdtm -install-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"; \
 	
 	# Clone custom tools
@@ -258,7 +262,7 @@ install-offensive: sanity-check  ## Install offensive tools
 	if [ ! -d /opt/lists/webapp-wordlists ]; then git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists ; fi
 
 install-security: sanity-check  ## Install security tools
-	sudo pacman --noconfirm --needed -S opensnitch
+	yes|sudo pacman -S --noconfirm --needed opensnitch
 	sudo systemctl disable --now nxserver.service
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service

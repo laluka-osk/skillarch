@@ -27,14 +27,14 @@ make install
 - Document aliases & tools
 - Verify install process
 - Add CICD daily builds
-- Add update process
-- Rethink the dotfiles sourcing approach VS git-based
 - nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
 - Hide golang storage in home, change basedir
-- pacman noconfirm stops on must reinstall vlc
+- pacman on must reinstall vlc
+- omz plugin check before enable (slowww)
+- alias docker php 7 broken libs lulz
 
 ## git-based + link config management
 
+- home current config files if present AND not links must be moved to .bak
 - home links to /opt/skillarch/config/...
-- config/foo.ext must include config/foo-custom.ext for users custom configs
 - update alias must make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase

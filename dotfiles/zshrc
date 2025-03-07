@@ -7,5 +7,6 @@ export PAGER=/usr/bin/bat
 export TERMINAL=/usr/bin/kitty
 export VISUAL=/usr/bin/eog
 source $ZSH/oh-my-zsh.sh
+export PATH=$PATH:~/.pdtm/go/bin
 source /opt/skillarch/dotfiles/aliases
 eval "$(register-python-argcomplete --no-defaults exegol)"
