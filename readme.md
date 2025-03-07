@@ -32,3 +32,9 @@ make install
 - nvim auto transparency with https://github.com/LazyVim/LazyVim/discussions/116#discussioncomment-11108106
 - Hide golang storage in home, change basedir
 
+## git-based + link config management
+
+- home links to /opt/skillarch/config/...
+- config/foo.ext must include config/foo-custom.ext for users custom configs
+- update alias must make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+- 
