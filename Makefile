@@ -45,7 +45,7 @@ install-system: sanity-check  ## Install system packages
 	# Append chaotic-aur lines if not present in /etc/pacman.conf
 	if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then \
 		echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n# Add your custom config here" | cat - /etc/pacman.conf > temp; \
-		mv temp /etc/pacman.conf; \
+		sudo mv temp /etc/pacman.conf; \
 	fi
 	
 	sudo pacman --noconfirm --needed -S arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff vlc-luajit wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine cachyos/obs-studio-browser signal-desktop veracrypt
