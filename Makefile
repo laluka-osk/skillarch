@@ -54,8 +54,7 @@ install-system: sanity-check  ## Install system packages
 	sudo systemctl disable --now nxserver.service
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	xargs -n1 code --install-extension < dotfiles/extensions.txt
-	yay --noconfirm --needed -S fswebcam fastgron
-	# TODO fix cursor-bin
+	yay --noconfirm --needed -S fswebcam fastgron cursor-bin
 	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
 	if [ ! -f ~/.config/picom.conf ]; then \
 		touch ~/.config/picom.conf; \
