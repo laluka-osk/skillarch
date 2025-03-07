@@ -122,7 +122,7 @@ install-shell: sanity-check  ## Install shell packages
 		mv temp ~/.tmux.conf; \
 	fi
 
-	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting; do \
+	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do \
 		zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; \
 	done
 
