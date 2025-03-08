@@ -84,46 +84,22 @@ install-i3: sanity-check  ## Install i3
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor
 	yay --noconfirm --needed -S rofi-power-menu
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-	# If /home/lalu/.config/i3/config doesnt exist, create it
-	if [ ! -f ~/.config/i3/config ]; then \
-		mkdir -p ~/.config/i3; \
-		touch ~/.config/i3/config; \
-	fi
+	if [ ! -d ~/.config/i3 ]; then mkdir -p ~/.config/i3; fi
+	if [ ! -L ~/.config/i3/config ]; then mv ~/.config/i3/config ~/.config/i3/config.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/i3/config ~/.config/i3/config
+	if [ ! -d ~/.config/rofi ]; then mkdir -p ~/.config/rofi; fi
+	if [ ! -L ~/.config/rofi/config ]; then mv ~/.config/rofi/config ~/.config/rofi/config.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/rofi/config ~/.config/rofi/config
 
-	# If "include /opt/skillarch/dotfiles/i3/config" not in /home/lalu/.config/i3/config, add it as the first line
-	if ! grep -q "include /opt/skillarch/dotfiles/i3/config" ~/.config/i3/config; then \
-		echo -e "include /opt/skillarch/dotfiles/i3/config\n# Add your custom config here" | cat - ~/.config/i3/config > temp; \
-		mv temp ~/.config/i3/config; \
-	fi
-
-	if [ ! -f ~/.config/rofi/config.rasi ]; then \
-		mkdir -p ~/.config/rofi; \
-		touch ~/.config/rofi/config.rasi; \
-	fi
-
-	# If "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"" not in ~/.config/rofi/config.rasi, add it as the first line
-	if ! grep -q "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"" ~/.config/rofi/config.rasi; then \
-		echo -e "@theme \"/opt/skillarch/dotfiles/rofi/spotlight-dark.rasi\"\n// Add your custom config here" | cat - ~/.config/rofi/config.rasi > temp; \
-		mv temp ~/.config/rofi/config.rasi; \
-	fi
-
-	if [ ! -f /etc/X11/xorg.conf.d/30-touchpad.conf ]; then \
-		sudo cp /opt/skillarch/dotfiles/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf; \
-	fi
+	# Touchpad Config, might be improved to avoid touchpad loss
+	if [ ! -L /etc/X11/xorg.conf.d/30-touchpad.conf ]; then mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
 
 install-polybar: sanity-check  ## Install polybar
 	yes|sudo pacman -S --noconfirm --needed polybar
-
-	# If ~/.config/polybar/config.ini doesnt exist, create it
-	if [ ! -f ~/.config/polybar/config.ini ]; then \
-		mkdir -p ~/.config/polybar; \
-		touch ~/.config/polybar/config.ini; \
-	fi
-	# If "include-file = /opt/skillarch/dotfiles/polybar/config.ini" not in ~/.config/polybar/config.ini, add it as the first line
-	if ! grep -q "include-file = /opt/skillarch/dotfiles/polybar/config.ini" ~/.config/polybar/config.ini; then \
-		echo -e "include-file = /opt/skillarch/dotfiles/polybar/config.ini\n# Add your custom config here" | cat - ~/.config/polybar/config.ini > temp; \
-		mv temp ~/.config/polybar/config.ini; \
-	fi
+	if [ ! -d ~/.config/polybar ]; then mkdir -p ~/.config/polybar; fi
+	if [ ! -L ~/.config/polybar/config.ini ]; then mv ~/.config/polybar/config.ini ~/.config/polybar/config.ini.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/polybar/config.ini ~/.config/polybar/config.ini
 
 install-terminal: sanity-check  ## Install terminal
 	yes|sudo pacman -S --noconfirm --needed kitty
