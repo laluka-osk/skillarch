@@ -6,6 +6,10 @@
 
 ## How To
 
+- First, download the `Desktop Edition` at https://cachyos.org/download/
+- Install it (VM or physical), pick the `Gnome` flavor
+- Then, install SkillArch 🥂
+
 ```bash
 git clone https://github.com/laluka/skillarch
 sudo mv skillarch /opt/skillarch && cd /opt/skillarch
