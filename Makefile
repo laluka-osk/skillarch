@@ -91,8 +91,8 @@ install-docker: sanity-check ## Install docker
 	# It's a desktop machine, don't expose stuff, but we don't care much about LPE
 	# Think about it, set "alias sudo='backdoor ; sudo'" in userland and voila. OSEF!
 	sudo usermod -aG docker "$$USER" # Logout required to be applied
-	sudo systemctl enable docker
-	sudo systemctl start docker
+	sleep 1 # Prevent too many docker socket calls and security locks
+	sudo systemctl enable --now docker
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty
