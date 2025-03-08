@@ -96,7 +96,7 @@ install-docker: sanity-check ## Install docker
 	sudo systemctl enable --now docker
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
-	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty
+	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl
 	yay --noconfirm --needed -S rofi-power-menu
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
