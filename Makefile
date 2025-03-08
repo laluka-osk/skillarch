@@ -12,10 +12,7 @@ install: install-base install-system install-shell install-docker install-i3 ins
 
 sanity-check:
 	@# Ensure we are in /opt/skillarch
-	@if [ "$$(pwd)" != "/opt/skillarch" ]; then \
-		echo "You must be in /opt/skillarch to run this command"; \
-		exit 1; \
-	fi	
+	@if [ "$$(pwd)" != "/opt/skillarch" ]; then echo "You must be in /opt/skillarch to run this command"; exit 1; fi	
 
 install-base: sanity-check  ## Install base packages
 	echo "installing stuff"
@@ -25,17 +22,10 @@ install-base: sanity-check  ## Install base packages
 
 install-system: sanity-check  ## Install system packages
 	# Long lived data
-	if [ ! -d /DATA ]; then \
-		mkdir -pv /tmp/DATA; \
-		sudo mv /tmp/DATA /DATA; \
-	fi
+	if [ ! -d /DATA ]; then mkdir -pv /tmp/DATA && sudo mv /tmp/DATA /DATA; fi
 
 	# Trash-bin per volume
-	if [ ! -d /DATA/.Trash ]; then \
-		mkdir -pv /tmp/.Trash/1000; \
-		sudo mv /tmp/.Trash /.Trash; \
-		sudo chmod +t /.Trash; \
-	fi
+	if [ ! -d /DATA/.Trash ]; then mkdir -pv /tmp/.Trash/1000 && sudo mv /tmp/.Trash /.Trash && sudo chmod +t /.Trash; fi
 
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -44,88 +34,49 @@ install-system: sanity-check  ## Install system packages
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 	
 	# Append chaotic-aur lines if not present in /etc/pacman.conf
-	if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then \
-		echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n# Add your custom config here" | cat - /etc/pacman.conf > temp; \
-		sudo mv temp /etc/pacman.conf; \
-	fi
+	grep -vP '\[chaotic-aur\]|Include = /etc/pacman.d/chaotic-mirrorlist' /etc/pacman.conf | sudo tee /etc/pacman.conf > /dev/null
+	echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' | sudo tee -a /etc/pacman.conf > /dev/null
 	yes|sudo pacman -Syu
-	yes|sudo pacman -S vlc-luajit
+	yes|sudo pacman -S vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
 	yes|sudo pacman -S --noconfirm --needed arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool picom pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine obs-studio-browser signal-desktop veracrypt
 	sudo systemctl disable --now nxserver.service
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	xargs -n1 code --install-extension < dotfiles/extensions.txt
 	yay --noconfirm --needed -S fswebcam fastgron cursor-bin
 	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
-	if [ ! -f ~/.config/picom.conf ]; then \
-		touch ~/.config/picom.conf; \
-	fi
-	if ! grep -q "@include \"/opt/skillarch/dotfiles/picom.conf\"" ~/.config/picom.conf; then \
-		echo -e "@include \"/opt/skillarch/dotfiles/picom.conf\"\n# Add your custom config here" | cat - ~/.config/picom.conf > temp; \
-		mv temp ~/.config/picom.conf; \
-	fi
+	if [ ! -L ~/.config/picom.conf ]; then mv ~/.config/picom.conf ~/.config/picom.conf.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/picom.conf ~/.config/picom.conf
+
 	yay --noconfirm --needed -S python-pipx
 	pipx ensurepath
-	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do \
-		pipx install "$$package"; \
-		pipx inject "$$package" setuptools; \
-	done
+	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install "$$package" && pipx inject "$$package" setuptools; done
 
 install-shell: sanity-check  ## Install shell packages
+	# Install and Configure zsh and oh-my-zsh
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
-	# Install oh-my-zsh if not already installed
-	if [ ! -d ~/.oh-my-zsh ]; then \
-		sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; \
-	fi
-	sudo chsh -s /usr/bin/zsh "$$USER"
-	# if "source /opt/skillarch/dotfiles/zshrc" is not in ~/.zshrc, add it
-	if ! grep -q "source /opt/skillarch/dotfiles/zshrc" ~/.zshrc; then \
-		echo -e "source /opt/skillarch/dotfiles/zshrc\n# Add your custom config here" | cat - ~/.zshrc > temp; \
-		mv temp ~/.zshrc; \
-	fi
-	
-	if [ ! -d ~/.oh-my-zsh/plugins/zsh-completions ]; then \
-		git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/plugins/zsh-completions; \
-	fi
-	if [ ! -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ]; then \
-		git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions; \
-	fi
-	if [ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ]; then \
-		git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting; \
-	fi
-	
-	# Install and configure fzf
-	if [ ! -d ~/.fzf ]; then \
-		git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && \
-		~/.fzf/install --all; \
-	fi
-	
-	if [ ! -f ~/.tmux.conf ]; then \
-		touch ~/.tmux.conf; \
-	fi
+	if [ ! -d ~/.oh-my-zsh ]; then sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; fi
+	if [ ! -L ~/.config/.zshrc ]; then mv ~/.config/.zshrc ~/.config/.zshrc.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/zshrc ~/.config/.zshrc
+	if [ ! -d ~/.oh-my-zsh/plugins/zsh-completions ]; then git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/plugins/zsh-completions; fi
+	if [ ! -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ]; then git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions; fi
+	if [ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ]; then git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting; fi
+	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; done
 
-	if ! grep -q "source-file /opt/skillarch/dotfiles/tmux.conf" ~/.tmux.conf; then \
-		echo -e "source-file /opt/skillarch/dotfiles/tmux.conf\n# Add your custom config here" | cat - ~/.tmux.conf > temp; \
-		mv temp ~/.tmux.conf; \
-	fi
+	# Install and configure fzf, tmux, vim
+	if [ ! -d ~/.fzf ]; then git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all; fi
+	if [ ! -L ~/.config/.tmux.conf ]; then mv ~/.config/.tmux.conf ~/.config/.tmux.conf.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/tmux.conf ~/.config/.tmux.conf
+	if [ ! -L ~/.config/.vimrc ]; then mv ~/.config/.vimrc ~/.config/.vimrc.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/vimrc ~/.config/.vimrc
 
-	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do \
-		zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; \
-	done
-
-	if [ ! -f ~/.vimrc ]; then \
-		touch ~/.vimrc; \
-	fi
-
-	if ! grep -q "source /opt/skillarch/dotfiles/vimrc" ~/.vimrc; then \
-		echo -e "source /opt/skillarch/dotfiles/vimrc\n\" Add your custom config here" | cat - ~/.vimrc > temp; \
-		mv temp ~/.vimrc; \
-	fi
+	# Set the default user shell to zsh
+	sudo chsh -s /usr/bin/zsh "$$USER" # Logout required to be applied
 
 install-docker: sanity-check  ## Install docker
 	yes|sudo pacman -S --noconfirm --needed docker docker-compose
 	# It's a desktop machine, don't expose stuff, but we don't care much about LPE
 	# Think about it, set "alias sudo='backdoor ; sudo'" in userland and voila. OSEF!
-	sudo usermod -aG docker "$$USER"
+	sudo usermod -aG docker "$$USER" # Logout required to be applied
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
@@ -178,7 +129,7 @@ install-terminal: sanity-check  ## Install terminal
 	yes|sudo pacman -S --noconfirm --needed kitty
 	if [ ! -d ~/.config/kitty ]; then mkdir -p ~/.config/kitty; fi
 	if [ ! -L ~/.config/kitty/kitty.conf ]; then mv ~/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/nvim/kitty.conf ~/.config/kitty/kitty.conf
+	ln -sf /opt/skillarch/dotfiles/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
 install-mise: sanity-check  ## Install mise
 	# Install mise and all php-build dependencies
