@@ -40,6 +40,10 @@ make help
 #   install-hardening   Install hardening tools
 ```
 
+> Or join the SkillArch Discord server 🍀\
+> ➡️ https://discord.com/invite/tH8wEpNKWS ⬅️\
+> Yes, I help in the SkillArch channel, not in DMs! 😇
+
 ## Kudos
 
 > Let's be honest, I put stuff together, but the heavy lifting is done by these true gods 😉
