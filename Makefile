@@ -32,7 +32,7 @@ install-system: sanity-check  ## Install system packages
 	sudo pacman-key --lsign-key 3056513887B78AEB
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-	
+
 	# Ensure chaotic-aur is present in /etc/pacman.conf
 	grep -vP '\[chaotic-aur\]|Include = /etc/pacman.d/chaotic-mirrorlist' /etc/pacman.conf | sudo tee /etc/pacman.conf > /dev/null
 	echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' | sudo tee -a /etc/pacman.conf > /dev/null
@@ -52,20 +52,18 @@ install-shell: sanity-check  ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	[ ! -d ~/.oh-my-zsh ] && sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-	[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.skabak
+	[ -f ~/.zshrc ] && [ ! -L ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.skabak
 	ln -sf /opt/skillarch/config/zshrc ~/.zshrc
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-completions ] && git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/plugins/zsh-completions
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ] && git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
-	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do \
-		zsh -c "source ~/.zshrc && echo $$plugins | grep -qF $$plugin || omz plugin enable $$plugin || true"; \
-	done
+	for plugin in aws colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; done
 
 	# Install and configure fzf, tmux, vim
 	[ ! -d ~/.fzf ] && git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all
-	[ -f ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.skabak
+	[ -f ~/.tmux.conf ] && [ ! -L ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.skabak
 	ln -sf /opt/skillarch/config/tmux.conf ~/.tmux.conf
-	[ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.skabak
+	[ -f ~/.vimrc ] && [ ! -L ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.skabak
 	ln -sf /opt/skillarch/config/vimrc ~/.vimrc
 
 	# Set the default user shell to zsh
@@ -86,26 +84,26 @@ install-gui: sanity-check  ## Install gui, i3, polybar, kitty, rofi, picom
 
 	# i3 config
 	[ ! -d ~/.config/i3 ] && mkdir -p ~/.config/i3
-	[ -f ~/.config/i3/config ] && mv ~/.config/i3/config ~/.config/i3/config.skabak
+	[ -f ~/.config/i3/config ] && [ ! -L ~/.config/i3/config ] && mv ~/.config/i3/config ~/.config/i3/config.skabak
 	ln -sf /opt/skillarch/config/i3/config ~/.config/i3/config
 
 	# polybar config
 	[ ! -d ~/.config/polybar ] && mkdir -p ~/.config/polybar
-	[ -f ~/.config/polybar/config.ini ] && mv ~/.config/polybar/config.ini ~/.config/polybar/config.ini.skabak
+	[ -f ~/.config/polybar/config.ini ] && [ ! -L ~/.config/polybar/config.ini ] && mv ~/.config/polybar/config.ini ~/.config/polybar/config.ini.skabak
 	ln -sf /opt/skillarch/config/polybar/config.ini ~/.config/polybar/config.ini
 
 	# rofi config
 	[ ! -d ~/.config/rofi ] && mkdir -p ~/.config/rofi
-	[ -f ~/.config/rofi/config.rasi ] && mv ~/.config/rofi/config.rasi ~/.config/rofi/config.rasi.skabak
+	[ -f ~/.config/rofi/config.rasi ] && [ ! -L ~/.config/rofi/config.rasi ] && mv ~/.config/rofi/config.rasi ~/.config/rofi/config.rasi.skabak
 	ln -sf /opt/skillarch/config/rofi/config.rasi ~/.config/rofi/config.rasi
 
 	# picom config
-	[ -f ~/.config/picom.conf ] && mv ~/.config/picom.conf ~/.config/picom.conf.skabak
+	[ -f ~/.config/picom.conf ] && [ ! -L ~/.config/picom.conf ] && mv ~/.config/picom.conf ~/.config/picom.conf.skabak
 	ln -sf /opt/skillarch/config/picom.conf ~/.config/picom.conf
 
 	# kitty config
 	[ ! -d ~/.config/kitty ] && mkdir -p ~/.config/kitty
-	[ -f ~/.config/kitty/kitty.conf ] && mv ~/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf.skabak
+	[ -f ~/.config/kitty/kitty.conf ] && [ ! -L ~/.config/kitty/kitty.conf ] && mv ~/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf.skabak
 	ln -sf /opt/skillarch/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
 	# touchpad config
@@ -126,19 +124,19 @@ install-mise: sanity-check  ## Install mise
 install-goodies: sanity-check  ## Install goodies
 	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
-	[ -f ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
+	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
 	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
 
 install-offensive: sanity-check  ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
-	
+
 	mise exec -- go install github.com/sw33tLie/sns@latest
 	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
 	mise exec -- go install github.com/x90skysn3k/brutespray@latest
 	zsh -c "source ~/.zshrc && pdtm -install-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
-	
+
 	# Clone custom tools
 	[ ! -d /opt/chisel ] && git clone https://github.com/jpillora/chisel && sudo mv chisel /opt/chisel
 	[ ! -d /opt/phpggc ] && git clone https://github.com/ambionics/phpggc && sudo mv phpggc /opt/phpggc
