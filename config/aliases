@@ -15,6 +15,7 @@ alias lbt='cd /opt/lalubuntu'
 alias ska='cd /opt/skillarch'
 alias fetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/skillarch-full.png --logo-width 50'
 alias neofetch='fetch'
+alias hifetch='fetch'
 alias life='cd /opt/lalulife' # Might be released some day ;)
 alias lbt-update='bash /opt/lalubuntu/update.sh'
 alias sudo-unlock='su -c "faillock --user $USER --reset"'

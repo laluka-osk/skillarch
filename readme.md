@@ -9,7 +9,7 @@
 ## How To
 
 - First, download the `Desktop Edition` at https://cachyos.org/download/
-- Install it (VM or physical), pick the `Gnome` flavor
+- Install it, pick the `Gnome` flavor
 - Then open `Console` and install SkillArch 🥂
 
 ```bash
@@ -63,7 +63,6 @@ make help
 
 ## TODO BugFix & Improvements
 
-- Neofetch logo
 - Fix vbox copy paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
@@ -76,3 +75,4 @@ make help
 - What's inside (tools, alias, bindings)
 - Kitty visual select (ctrl+alt+select)
 - Document LITE mode (no php, no wordlists)
+- picom & transparency can work in a VM, but slow af
