@@ -4,9 +4,30 @@
 
 ```bash
 git clone https://github.com/laluka/skillarch
-sudo mv skillarch /opt/skillarch
-cd /opt/skillarch
+sudo mv skillarch /opt/skillarch && cd /opt/skillarch
 make install
+```
+
+## Get Help
+
+```text
+Welcome to LalukArk! 🌹
+
+Usage: make [target]
+Targets:
+
+  help                Show this help message
+  install             Install SkillArch
+  install-base        Install base packages
+  install-system      Install system packages
+  install-shell       Install shell packages
+  install-docker      Install docker
+  install-gui         Install gui, i3, polybar, kitty, rofi, picom
+  install-mise        Install mise
+  install-goodies     Install goodies
+  install-offensive   Install offensive tools
+  install-wordlists   Install wordlists
+  install-hardening   Install hardening tools
 ```
 
 ## Kudos
@@ -24,8 +45,8 @@ make install
 
 ## TODO BugFix
 
+- mv dotfiles config + refacto name
 - Fix vbox copy paste
-- Autoinstall curl -sS https://raw.githubusercontent.com/laluka/skillarch/refs/heads/main/autoinstall.sh|bash
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 
