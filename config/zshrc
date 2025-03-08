@@ -112,7 +112,7 @@ export PAGER=/usr/bin/bat
 export TERMINAL=/usr/bin/kitty
 export VISUAL=/usr/bin/eog
 source $ZSH/oh-my-zsh.sh
-source /opt/skillarch/dotfiles/aliases
+source /opt/skillarch/config/aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(register-python-argcomplete --no-defaults exegol)"
 

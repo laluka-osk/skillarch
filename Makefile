@@ -2,7 +2,7 @@
 .PHONY: help
 
 help: ## Show this help message
-	@echo 'Welcome to LalukArk! 🌹'
+	@echo 'Welcome to SkillArch! 🌹'
 	@echo ''
 	@echo 'Usage: make [target]'
 	@echo 'Targets:'
@@ -40,7 +40,7 @@ install-system: sanity-check  ## Install system packages
 	yes|sudo pacman -S vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
 	yes|sudo pacman -S --noconfirm --needed arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine obs-studio-browser signal-desktop veracrypt
 	sudo systemctl disable --now nxserver.service
-	xargs -n1 code --install-extension < dotfiles/extensions.txt
+	xargs -n1 code --install-extension < config/extensions.txt
 	yay --noconfirm --needed -S fswebcam fastgron cursor-bin
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
@@ -53,7 +53,7 @@ install-shell: sanity-check  ## Install shell packages
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	[ ! -d ~/.oh-my-zsh ] && sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 	[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.skabak
-	ln -sf /opt/skillarch/dotfiles/zshrc ~/.zshrc
+	ln -sf /opt/skillarch/config/zshrc ~/.zshrc
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-completions ] && git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/plugins/zsh-completions
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ] && git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
@@ -64,9 +64,9 @@ install-shell: sanity-check  ## Install shell packages
 	# Install and configure fzf, tmux, vim
 	[ ! -d ~/.fzf ] && git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all
 	[ -f ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.skabak
-	ln -sf /opt/skillarch/dotfiles/tmux.conf ~/.tmux.conf
+	ln -sf /opt/skillarch/config/tmux.conf ~/.tmux.conf
 	[ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.skabak
-	ln -sf /opt/skillarch/dotfiles/vimrc ~/.vimrc
+	ln -sf /opt/skillarch/config/vimrc ~/.vimrc
 
 	# Set the default user shell to zsh
 	sudo chsh -s /usr/bin/zsh "$$USER" # Logout required to be applied
@@ -87,30 +87,30 @@ install-gui: sanity-check  ## Install gui, i3, polybar, kitty, rofi, picom
 	# i3 config
 	[ ! -d ~/.config/i3 ] && mkdir -p ~/.config/i3
 	[ -f ~/.config/i3/config ] && mv ~/.config/i3/config ~/.config/i3/config.skabak
-	ln -sf /opt/skillarch/dotfiles/i3/config ~/.config/i3/config
+	ln -sf /opt/skillarch/config/i3/config ~/.config/i3/config
 
 	# polybar config
 	[ ! -d ~/.config/polybar ] && mkdir -p ~/.config/polybar
 	[ -f ~/.config/polybar/config.ini ] && mv ~/.config/polybar/config.ini ~/.config/polybar/config.ini.skabak
-	ln -sf /opt/skillarch/dotfiles/polybar/config.ini ~/.config/polybar/config.ini
+	ln -sf /opt/skillarch/config/polybar/config.ini ~/.config/polybar/config.ini
 
 	# rofi config
 	[ ! -d ~/.config/rofi ] && mkdir -p ~/.config/rofi
 	[ -f ~/.config/rofi/config.rasi ] && mv ~/.config/rofi/config.rasi ~/.config/rofi/config.rasi.skabak
-	ln -sf /opt/skillarch/dotfiles/rofi/config.rasi ~/.config/rofi/config.rasi
+	ln -sf /opt/skillarch/config/rofi/config.rasi ~/.config/rofi/config.rasi
 
 	# picom config
 	[ -f ~/.config/picom.conf ] && mv ~/.config/picom.conf ~/.config/picom.conf.skabak
-	ln -sf /opt/skillarch/dotfiles/picom.conf ~/.config/picom.conf
+	ln -sf /opt/skillarch/config/picom.conf ~/.config/picom.conf
 
 	# kitty config
 	[ ! -d ~/.config/kitty ] && mkdir -p ~/.config/kitty
 	[ -f ~/.config/kitty/kitty.conf ] && mv ~/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf.skabak
-	ln -sf /opt/skillarch/dotfiles/kitty/kitty.conf ~/.config/kitty/kitty.conf
+	ln -sf /opt/skillarch/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
 	# touchpad config
 	[ -f /etc/X11/xorg.conf.d/30-touchpad.conf ] && sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak
-	sudo ln -sf /opt/skillarch/dotfiles/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+	sudo ln -sf /opt/skillarch/config/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
 
 install-mise: sanity-check  ## Install mise
 	# Install mise and all php-build dependencies
@@ -127,7 +127,7 @@ install-goodies: sanity-check  ## Install goodies
 	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
 	[ -f ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
-	ln -sf /opt/skillarch/dotfiles/nvim/init.lua ~/.config/nvim/init.lua
+	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
 
 install-offensive: sanity-check  ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq

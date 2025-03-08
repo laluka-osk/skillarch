@@ -216,4 +216,4 @@ bindsym $mod+BackSpace split toggle
 bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 bindsym $mod+Escape exec rofi -show power-menu -modi power-menu:rofi-power-menu
-bindsym $mod+l exec i3lock-fancy -f Bitstream-Vera-Serif -t 'Welcome back to LalukArk'
+bindsym $mod+l exec i3lock-fancy -f Bitstream-Vera-Serif -t 'Welcome back to SkillArch'

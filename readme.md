@@ -11,7 +11,7 @@ make install
 ## Get Help
 
 ```text
-Welcome to LalukArk! 🌹
+Welcome to SkillArch! 🌹
 
 Usage: make [target]
 Targets:
@@ -40,20 +40,19 @@ Targets:
 - https://github.com/Hyde-project/hyde
 - https://github.com/jluttine/rofi-power-menu
 - https://github.com/newmanls/rofi-themes-collection
-- https://github.com/orhun/dotfiles
+- https://github.com/orhun/config
 - https://github.com/regolith-linux/regolith-desktop
 
 ## TODO BugFix
 
-- mv dotfiles config + refacto name
 - Fix vbox copy paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 
 ## TODO Documentation
 
-- Dotfiles management & backups
+- Config management & backups
 - Update process
 - What's inside (tools, alias, bindings)
-- kitty visual select (ctrl+alt+select)
+- Kitty visual select (ctrl+alt+select)
 - Document LITE mode (no php, no wordlists)
