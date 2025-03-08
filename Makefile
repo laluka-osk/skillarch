@@ -136,7 +136,7 @@ install-gui-tools: sanity-check ## Install system packages
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 
 install-offensive: sanity-check ## Install offensive tools
-	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq
+	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq gitleaks
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
 
 	mise exec -- go install github.com/sw33tLie/sns@latest
