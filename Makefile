@@ -8,7 +8,7 @@ help: ## Show this help message
 	@echo ''
 
 install: install-base install-system install-shell install-docker install-i3 install-polybar install-terminal install-mise install-goodies install-offensive install-hardening ## Install SkillArch
-	echo "You are all set up! Enjoy ! 🌹"
+	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
 	@# Ensure we are in /opt/skillarch
@@ -21,11 +21,9 @@ install-base: sanity-check  ## Install base packages
 	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl
 
 install-system: sanity-check  ## Install system packages
-	# Long lived data
-	if [ ! -d /DATA ]; then mkdir -pv /tmp/DATA && sudo mv /tmp/DATA /DATA; fi
-
-	# Trash-bin per volume
-	if [ ! -d /DATA/.Trash ]; then mkdir -pv /tmp/.Trash/1000 && sudo mv /tmp/.Trash /.Trash && sudo chmod +t /.Trash; fi
+	# Long Lived DATA & trash-cli Setup
+	if [ ! -d /DATA ]; then sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA; fi
+	if [ ! -d /.Trash ]; then sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash; fi
 
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -55,8 +53,8 @@ install-shell: sanity-check  ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	if [ ! -d ~/.oh-my-zsh ]; then sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; fi
-	if [ ! -L ~/.config/.zshrc ]; then mv ~/.config/.zshrc ~/.config/.zshrc.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/zshrc ~/.config/.zshrc
+	if [ ! -L ~/.zshrc ]; then mv ~/.zshrc ~/.zshrc.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/zshrc ~/.zshrc
 	if [ ! -d ~/.oh-my-zsh/plugins/zsh-completions ]; then git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/plugins/zsh-completions; fi
 	if [ ! -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ]; then git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions; fi
 	if [ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ]; then git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting; fi
@@ -64,10 +62,10 @@ install-shell: sanity-check  ## Install shell packages
 
 	# Install and configure fzf, tmux, vim
 	if [ ! -d ~/.fzf ]; then git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all; fi
-	if [ ! -L ~/.config/.tmux.conf ]; then mv ~/.config/.tmux.conf ~/.config/.tmux.conf.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/tmux.conf ~/.config/.tmux.conf
-	if [ ! -L ~/.config/.vimrc ]; then mv ~/.config/.vimrc ~/.config/.vimrc.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/vimrc ~/.config/.vimrc
+	if [ ! -L ~/.tmux.conf ]; then mv ~/.tmux.conf ~/.tmux.conf.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/tmux.conf ~/.tmux.conf
+	if [ ! -L ~/.vimrc ]; then mv ~/.vimrc ~/.vimrc.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/vimrc ~/.vimrc
 
 	# Set the default user shell to zsh
 	sudo chsh -s /usr/bin/zsh "$$USER" # Logout required to be applied
@@ -88,12 +86,12 @@ install-i3: sanity-check  ## Install i3
 	if [ ! -L ~/.config/i3/config ]; then mv ~/.config/i3/config ~/.config/i3/config.skabak; fi
 	ln -sf /opt/skillarch/dotfiles/i3/config ~/.config/i3/config
 	if [ ! -d ~/.config/rofi ]; then mkdir -p ~/.config/rofi; fi
-	if [ ! -L ~/.config/rofi/config ]; then mv ~/.config/rofi/config ~/.config/rofi/config.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/rofi/config ~/.config/rofi/config
+	if [ ! -L ~/.config/rofi/config.rasi ]; then mv ~/.config/rofi/config.rasi ~/.config/rofi/config.rasi.skabak; fi
+	ln -sf /opt/skillarch/dotfiles/rofi/config.rasi ~/.config/rofi/config.rasi
 
 	# Touchpad Config, might be improved to avoid touchpad loss
-	if [ ! -L /etc/X11/xorg.conf.d/30-touchpad.conf ]; then mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak; fi
-	ln -sf /opt/skillarch/dotfiles/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+	if [ ! -L /etc/X11/xorg.conf.d/30-touchpad.conf ]; then sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak; fi
+	sudo ln -sf /opt/skillarch/dotfiles/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
 
 install-polybar: sanity-check  ## Install polybar
 	yes|sudo pacman -S --noconfirm --needed polybar
