@@ -15,6 +15,7 @@ alias lbt='cd /opt/lalubuntu'
 alias ska='cd /opt/skillarch'
 alias life='cd /opt/lalulife' # Might be released some day ;)
 alias lbt-update='bash /opt/lalubuntu/update.sh'
+alias sudo-unlock='su -c "faillock --user $USER --reset"'
 
 # Tools Sysadmin
 alias t='f(){ exa -Tll "$@";  unset -f f; }; f'

@@ -14,9 +14,11 @@ install: install-base install-cli-tools install-shell install-docker install-gui
 
 sanity-check:
 	@# Ensure we are in /opt/skillarch
-	@if [ "$$(pwd)" != "/opt/skillarch" ] ; then echo "You must be in /opt/skillarch to run this command"; exit 1; fi
+	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
+	@sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
 
 install-base: sanity-check ## Install base packages
+	set -x
 	# Clean up, Update, Basics
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
@@ -36,6 +38,7 @@ install-base: sanity-check ## Install base packages
 	# Long Lived DATA & trash-cli Setup
 	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA
 	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash
+	true # Avoid make error if last dir already exists
 
 install-cli-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile

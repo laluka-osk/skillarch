@@ -48,6 +48,7 @@ make help
 - Fix vbox copy paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+- Huge alias refacto
 
 ## TODO Documentation
 
