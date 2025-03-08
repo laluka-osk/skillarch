@@ -66,6 +66,7 @@ make help
 - Fix vbox copy paste
 - Fix invalid number y before vlc noconfirm needed
 - Term default floating size should be smaller
+- lazyvim full install if doable
 - Polybar add MIC: ON/OFF
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
