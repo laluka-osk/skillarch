@@ -22,16 +22,17 @@ make install
 - https://github.com/orhun/dotfiles
 - https://github.com/regolith-linux/regolith-desktop
 
-## TODO
+## TODO BugFix
 
-- fix vbox copy paste
-- link ~/config/* to /opt/skillarch/config/*, mv .bak if exists
-- omz plugin check before enable (slowww)
-- visual select kitty ?
-
-## TODO Later
-
+- Fix vbox copy paste
 - Autoinstall curl -sS https://raw.githubusercontent.com/laluka/skillarch/refs/heads/main/autoinstall.sh|bash
-- Document aliases & tools
 - Add CICD daily builds
-- alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+- Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+
+## TODO Documentation
+
+- Dotfiles management & backups
+- Update process
+- What's inside (tools, alias, bindings)
+- kitty visual select (ctrl+alt+select)
+- Document LITE mode (no php, no wordlists)
