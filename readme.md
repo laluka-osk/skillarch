@@ -15,8 +15,12 @@
 ```bash
 git clone https://github.com/laluka/skillarch
 sudo mv skillarch /opt/skillarch && cd /opt/skillarch
-make install
+make install # Then reboot && pick i3 at login
 ```
+
+> The install takes approx 30mn 🕑️\
+> Please watch this intro video to onboard yourself! 🙏\
+> ➡️ TODO(lalu) ⬅️
 
 ## Get Help
 
@@ -57,8 +61,9 @@ make help
 - https://github.com/orhun/config
 - https://github.com/regolith-linux/regolith-desktop
 
-## TODO BugFix
+## TODO BugFix & Improvements
 
+- Neofetch logo
 - Fix vbox copy paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
