@@ -9,23 +9,18 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-system install-shell install-docker install-gui install-mise install-goodies install-offensive install-wordlists install-hardening ## Install SkillArch
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
 	@# Ensure we are in /opt/skillarch
 	@if [ "$$(pwd)" != "/opt/skillarch" ] ; then echo "You must be in /opt/skillarch to run this command"; exit 1; fi
 
-install-base: sanity-check  ## Install base packages
+install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
 	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl
-
-install-system: sanity-check  ## Install system packages
-	# Long Lived DATA & trash-cli Setup
-	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA
-	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash
 
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -37,18 +32,37 @@ install-system: sanity-check  ## Install system packages
 	grep -vP '\[chaotic-aur\]|Include = /etc/pacman.d/chaotic-mirrorlist' /etc/pacman.conf | sudo tee /etc/pacman.conf > /dev/null
 	echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' | sudo tee -a /etc/pacman.conf > /dev/null
 	yes|sudo pacman -Syu
-	yes|sudo pacman -S vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
-	yes|sudo pacman -S --noconfirm --needed arandr base-devel bison blueman bzip2 ca-certificates cheese cloc cmake code code-marketplace discord dos2unix dunst expect ffmpeg filezilla flameshot foremost gdb ghex gnupg google-chrome gparted htop bottom hwinfo icu inotify-tools iproute2 jq kdenlive kompare libreoffice-fresh llvm lsof ltrace make meld mlocate mplayer ncurses net-tools ngrep nmap okular openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv qbittorrent re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff wireshark-qt ghidra xclip xz yay zip dragon-drop-git nomachine obs-studio-browser signal-desktop veracrypt
-	sudo systemctl disable --now nxserver.service
-	xargs -n1 code --install-extension < config/extensions.txt
-	yay --noconfirm --needed -S fswebcam fastgron cursor-bin
-	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
+
+	# Long Lived DATA & trash-cli Setup
+	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA
+	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash
+
+install-cli-tools: sanity-check ## Install system packages
+	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile
+
+	# nvim config
+	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
+	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
+	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
+
+	# Install fastgron + pipx & tools
+	yay --noconfirm --needed -S fastgron python-pipx
 	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
-	yay --noconfirm --needed -S python-pipx
 	pipx ensurepath
 	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install "$$package" && pipx inject "$$package" setuptools; done
 
-install-shell: sanity-check  ## Install shell packages
+	# Install mise and all php-build dependencies
+	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	mise self-update
+	mise use -g usage@latest
+	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest"; done
+	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
+	# Install libs to build current latest, aka php 8.4.4
+	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
+	mise use -g php@latest
+
+install-shell: sanity-check ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	[ ! -d ~/.oh-my-zsh ] && sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -69,7 +83,7 @@ install-shell: sanity-check  ## Install shell packages
 	# Set the default user shell to zsh
 	sudo chsh -s /usr/bin/zsh "$$USER" # Logout required to be applied
 
-install-docker: sanity-check  ## Install docker
+install-docker: sanity-check ## Install docker
 	yes|sudo pacman -S --noconfirm --needed docker docker-compose
 	# It's a desktop machine, don't expose stuff, but we don't care much about LPE
 	# Think about it, set "alias sudo='backdoor ; sudo'" in userland and voila. OSEF!
@@ -77,7 +91,7 @@ install-docker: sanity-check  ## Install docker
 	sudo systemctl enable docker
 	sudo systemctl start docker
 
-install-gui: sanity-check  ## Install gui, i3, polybar, kitty, rofi, picom
+install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty
 	yay --noconfirm --needed -S rofi-power-menu
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
@@ -110,24 +124,15 @@ install-gui: sanity-check  ## Install gui, i3, polybar, kitty, rofi, picom
 	[ -f /etc/X11/xorg.conf.d/30-touchpad.conf ] && sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak
 	sudo ln -sf /opt/skillarch/config/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
 
-install-mise: sanity-check  ## Install mise
-	# Install mise and all php-build dependencies
-	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
-	mise use -g usage@latest
-	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest"; done
-	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
-	# Install libs to build current latest, aka php 8.4.4
-	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
-	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	mise use -g php@latest
+install-gui-tools: sanity-check ## Install system packages
+	yes|sudo pacman -S --needed vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
+	yes|sudo pacman -S --noconfirm --needed arandr blueman cheese code code-marketplace discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine obs-studio-browser
+	sudo systemctl disable --now nxserver.service
+	xargs -n1 code --install-extension < config/extensions.txt
+	yay --noconfirm --needed -S fswebcam cursor-bin
+	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 
-install-goodies: sanity-check  ## Install goodies
-	yes|sudo pacman -S --noconfirm --needed git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile discord
-	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
-	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
-	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
-
-install-offensive: sanity-check  ## Install offensive tools
+install-offensive: sanity-check ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit burpsuite fx lazygit fq
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
 
@@ -149,7 +154,7 @@ install-offensive: sanity-check  ## Install offensive tools
 	[ ! -d /opt/pypotomux ] && git clone https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux
 	true # Avoid make error if last dir already exists
 
-install-wordlists: sanity-check  ## Install wordlists
+install-wordlists: sanity-check ## Install wordlists
 	# If "LITE" is set in env, return early
 	[ ! -z "$$LITE" ] && echo "LITE mode ON, not cloning wordlists" && exit
 	[ ! -d /opt/lists ] && mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists
@@ -167,7 +172,7 @@ install-wordlists: sanity-check  ## Install wordlists
 	[ ! -d /opt/lists/webapp-wordlists ] && git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists
 	true # Avoid make error if last dir already exists
 
-install-hardening: sanity-check  ## Install hardening tools
+install-hardening: sanity-check ## Install hardening tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service

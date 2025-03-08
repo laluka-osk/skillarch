@@ -10,24 +10,24 @@ make install
 
 ## Get Help
 
-```text
-Welcome to SkillArch! 🌹
+```bash
+make help
+# Welcome to SkillArch! 🌹
 
-Usage: make [target]
-Targets:
+# Usage: make [target]
+# Targets:
 
-  help                Show this help message
-  install             Install SkillArch
-  install-base        Install base packages
-  install-system      Install system packages
-  install-shell       Install shell packages
-  install-docker      Install docker
-  install-gui         Install gui, i3, polybar, kitty, rofi, picom
-  install-mise        Install mise
-  install-goodies     Install goodies
-  install-offensive   Install offensive tools
-  install-wordlists   Install wordlists
-  install-hardening   Install hardening tools
+#   help                Show this help message
+#   install             Install SkillArch
+#   install-base        Install base packages
+#   install-cli-tools   Install system packages
+#   install-shell       Install shell packages
+#   install-docker      Install docker
+#   install-gui         Install gui, i3, polybar, kitty, rofi, picom
+#   install-gui-tools   Install system packages
+#   install-offensive   Install offensive tools
+#   install-wordlists   Install wordlists
+#   install-hardening   Install hardening tools
 ```
 
 ## Kudos
