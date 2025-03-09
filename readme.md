@@ -63,7 +63,6 @@ make help
 
 ## TODO BugFix & Improvements
 
-- Fix vbox copy paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 - Huge alias refacto
@@ -76,3 +75,12 @@ make help
 - Document LITE mode (no php, no wordlists)
 - picom & transparency can work in a VM, but slow af
 - Document help bindings
+
+## WIP Fix vbox copy paste
+
+```bash
+VBoxClient-all
+sudo pacman -S linux-headers
+sudo pacman -S virtualbox-guest-utils
+sudo usermod -aG vboxsf $USER
+```
