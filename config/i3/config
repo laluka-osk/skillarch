@@ -203,7 +203,6 @@ client.focused_inactive #000000 #000000 #000000 #000000   #000000
 client.unfocused_inactive #000000 #000000 #000000 #000000   #000000
 client.urgent           #000000 #000000 #000000 #000000   #000000
 
-
 # Make help windows float by default
 for_window [title="Help: SkillArch Bindings"] floating enable
 for_window [title="Help: SkillArch Aliases"] floating enable

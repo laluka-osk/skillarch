@@ -63,6 +63,8 @@ make help
 
 ## TODO BugFix & Improvements
 
+- No Standby or Lock during make install
+- VBox Auto Agent & cpy/paste
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 - Huge alias refacto
