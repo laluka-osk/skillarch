@@ -18,7 +18,7 @@ sudo mv skillarch /opt/skillarch && cd /opt/skillarch
 make install # Then reboot && pick i3 at login
 ```
 
-> The install takes approx 30mn 🕑️\
+> The install takes 15/20mn 🕑️\
 > Please watch this intro video to onboard yourself! 🙏\
 > ➡️ TODO(lalu) ⬅️
 
@@ -64,9 +64,6 @@ make help
 ## TODO BugFix & Improvements
 
 - Fix vbox copy paste
-- Fix invalid number y before vlc noconfirm needed // CHECK
-- lazyvim full install if doable // CHECK
-- Polybar add MIC: ON/OFF // CHECK
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 - Huge alias refacto
