@@ -13,14 +13,14 @@ install: install-base install-cli-tools install-shell install-docker install-gui
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
+	set -x
 	@# Ensure we are in /opt/skillarch and temporary disable screensaver
-	[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
-	sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
-	nohup bash -c 'xset s off -dpms && sleep 3600 && xset s on +dpms' > /dev/null 2>&1 &
-	nohup bash -c 'gsettings set org.gnome.desktop.screensaver lock-enabled false && sleep 3600 && gsettings set org.gnome.desktop.screensaver lock-enabled true' > /dev/null 2>&1 &
+	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
+	@sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
+	@nohup bash -c 'xset s off -dpms && sleep 3600 && xset s on +dpms' > /dev/null 2>&1 &
+	@nohup bash -c 'gsettings set org.gnome.desktop.screensaver lock-enabled false && sleep 3600 && gsettings set org.gnome.desktop.screensaver lock-enabled true' > /dev/null 2>&1 &
 
 install-base: sanity-check ## Install base packages
-	set -x
 	# Clean up, Update, Basics
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
