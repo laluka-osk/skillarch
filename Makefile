@@ -13,9 +13,10 @@ install: install-base install-cli-tools install-shell install-docker install-gui
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
-	@# Ensure we are in /opt/skillarch
+	@# Ensure we are in /opt/skillarch and temporary disable screensaver
 	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
 	@sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
+	@nohup bash -c 'xset s off -dpms && sleep 3600 && xset s on +dpms' > /dev/null 2>&1 &
 
 install-base: sanity-check ## Install base packages
 	set -x
@@ -47,6 +48,7 @@ install-cli-tools: sanity-check ## Install system packages
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
 	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
 	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
+	nvim --headless +"Lazy! sync" +"SomeOtherCommand" +qa # Download and update plugins
 
 	# Install fastgron + pipx & tools
 	yay --noconfirm --needed -S fastgron python-pipx
