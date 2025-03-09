@@ -187,7 +187,7 @@ alias retdec='dockit blacktop/retdec'
 alias bettercap-wifi="bettercap -iface wlp0s20f3 -eval \"wifi.recon on;set wifi.show.sort clients desc;set ticker.commands 'clear; wifi.show';ticker on\""
 
 ## Sysadmin
-# alias sysdig='docker run --rm -it --privileged --net=host -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro -d --name sysdig docker.io/sysdig/sysdig'
+alias dsysdig='docker run --rm -it --privileged --net=host -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
 # alias quick-ssh-srv='dockit -d thelaluka/welcome:quick-ssh'
 # alias swagger-editor='dockit swaggerapi/swagger-editor'
 # alias crypt-pad='mkdir datastore; docker run --rm -it -p 3000:3000 -v "$PWD/datastore:/cryptpad/datastore" arno0x0x/docker-cryptpad'
