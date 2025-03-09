@@ -64,9 +64,9 @@ make help
 ## TODO BugFix & Improvements
 
 - Fix vbox copy paste
-- Fix invalid number y before vlc noconfirm needed
-- lazyvim full install if doable
-- Polybar add MIC: ON/OFF
+- Fix invalid number y before vlc noconfirm needed // CHECK
+- lazyvim full install if doable // CHECK
+- Polybar add MIC: ON/OFF // CHECK
 - Add CICD daily builds
 - Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
 - Huge alias refacto
