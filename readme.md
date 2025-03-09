@@ -72,7 +72,7 @@ make help
 
 - Config management & backups
 - Update process
-- What's inside (tools, alias, bindings)
 - Kitty visual select (ctrl+alt+select)
 - Document LITE mode (no php, no wordlists)
 - picom & transparency can work in a VM, but slow af
+- Document help bindings
