@@ -66,8 +66,8 @@ make help
 - No Standby or Lock during make install // WIP
 - VBox Auto Agent & cpy/paste // WIP
 - Add CICD daily builds // WIP
-- make update // WIP
 - Huge alias refacto
+- Github api rate-limit, implement SLEEP=60 ?
 
 ## TODO Documentation
 
