@@ -195,8 +195,8 @@ install-tweaks: sanity-check ## Manage user final tweaks
 	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
 
 update: sanity-check ## Update SkillArch
-	@[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit
-	@[ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ] && echo "Error: current branch is not main, please switch to main before updating" && exit
+	@[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit 1
+	@[ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ] && echo "Error: current branch is not main, please switch to main before updating" && exit 1
 	@git pull
 	@echo "SkillArch updated, please run make install to apply changes 🙏"
 
