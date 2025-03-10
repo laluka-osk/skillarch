@@ -21,7 +21,7 @@ sanity-check:
 	gsettings set org.gnome.desktop.screensaver lock-enabled false || true
 	gsettings set org.gnome.desktop.session idle-delay 0 || true
 	gsettings set org.gnome.desktop.screensaver lock-delay 0 || true
-	bash -c "xdg-screensaver suspend sleep 7200" & || true
+	bash -c "xdg-screensaver suspend sleep 7200" &
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
