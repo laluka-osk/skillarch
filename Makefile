@@ -209,6 +209,3 @@ docker-build:
 
 docker-run:
 	docker run -it --net=host -v /tmp:/tmp skillarch:latest
-
-docker-push:
-	docker push skillarch:latest
