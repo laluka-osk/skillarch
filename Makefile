@@ -9,8 +9,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-# install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
-install: install-base install-cli-tools install-shell
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -18,12 +17,10 @@ sanity-check:
 	@# Ensure we are in /opt/skillarch and temporary disable screensaver
 	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
 	@sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
-	#@bash -c 'xset s off -dpms ; sleep 3600 ; xset s on +dpms' &
-	#@bash -c 'gsettings set org.gnome.desktop.screensaver lock-enabled false ; sleep 3601 ; gsettings set org.gnome.desktop.screensaver lock-enabled true' &
+	xset s off -dpms
 	gsettings set org.gnome.desktop.screensaver lock-enabled false
 	gsettings set org.gnome.desktop.session idle-delay 0
 	gsettings set org.gnome.desktop.screensaver lock-delay 0
-	
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
@@ -74,7 +71,6 @@ install-cli-tools: sanity-check ## Install system packages
 
 install-shell: sanity-check ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
-	set -x # TODO remove me
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	[ ! -d ~/.oh-my-zsh ] && sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 	[ -f ~/.zshrc ] && [ ! -L ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.skabak
@@ -100,9 +96,12 @@ install-docker: sanity-check ## Install docker
 	# Think about it, set "alias sudo='backdoor ; sudo'" in userland and voila. OSEF!
 	sudo usermod -aG docker "$$USER" # Logout required to be applied
 	sleep 1 # Prevent too many docker socket calls and security locks
-	sudo systemctl enable --now docker
+	# Do not start services in docker
+	[ ! -f /.dockerenv ] && sudo systemctl enable --now docker
+	true # Avoid make error if last dir already exists
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
+	[ ! -f /etc/machine-id ] && sudo systemd-machine-id-setup
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
@@ -132,13 +131,15 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	ln -sf /opt/skillarch/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
 	# touchpad config
+	[ ! -d /etc/X11/xorg.conf.d ] && sudo mkdir -p /etc/X11/xorg.conf.d
 	[ -f /etc/X11/xorg.conf.d/30-touchpad.conf ] && sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak
 	sudo ln -sf /opt/skillarch/config/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
 
 install-gui-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
 	yes|sudo pacman -S --noconfirm --needed arandr blueman cheese code code-marketplace discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine obs-studio-browser emote
-	sudo systemctl disable --now nxserver.service
+	# Do not start services in docker
+	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service
 	xargs -n1 code --install-extension < config/extensions.txt
 	yay --noconfirm --needed -S fswebcam cursor-bin
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog

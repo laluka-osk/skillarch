@@ -13,13 +13,15 @@ WORKDIR /home/hacker
 COPY . skillarch
 # RUN git clone https://github.com/laluka/skillarch && \
 
+ENV USER=hacker
 RUN sudo mv skillarch /opt/skillarch && \
     cd /opt/skillarch && \
-    export USER=hacker && \
-    make install LITE=1
+    make install
 
 # Remove NOPASSWD capability after installation
-RUN sudo echo "hacker ALL=(ALL) ALL" > /etc/sudoers.d/hacker
+USER root
+RUN echo "hacker ALL=(ALL) ALL" > /etc/sudoers.d/hacker
 
+USER hacker
 # ENTRYPOINT ["/bin/bash", "-il"]
 ENTRYPOINT ["/bin/zsh", "-il"]
