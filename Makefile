@@ -158,6 +158,7 @@ install-offensive: sanity-check ## Install offensive tools
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
 
 	# Clone custom tools
+	cd /tmp # Avoid git clone in root
 	[ ! -d /opt/chisel ] && git clone https://github.com/jpillora/chisel && sudo mv chisel /opt/chisel
 	[ ! -d /opt/phpggc ] && git clone https://github.com/ambionics/phpggc && sudo mv phpggc /opt/phpggc
 	[ ! -d /opt/PyFuscation ] && git clone https://github.com/CBHue/PyFuscation && sudo mv PyFuscation /opt/PyFuscation
