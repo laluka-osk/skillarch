@@ -16,7 +16,7 @@ COPY . skillarch
 ENV USER=hacker
 RUN sudo mv skillarch /opt/skillarch && \
     cd /opt/skillarch && \
-    make install
+    make install LITE=1
 
 # Remove NOPASSWD capability after installation
 USER root
