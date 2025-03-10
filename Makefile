@@ -9,7 +9,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-tweaks ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -188,6 +188,12 @@ install-hardening: sanity-check ## Install hardening tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
+
+install-tweaks: sanity-check ## Manage user final tweaks
+	[ ! -d ~/.config/skillarch ] && mkdir -p ~/.config/skillarch
+	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo "# Place your final tweaks here" > ~/.config/skillarch/tweaks.sh
+	bash ~/.config/skillarch/tweaks.sh
+	@echo "Final tweaks applied, please logout/login if needed ✨"
 
 docker-build:
 	docker build -t skillarch:latest .
