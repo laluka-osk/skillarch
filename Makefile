@@ -20,6 +20,7 @@ sanity-check:
 	gsettings set org.gnome.desktop.screensaver lock-enabled false
 	gsettings set org.gnome.desktop.session idle-delay 0
 	gsettings set org.gnome.desktop.screensaver lock-delay 0
+	xdg-screensaver suspend
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
@@ -60,8 +61,10 @@ install-cli-tools: sanity-check ## Install system packages
 	# Install mise and all php-build dependencies
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
 	mise self-update
+	sleep 30
 	mise use -g usage@latest
-	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest"; done
+	sleep 30
+	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
@@ -150,6 +153,7 @@ install-offensive: sanity-check ## Install offensive tools
 	mise exec -- go install github.com/sw33tLie/sns@latest
 	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
 	mise exec -- go install github.com/x90skysn3k/brutespray@latest
+	sleep 30
 	zsh -c "source ~/.zshrc && pdtm -install-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
 

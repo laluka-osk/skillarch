@@ -64,9 +64,9 @@ make help
 ## TODO BugFix & Improvements
 
 - No Standby or Lock during make install // WIP
-- Add CICD daily builds // WIP
+- Github api rate-limit, implement sleep delay // WIP
+- Add CICD daily builds
 - Huge alias refacto
-- Github api rate-limit, implement SLEEP=60 ?
 
 ## TODO Documentation
 
@@ -76,3 +76,4 @@ make help
 - Document LITE=1 mode (no php, no wordlists)
 - picom & transparency can work in a VM, but slow af
 - Document help bindings
+- Document extra sleep for github rate limit MDR.
