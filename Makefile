@@ -16,12 +16,10 @@ sanity-check:
 	set -x
 	@# Ensure we are in /opt/skillarch and temporary disable screensaver
 	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit 1
-	# @sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit 1
 	xset s off -dpms
 	gsettings set org.gnome.desktop.screensaver lock-enabled false
-	gsettings set org.gnome.desktop.session idle-delay 0
-	gsettings set org.gnome.desktop.screensaver lock-delay 0
-	# xdg-screensaver suspend
+	# gsettings set org.gnome.desktop.session idle-delay 0
+	# gsettings set org.gnome.desktop.screensaver lock-delay 0
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
