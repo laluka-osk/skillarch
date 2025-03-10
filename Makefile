@@ -13,7 +13,6 @@ install: install-base install-cli-tools install-shell install-docker install-gui
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
-	set -x
 	@# Ensure we are in /opt/skillarch and temporary disable screensaver
 	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit
 	@sudo -v >/dev/null 2>&1 || echo "Error: sudo access is required" && exit
@@ -196,9 +195,9 @@ install-tweaks: sanity-check ## Manage user final tweaks
 	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
 
 update: sanity-check ## Update SkillArch
-	[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit
-	[ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ] && echo "Error: current branch is not main, please switch to main before updating" && exit
-	git pull
+	@[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit
+	@[ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ] && echo "Error: current branch is not main, please switch to main before updating" && exit
+	@git pull
 	@echo "SkillArch updated, please run make install to apply changes 🙏"
 
 docker-build:
