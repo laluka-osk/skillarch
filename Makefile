@@ -9,7 +9,8 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
+# install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening ## Install SkillArch
+install: install-base install-cli-tools install-shell
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -22,6 +23,7 @@ sanity-check:
 	gsettings set org.gnome.desktop.screensaver lock-enabled false
 	gsettings set org.gnome.desktop.session idle-delay 0
 	gsettings set org.gnome.desktop.screensaver lock-delay 0
+	
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
@@ -46,19 +48,18 @@ install-base: sanity-check ## Install base packages
 	true # Avoid make error if last dir already exists
 
 install-cli-tools: sanity-check ## Install system packages
-	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile
+	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile gron
 
 	# nvim config
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
 	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
 	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
-	nvim --headless +"Lazy! sync" +"SomeOtherCommand" +qa # Download and update plugins
+	nvim --headless +"Lazy! sync" +qa # Download and update plugins
 
-	# Install fastgron + pipx & tools
-	yay --noconfirm --needed -S fastgron python-pipx
-	sudo ln -sf /usr/bin/fastgron /usr/local/bin/fgr
+	# Install pipx & tools
+	yay --noconfirm --needed -S python-pipx
 	pipx ensurepath
-	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install "$$package" && pipx inject "$$package" setuptools; done
+	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install -q "$$package" && pipx inject -q "$$package" setuptools; done
 
 	# Install mise and all php-build dependencies
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
@@ -73,6 +74,7 @@ install-cli-tools: sanity-check ## Install system packages
 
 install-shell: sanity-check ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
+	set -x # TODO remove me
 	yes|sudo pacman -S --noconfirm --needed zsh zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search zsh-theme-powerlevel10k
 	[ ! -d ~/.oh-my-zsh ] && sh -c "$$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 	[ -f ~/.zshrc ] && [ ! -L ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.skabak
@@ -89,7 +91,6 @@ install-shell: sanity-check ## Install shell packages
 	ln -sf /opt/skillarch/config/tmux.conf ~/.tmux.conf
 	[ -f ~/.vimrc ] && [ ! -L ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.skabak
 	ln -sf /opt/skillarch/config/vimrc ~/.vimrc
-
 	# Set the default user shell to zsh
 	sudo chsh -s /usr/bin/zsh "$$USER" # Logout required to be applied
 
@@ -103,7 +104,7 @@ install-docker: sanity-check ## Install docker
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl
-	yay --noconfirm --needed -S rofi-power-menu
+	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 	# i3 config
@@ -186,3 +187,12 @@ install-hardening: sanity-check ## Install hardening tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
+
+docker-build:
+	docker build -t skillarch:latest .
+
+docker-run:
+	docker run -it --net=host -v /tmp:/tmp skillarch:latest
+
+docker-push:
+	docker push skillarch:latest

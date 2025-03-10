@@ -26,6 +26,7 @@ exec_always --no-startup-id dex --autostart --environment i3
 exec_always --no-startup-id feh --bg-scale /opt/skillarch/assets/bg-0.jpg
 exec_always --no-startup-id killall -q polybar; polybar
 exec_always --no-startup-id bash -c "killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom"
+exec_always --no-startup-id i3-battery-popup
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
