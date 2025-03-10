@@ -65,8 +65,9 @@ make help
 
 - No Standby or Lock during make install // WIP
 - Github api rate-limit, implement sleep delay // WIP
-- Add CICD daily builds
+- Add CICD daily builds // WIP
 - Huge alias refacto
+- Ensure COPY . in Dockerfile doesn't leak github action creds...
 
 ## TODO Documentation
 
