@@ -68,7 +68,7 @@ make help
 - Add CICD daily builds // WIP
 - Low battery warning // WIP
 - pipx silent Note: '/home/hacker/.local/bin' is not on your PATH environment variable. // WIP
-- Alias update: make pull (error out on dirty state, take care of home & main branches only) && make install && make rebase
+- make update // WIP
 - Huge alias refacto
 
 ## TODO Documentation
