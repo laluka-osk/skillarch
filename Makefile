@@ -44,7 +44,7 @@ install-base: sanity-check ## Install base packages
 	true # Avoid make error if last dir already exists
 
 install-cli-tools: sanity-check ## Install system packages
-	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile gron
+	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile gron exa
 
 	# nvim config
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
