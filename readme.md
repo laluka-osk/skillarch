@@ -66,8 +66,6 @@ make help
 - No Standby or Lock during make install // WIP
 - VBox Auto Agent & cpy/paste // WIP
 - Add CICD daily builds // WIP
-- Low battery warning // WIP
-- pipx silent Note: '/home/hacker/.local/bin' is not on your PATH environment variable. // WIP
 - make update // WIP
 - Huge alias refacto
 
@@ -76,7 +74,7 @@ make help
 - Config management & backups
 - Update process
 - Kitty visual select (ctrl+alt+select)
-- Document LITE mode (no php, no wordlists)
+- Document LITE=1 mode (no php, no wordlists)
 - picom & transparency can work in a VM, but slow af
 - Document help bindings
 
