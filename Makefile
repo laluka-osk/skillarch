@@ -192,8 +192,14 @@ install-hardening: sanity-check ## Install hardening tools
 install-tweaks: sanity-check ## Manage user final tweaks
 	[ ! -d ~/.config/skillarch ] && mkdir -p ~/.config/skillarch
 	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo "# Place your final tweaks here" > ~/.config/skillarch/tweaks.sh
-	bash ~/.config/skillarch/tweaks.sh
-	@echo "Final tweaks applied, please logout/login if needed ✨"
+	bash -x ~/.config/skillarch/tweaks.sh
+	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
+
+update: sanity-check ## Update SkillArch
+	[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit
+	[ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ] && echo "Error: current branch is not main, please switch to main before updating" && exit
+	git pull
+	@echo "SkillArch updated, please run make install to apply changes 🙏"
 
 docker-build:
 	docker build -t skillarch:latest .
