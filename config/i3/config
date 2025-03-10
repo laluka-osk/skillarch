@@ -25,6 +25,7 @@ font pango:monospace 8
 exec_always --no-startup-id dex --autostart --environment i3
 exec_always --no-startup-id feh --bg-scale /opt/skillarch/assets/bg-0.jpg
 exec_always --no-startup-id killall -q polybar; polybar
+exec_always --no-startup-id pgrep --exact VBoxService &> /dev/null && killall VBoxClient ; VBoxClient-all
 exec_always --no-startup-id bash -c "killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom"
 exec_always --no-startup-id i3-battery-popup
 
