@@ -64,7 +64,6 @@ make help
 ## TODO BugFix & Improvements
 
 - No Standby or Lock during make install // WIP
-- VBox Auto Agent & cpy/paste // WIP
 - Add CICD daily builds // WIP
 - Huge alias refacto
 - Github api rate-limit, implement SLEEP=60 ?
@@ -77,12 +76,3 @@ make help
 - Document LITE=1 mode (no php, no wordlists)
 - picom & transparency can work in a VM, but slow af
 - Document help bindings
-
-## WIP Fix vbox copy paste
-
-```bash
-VBoxClient-all
-sudo pacman -S linux-headers
-sudo pacman -S virtualbox-guest-utils
-sudo usermod -aG vboxsf $USER
-```
