@@ -10,6 +10,8 @@ RUN groupadd hacker && \
 COPY . /opt/skillarch
 RUN chown -R hacker:hacker /opt/skillarch
 USER hacker
+ENV USER=hacker
+ENV TZ=UTC
 WORKDIR /opt/skillarch
 
 # Install skillarch
