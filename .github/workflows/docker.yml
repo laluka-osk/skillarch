@@ -10,6 +10,17 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Romve useless stuff for docker size
+        run: |
+          df -h
+          echo "PACKER_DOCKER_FILE: $PACKER_DOCKER_FILE"
+          sudo docker system prune -a -f --volumes
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          df -h
+
       - name: Checkout code
         uses: actions/checkout@v4
 
