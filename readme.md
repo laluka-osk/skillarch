@@ -64,7 +64,6 @@ make help
 ## TODO BugFix & Improvements
 
 - Huge alias refacto
-- Ensure COPY . in Dockerfile doesn't leak github action creds...
 
 ## TODO Documentation
 
