@@ -3,6 +3,8 @@ name: Docker Build and Push
 on:
   push:
     branches: [ '**' ]
+  schedule:
+    - cron:  '30 7 * * *'
   pull_request:
     branches: [ main ]
 
@@ -15,10 +17,12 @@ jobs:
           df -h
           echo "PACKER_DOCKER_FILE: $PACKER_DOCKER_FILE"
           sudo docker system prune -a -f --volumes
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/share/dotnet
           df -h
 
       - name: Checkout code
