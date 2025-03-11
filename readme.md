@@ -1,4 +1,4 @@
-# SkillArch
+# SkillArch - [![Docker Build](https://github.com/laluka/skillarch/actions/workflows/docker.yml/badge.svg)](https://github.com/laluka/skillarch/actions/workflows/docker.yml)
 
 <img src='assets/skillarch-full.png' width='250'>
 
