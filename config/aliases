@@ -28,19 +28,19 @@ alias lbt-update='bash /opt/lalubuntu/update.sh'
 alias sudo-unlock='su -c "faillock --user $USER --reset"'
 
 # Tools Sysadmin
-alias t='f(){ exa -Tll "$@";  unset -f f; }; f'
-alias t2='f(){ exa -Tll -L 2 "$@";  unset -f f; }; f'
-alias t3='f(){ exa -Tll -L 3 "$@";  unset -f f; }; f'
-alias l='f(){ exa -ll --group-directories-first "$@";  unset -f f; }; f'
-alias la='f(){ exa -lla --group-directories-first "$@";  unset -f f; }; f'
-alias vff='f() { file=$(grep -rE . "$1" 2>/dev/null | fzf | cut -d: -f1); if [ -n "$file" ]; then v "$file"; fi; unset -f f; }; f'
-alias git="GIT_SSL_NO_VERIFY=true git"
-alias clean-crash='sudo /bin/rm -rf /var/crash/*'
-alias clean-go='sudo /bin/rm -rf ~/go/'
-alias carbo='docker run -ti fathyb/carbonyl'
-alias ipa='ip -br a | grep -vF DOWN | cut -d/ -f1'
-alias kill-click='sudo kill -9 $(get-pid-click)'
-alias cam-setup='guvcview'
+## ls, tree
+alias l="exa -ll --group-directories-first $@"
+alias la="l -a $@"
+alias t="l -T $@"
+alias t2="l -LT2 $@"
+alias t3="l -LT3 $@"
+
+## networking
+alias ipa="ip -br a | grep -vF DOWN"
+alias ipaa="ip -br a"
+
+# Video, Audio, Stream
+alias webcam-guvcview='guvcview'
 alias yt-dl-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
 alias record-screen='f(){ ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0 -c:v libx264 -crf 0 -preset ultrafast "$1".mkv;  unset -f f; }; f'
 alias maxfullscreen='f(){ window_title=$(i3-msg -t get_tree | gron | grep -F "title = " | grep -ioP "\".*\"" | fzf); i3-msg "[title=$window_title] focus ; floating enable ; resize set 3842px 1082px; move position -1px -1px" ;  unset -f f; }; f'
@@ -48,8 +48,6 @@ alias flameshotz='while true; do flameshot full -p /tmp/; sleep 1; done'
 alias rm='trash-put'
 alias te='trash-empty'
 alias cp='cp -i'
-alias aptitall='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean -y && sudo apt purge -y'
-alias dpkgi='sudo dpkg -i'
 alias show-disk-io='watch -cd -- iostat -h'
 alias show-open-ports="sudo ss -latepun | grep -i listen"
 alias ssh-yolo='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
@@ -58,8 +56,7 @@ alias tmux-split='f(){ tmux split-window -d zsh -c "echo $@; $@; zsh";  unset -f
 alias toqrcode='qrencode -t ANSI -o -'
 alias upload='f(){ curl -F"file=@$1" https://0x0.st;  unset -f f; }; f'
 alias usleep='f(){ python3 -c "import time; time.sleep($1)";  unset -f f; }; f'
-alias vplay='mplayer -nosound'
-alias wget="wget --no-check-certificate"
+alias wgetn="wget --no-check-certificate"
 alias wifi='nmtui'
 alias b64d='base64 -d'
 alias b64e='base64 -w 0'
@@ -72,18 +69,18 @@ alias paste='xclip -selection clipboard -o'
 alias decrypt='mdecrypt'
 alias digall='f(){ dig +answer +multiline "$1" any @8.8.8.8;  unset -f f; }; f'
 alias disable-ipv6='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1'
-alias dns-1='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf'
 alias dns-127='echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf'
+alias dns-1='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf'
 alias dns-8='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf'
 alias dns-9='echo "nameserver 9.9.9.9" | sudo tee /etc/resolv.conf'
-alias lbt-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
+alias ska-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
 alias encrypt='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$PASS" | xclip -selection c && tar -zcvf "$1.tar.gz" "$1" && echo "$PASS" && mcrypt "$1.tar.gz" && echo "$1.tar.gz $PASS" | xclip -selection c;  unset -f f; }; f'
 alias get-badchars='echo -e "\"\x27<?>][]{}_)(*;/\x5c"'
-alias lbt-pv='f(){ mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ;  unset -f f; }; f'
+alias pv='f(){ mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ;  unset -f f; }; f'
 alias get-bytes='for i in {0..255}; do python2 -c "print hex($i)[2:].rjust(2, str(0))"; done'
 alias get-chars='for i in {1..255}; do python2 -c "print chr($i)"; done'
 alias get-du='du -ch -d 1'
-alias get-ip='curl -sS ipinfo.io'
+alias get-ip='curl -sS ipinfo.io ; echo'
 alias get-meteo='curl https://wttr.in/'
 alias get-pid-click='xprop _NET_WM_PID | cut -d" " -f3'
 alias get-pid-ps='ps fauxw | fzf | awk "{ print \$2}"'
@@ -119,16 +116,12 @@ alias cfu-clean-url='f(){ cfu-clean $@ | cut -d"|" -f4- ;  unset -f f; }; f'
 alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ;  unset -f f; }; f'
 alias cfu='f(){ jq -r ".results[] | [(.status|tostring), (.length|tostring), (.lines|tostring), (.words|tostring), .url] | join(\"|\")" $@ | sort -uV;  unset -f f; }; f'
 alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
-alias crli='curl -sS --path-as-is -gk -D /dev/stderr -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
+alias crli='crl -D /dev/stderr'
 alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
 alias killit='sudo kill -KILL'
 alias favhash="python3 -c 'from mmh3 import hash as h;from codecs import encode as e;from sys import argv;favicon = e(open(argv[1], \"rb\").read(), \"base64\");print(f\"https://www.shodan.io/search?query=http.favicon.hash%3A{h(favicon)}\")'"
 alias fu='ffuf -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
 alias jwt-tool='f(){ docker run -it --network host --rm -v "${PWD}:/tmp" -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool $@ ;  unset -f f; }; f'
-
-# Tools Misc
-alias vgrep='f(){ grep -rnH "$1" "$2" | fzf --preview="bat --pager never --color always -H {2} -r {2}: -p {1}" --delimiter=: ;  unset -f f; }; f'
-alias discord-notify='xargs -I match curl https://discord.com/api/webhooks/849249235403800576/pgzx5eacjlEpzT9hIRTpgyxyYko2xX7Gc8LCc_HfE8WhQC-zuqInVsZUW_NtYIpVds7y -d "content=\`\`\`match\`\`\`"'
 
 ## [Deprecated for asdf & direnv] Python virtualenv shortcuts / Soon removed for asdf cleaner option
 alias py2='virtualenv -p python2 .py2 && source .py2/bin/activate'
@@ -143,7 +136,7 @@ alias dkill='dnorestart && dstopall'
 alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dexr='docker exec -it -u root $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dockns='sudo nsenter -a -t $(docker inspect -f "{{.State.Pid}}" $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1))'
-alias dockit='docker run --rm -it -v "$PWD":/host -w /host --net=host'
+alias dockit='dockit -v "$PWD":/host -w /host --net=host'
 alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
 alias dps='docker ps'
 alias wipe-docker-all='docker system prune -a -f --volumes'
@@ -162,16 +155,16 @@ alias git-allsecrets='dockit --entrypoint sh abhartiya/tools_gitallsecrets'
 alias recon-amass='dockit caffix/amass'
 alias recon-findomain='dockit edu4rdshl/findomain:latest findomain'
 alias recon-gcert='dockit hessman/gcert'
-alias recon-witnessme='dockit -w /host byt3bl33d3r/witnessme --threads 5 screenshot'
+alias recon-witnessme='dockit byt3bl33d3r/witnessme --threads 5 screenshot'
 alias recon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
 
 ## Fuzz & Crawl
 alias supptruder="dockit elsicarius/supptruder"
-alias secator="docker run -it --rm --net=host -v ~/.secator:/root/.secator freelabz/secator"
+alias secator="dockit -v ~/.secator:/root/.secator freelabz/secator"
 alias htcap-crawl='f(){ OUT=$(echo "$1" | tr "/" "_"); dockit htcap htcap crawl -m aggressive -s domain -U "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" "$1" "/host/$OUT.db" ; dockit htcap htcap scan native "/host/$OUT.db"; dockit htcap htcap util report "/host/$OUT.db" "/host/$OUT.html" ; unset -f f; }; f'
 alias rustscan='dockit rustscan/rustscan'
 alias oneforall='dockit tardis07/oneforall'
-alias getfuzz='f(){ echo "<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\";  unset -f f; }; f'
+alias getfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
 
 ## Compliance
 alias ssh-audit="dockit positronsecurity/ssh-audit"
@@ -181,19 +174,25 @@ alias ssl-test='dockit drwetter/testssl.sh'
 
 ## Hash cracking
 alias john='dockit phocean/john_the_ripper_jumbo'
-alias hashcat='dockit -w /host dizcza/docker-hashcat:intel-cpu hashcat'
+alias hashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat'
 
 ## Exploits
 alias metasploit='dockit -v /tmp/msf:/tmp/msf -e MSF_UID=0 -e MSF_GID=0 metasploitframework/metasploit-framework:latest /bin/bash'
 alias wpscan="dockit wpscanteam/wpscan"
 alias drupwn="dockit immunit/drupwn"
 
-## Misc
+## Reverse
 alias retdec='dockit blacktop/retdec'
+
+## Network
 alias bettercap-wifi="bettercap -iface wlp0s20f3 -eval \"wifi.recon on;set wifi.show.sort clients desc;set ticker.commands 'clear; wifi.show';ticker on\""
 
 ## Sysadmin
-alias dsysdig='docker run --rm -it --privileged --net=host -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
+alias dsysdig='dockit --privileged -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
 # alias quick-ssh-srv='dockit -d thelaluka/welcome:quick-ssh'
 # alias swagger-editor='dockit swaggerapi/swagger-editor'
 # alias crypt-pad='mkdir datastore; docker run --rm -it -p 3000:3000 -v "$PWD/datastore:/cryptpad/datastore" arno0x0x/docker-cryptpad'
+
+
+# Funky Stuff
+alias carbonyl='dockit fathyb/carbonyl' # Chrome in Terminal
