@@ -209,7 +209,7 @@ docker-build-full:
 	docker build -t skillarch-full:latest -f Dockerfile-full .
 
 docker-run:
-	docker run -it --net=host -v /tmp:/tmp skillarch-lite:latest
+	docker run --rm -it --name=ska --net=host -v /tmp:/tmp skillarch-lite:latest
 
 docker-run-full:
-	docker run -it --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged skillarch-full:latest
+	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged skillarch-full:latest
