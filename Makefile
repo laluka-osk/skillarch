@@ -200,7 +200,7 @@ install-hardening: sanity-check ## Install hardening tools
 
 install-tweaks: sanity-check ## Manage user final tweaks
 	[ ! -d ~/.config/skillarch ] && mkdir -p ~/.config/skillarch
-	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo "# Place your final tweaks here" > ~/.config/skillarch/tweaks.sh
+	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo -e "# Place your final tweaks here, like:\n# sed -i 's#/opt/skillarch/assets/bg-0.jpg#/some/other/nicebg.jpg#g' ~/.config/i3/config" > ~/.config/skillarch/tweaks.sh
 	bash ~/.config/skillarch/tweaks.sh
 	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
 	make clean
@@ -224,6 +224,7 @@ docker-run-full:
 	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
 
 clean: ## Clean up system and remove unnecessary files
+	[ ! -f /.dockerenv ] && exit
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Sc
 	yes|sudo pacman -Rns $$(pacman -Qtdq) 2>/dev/null || true
