@@ -20,7 +20,7 @@ make install # Then reboot && pick i3 at login
 
 > The install takes 15/20mn 🕑️\
 > Please watch this intro video to onboard yourself! 🙏\
-> ➡️ TODO(lalu) ⬅️
+> ➡️ TODO:(lalu) ⬅️
 
 ## Get Help
 
@@ -61,11 +61,11 @@ make help
 - https://github.com/orhun/config
 - https://github.com/regolith-linux/regolith-desktop
 
-## TODO BugFix & Improvements
+## BugFix & Improvements
 
 - None for now! 😎
 
-## TODO Documentation
+## TODO(lalu): Documentation
 
 - Config management & backups
 - Update process
