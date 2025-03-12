@@ -151,10 +151,11 @@ install-offensive: sanity-check ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks burpsuite hashcat bettercap
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
 
-	mise exec -- go install github.com/sw33tLie/sns@latest
-	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
-	mise exec -- go install github.com/x90skysn3k/brutespray@latest
-	mise exec -- go install github.com/sensepost/gowitness@latest
+	# Hide stdout and Keep stderr for CI builds
+	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null
+	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest > /dev/null
+	mise exec -- go install github.com/x90skysn3k/brutespray@latest > /dev/null
+	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null
 	sleep 30
 	zsh -c "source ~/.zshrc && pdtm -install-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"

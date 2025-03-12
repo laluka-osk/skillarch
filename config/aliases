@@ -1,11 +1,24 @@
-# Utils
-## Directories
+# Skillarch Helpers
+alias ska='/opt/skillarch'
+alias ska-help-bindings='i3-msg -t get_config | grep -oP "bindsym .*" | grep -vF "#bindsym" | fzf'
+alias ska-help-aliases='alias | fzf'
+alias ska-help-packages='pacman -Q | fzf'
+alias ska-update='ska && make update && make install'
+alias ska-vbox-guestutils='sudo pacman -S virtualbox-guest-utils'
+alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'
+alias ska-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
+alias fastfetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/skillarch-full.png --logo-width 50'
+alias neofetch='fastfetch'
+alias hifetch='fastfetch'
+
+## Directories, Git, Ide
 alias dl='cd ~/Downloads'
 alias da='cd /DATA'
 alias tn='tmux new'
 alias ta='tmux attach'
 alias b='bat'
 alias batcat='bat'
+alias batall='find . -type f | xargs bat'
 alias v='nvim'
 alias c='code'
 alias C='code .'
@@ -13,46 +26,58 @@ alias k='cursor'
 alias K='cursor .'
 alias p='python'
 alias cdtmp='pushd $(mktemp -d)'
-alias ska='/opt/skillarch'
-alias ska-help-bindings='i3-msg -t get_config | grep -oP "bindsym .*" | grep -vF "#bindsym" | fzf'
-alias ska-help-aliases='alias | fzf'
-alias ska-help-packages='pacman -Q | fzf'
-alias ska-update='ska && make update && make install'
-alias ska-vbox-guestutils='sudo pacman -S virtualbox-guest-utils'
-alias gdh='git diff HEAD'
-alias batall='find . -type f | xargs bat'
-alias fastfetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/skillarch-full.png --logo-width 50'
-alias neofetch='fastfetch'
-alias hifetch='fastfetch'
-alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'
 
-# Tools Sysadmin
-## ls, tree
+# Git stuff
+alias git-clone-all-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
+alias git-clone-all-gitlab='curl -sk -H "Authorization: Bearer ${GITLAB_READ_TOKEN}" "https://gitlab.com/api/v4/projects?owned=true&simple=true" | jq -r ".[].ssh_url_to_repo" | parallel -j10 "git clone {}"'
+alias git-pull-all='find . -maxdepth 2 -name ".git" | cut -d/ -f2 | parallel -j10 "cd {} && git pull"'
+alias gdh='git diff HEAD'
+
+## File Management
 alias l="exa -ll --group-directories-first $@"
 alias la="l -a $@"
 alias t="l -T $@"
 alias t2="l -LT2 $@"
 alias t3="l -LT3 $@"
-
-## networking
-alias ipa="ip -br a | grep -vF DOWN"
-alias ipaa="ip -br a"
-
-# Video, Audio, Stream
-alias webcam-guvcview='guvcview'
-alias yt-dlp-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
-alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
 alias rm='trash-put'
 alias te='trash-empty'
 alias cp='cp -i'
+
+## Networking
+alias ipa="ip -br a | grep -vF DOWN"
+alias ipaa="ip -br a"
+alias ssh-yolo='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+alias wifi-nmtui='nmtui'
+alias wget-yolo="wget --no-check-certificate"
+alias digall='f(){ dig +answer +multiline "$1" any @8.8.8.8;  unset -f f; }; f'
+alias ipv6-disable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1'
+alias ipv6-enable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=0'
+alias dns-127='echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf'
+alias dns-1='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf'
+alias dns-8='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf'
+alias dns-9='echo "nameserver 9.9.9.9" | sudo tee /etc/resolv.conf'
+alias get-ip='curl -sS ipinfo.io/ip ; echo'
+alias get-ip-cpy='curl -sS ipinfo.io/ip | cpy'
+
+# Video, Audio
+alias webcam-guvcview='guvcview'
+alias yt-dlp-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
+alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
+
+# Monitoring, Upload, Sleep
 alias show-disk-io='watch -cd -- iostat -h'
 alias show-open-ports="sudo ss -latepun | grep -i listen"
-alias ssh-yolo='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-alias makeqrcode='qrencode -t ANSI -o -'
+alias get-du='du -ch -d 1'
+alias get-pid-click='xprop _NET_WM_PID | cut -d" " -f3'
+alias get-pid-ps='ps fauxw | fzf | awk "{ print \$2}"'
+alias get-shell-size='echo "stty rows $LINES cols $COLUMNS"'
+alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
+alias killit='sudo kill -KILL'
+
+# Misc Utils
 alias upload='f(){ curl -F"file=@$1" https://0x0.st;  unset -f f; }; f'
 alias usleep='f(){ python3 -c "import time; time.sleep($1)";  unset -f f; }; f'
-alias wget-yolo="wget --no-check-certificate"
-alias wifi-nmtui='nmtui'
+alias makeqrcode='qrencode -t ANSI -o -'
 alias b64d='base64 -d'
 alias b64e='base64 -w 0'
 alias back-n='sed "s/\\\n/\n/g"'
@@ -61,41 +86,27 @@ alias cheat='f(){ curl -s "cheat.sh/$1";  unset -f f; }; f'
 alias clean-swap='sudo swapoff -a && sudo swapon -a'
 alias cpy='xclip -selection clipboard'
 alias paste='xclip -selection clipboard -o'
-alias mcrypt-dec='mdecrypt'
-alias digall='f(){ dig +answer +multiline "$1" any @8.8.8.8;  unset -f f; }; f'
-alias ipv6-disable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1'
-alias ipv6-enable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=0'
-alias dns-127='echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf'
-alias dns-1='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf'
-alias dns-8='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf'
-alias dns-9='echo "nameserver 9.9.9.9" | sudo tee /etc/resolv.conf'
-alias ska-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
 alias mcrypt-enc='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$PASS" | xclip -selection c && tar -zcvf "$1.tar.gz" "$1" && echo "$PASS" && mcrypt "$1.tar.gz" && echo "$1.tar.gz $PASS" | xclip -selection c;  unset -f f; }; f'
-alias get-badchars='echo -e "\x22\x27<?>][]{}_)(*;/\x5c"'
+alias mcrypt-dec='mdecrypt'
+alias get-meteo='curl https://wttr.in/'
+
+# Python
 alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
 alias pyreq='pip install -r requirements.txt'
+alias pysrv='mkdir -pv /tmp/empty ; python3 -m http.server -d /tmp/empty'
+
+# Data Generation & Modification
+alias get-badchars='echo -e "\x22\x27<?>][]{}_)(*;/\x5c"'
 alias get-bytes-hex='python3 -c "for i in range(0,256): print(hex(i))"'
 alias get-bytes-raw='python3 -c "for i in range(0,256): print(chr(i))"'
 alias get-bytes-url='python3 -c "for i in range(0,256): print(hex(i).replace(\"0x\", \"%\"))"'
-alias get-du='du -ch -d 1'
-alias get-ip='curl -sS ipinfo.io/ip ; echo'
-alias get-ip-cpy='curl -sS ipinfo.io/ip | cpy'
-alias get-meteo='curl https://wttr.in/'
-alias get-pid-click='xprop _NET_WM_PID | cut -d" " -f3'
-alias get-pid-ps='ps fauxw | fzf | awk "{ print \$2}"'
-alias get-shell-size='echo "stty rows $LINES cols $COLUMNS"'
-alias git-clone-all-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
-alias git-clone-all-gitlab='curl -sk -H "Authorization: Bearer ${GITLAB_READ_TOKEN}" "https://gitlab.com/api/v4/projects?owned=true&simple=true" | jq -r ".[].ssh_url_to_repo" | parallel -j10 "git clone {}"'
-alias git-pull-all='find . -maxdepth 2 -name ".git" | cut -d/ -f2 | parallel -j10 "cd {} && git pull"'
 alias nocolor='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"'
 alias nonullbyte='sed "s/\x00//g"'
-alias probe-urls='f(){ while read url; do curl -sk "$url" -o /dev/null -w "%{http_code}:%{size_download}:%{url_effective}\n" ; done < "$@" ; ; unset -f f; }; f'
-alias pserv='mkdir -pv /tmp/empty ; python3 -m http.server -d /tmp/empty'
 alias urldecode='python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))"'
 alias urlencode='python3 -c "import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=str()))"'
 alias urlencode-deep='f(){ echo -n "$1" | xxd -p -c 1000000 | sed "s#..#%&#g"; unset -f f; }; f'
 
-# Tools Hacking
+# Web Based Recon
 alias getinfo-known-creds='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ;  unset -f f; }; f'
 alias getinfo-known-port='f(){ xdg-open "https://www.speedguide.net/port.php?port=$@" ;  unset -f f; }; f'
 alias getinfo-bookhacktricks='f(){ xdg-open "https://book.hacktricks.wiki/en/index.html?search=$@" ;  unset -f f; }; f'
@@ -103,15 +114,16 @@ alias getinfo-certspotter='f(){ curl -sS "https://api.certspotter.com/v1/issuanc
 alias getinfo-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ;  unset -f f; }; f'
 alias getinfo-crtsh='f(){ curl -sk "https://crt.sh/json?q=$1" | jq . ; unset -f f; }; f'
 alias getinfo-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
+alias getinfo-favhash='f(){ pip install mmh3 &>/dev/null ; MMH3=$(python3 -c "from mmh3 import hash as h;from codecs import encode as e ; print(h(e(open(\"$1\", \"rb\").read(), \"base64\")))"); xdg-open "https://www.shodan.io/search?query=http.favicon.hash%3A$MMH3" ;  unset -f f; }; f'
+
+# Web Fuzzing
+alias probe-urls='f(){ while read url; do curl -sk "$url" -o /dev/null -w "%{http_code}:%{size_download}:%{url_effective}\n" ; done < "$@" ; ; unset -f f; }; f'
 alias fu='ffuf --of json -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
 alias cfu='f(){ jq -r ".results[] | [(.status|tostring), (.length|tostring), (.lines|tostring), (.words|tostring), .url] | join(\"|\")" $@ | sort -uV;  unset -f f; }; f'
 alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ;  unset -f f; }; f'
 alias cfu-clean-url='f(){ cfu-clean $@ | cut -d"|" -f4- ;  unset -f f; }; f'
 alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
 alias crli='crl -D /dev/stderr'
-alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
-alias killit='sudo kill -KILL'
-alias favhash='f(){ pip install mmh3 &>/dev/null ; MMH3=$(python3 -c "from mmh3 import hash as h;from codecs import encode as e ; print(h(e(open(\"$1\", \"rb\").read(), \"base64\")))"); xdg-open "https://www.shodan.io/search?query=http.favicon.hash%3A$MMH3" ;  unset -f f; }; f'
 
 # Docker Utils
 alias dockit='docker run --rm -it -v /tmp:/tmp -v "$PWD":/host -w /host'
@@ -122,49 +134,49 @@ alias dnorestart='docker update --restart=no $(docker ps -q)'
 alias dstopall='docker stop $(docker ps -q)'
 alias dkillall='dnorestart && dstopall'
 alias dps='docker ps'
-alias wipe-docker-all='docker system prune -a -f --volumes'
-alias wipe-docker-image='docker rmi -f $(docker images -q)'
-alias wipe-docker-network='docker network rm $(docker network ls -q | tr "\n" " ")'
-alias wipe-docker-process='docker rm $(docker ps -a -q)'
-alias wipe-docker-volume='docker volume rm $(docker volume ls -q | tr "\n" " ")'
-alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
+alias dwipe-all='docker system prune -a -f --volumes'
+alias dwipe-image='docker rmi -f $(docker images -q)'
+alias dwipe-network='docker network rm $(docker network ls -q | tr "\n" " ")'
+alias dwipe-process='docker rm $(docker ps -a -q)'
+alias dwipe-volume='docker volume rm $(docker volume ls -q | tr "\n" " ")'
 
 # Docker Tooling
 ## Git stuff
-alias git-trufflehog='dockit trufflesecurity/trufflehog'
-alias git-leaks="dockit zricethezav/gitleaks"
+alias dtrufflehog='dockit trufflesecurity/trufflehog'
+alias dgitleaks="dockit zricethezav/gitleaks"
 
 ## Recon
-alias recon-amass='dockit caffix/amass'
-alias recon-findomain='dockit edu4rdshl/findomain findomain'
-alias recon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
+alias drecon-amass='dockit caffix/amass'
+alias drecon-findomain='dockit edu4rdshl/findomain findomain'
+alias drecon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
 
 ## Fuzz & Crawl
-alias secator="dockit -v ~/.secator:/root/.secator freelabz/secator" # normalize offensive arsenal
-alias rustscan='dockit rustscan/rustscan' # web path enum
-alias oneforall='dockit -w /OneForAll -v /tmp/results:/OneForAll/results shmilylty/oneforall' # noisy recon
-alias getfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
+alias dsecator="dockit -v ~/.secator:/root/.secator freelabz/secator" # normalize offensive arsenal
+alias drustscan='dockit rustscan/rustscan' # web path enum
+alias doneforall='dockit -w /OneForAll -v /tmp/results:/OneForAll/results shmilylty/oneforall' # noisy recon
+alias dgetfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
 
 ## Compliance
-alias ssh-audit="dockit positronsecurity/ssh-audit"
-alias ssl-test='dockit drwetter/testssl.sh'
+alias dssh-audit="dockit positronsecurity/ssh-audit"
+alias dssl-test='dockit drwetter/testssl.sh'
 
 ## Hash & JWT
-alias john='dockit phocean/john_the_ripper_jumbo /jtr/run/john'
-alias jwt-tool='dockit -w /opt/jwt_tool -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool'
-alias hashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat' # Useful but it's better to install it with pacman
+alias djohn='dockit phocean/john_the_ripper_jumbo /jtr/run/john'
+alias djwt-tool='dockit -w /opt/jwt_tool -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool'
+alias dhashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat' # Useful but it's better to install it with pacman
 
 ## Scan, Exploit
-alias msfconsole='dockit --net=host --entrypoint /usr/src/metasploit-framework/msfconsole metasploitframework/metasploit-framework'
-alias msfvenom='dockit --entrypoint /usr/src/metasploit-framework/msfvenom metasploitframework/metasploit-framework'
-alias wpscan="dockit wpscanteam/wpscan" # wordpress scanner
-alias droopescan="dockit droope/droopescan" # drupal scanner
+alias dmsfconsole='dockit --net=host --entrypoint /usr/src/metasploit-framework/msfconsole metasploitframework/metasploit-framework'
+alias dmsfvenom='dockit --entrypoint /usr/src/metasploit-framework/msfvenom metasploitframework/metasploit-framework'
+alias dwpscan="dockit wpscanteam/wpscan" # wordpress scanner
+alias ddroopescan="dockit droope/droopescan" # drupal scanner
 
 ## Reverse, Forensic
-alias retdec='dockit blacktop/retdec' # binary to c code
-alias binwalk-dd="/usr/bin/binwalk --dd='.*'"
+alias dretdec='dockit blacktop/retdec' # binary to c code
+alias dbinwalk-dd="/usr/bin/binwalk --dd='.*'"
 
 ## Sysadmin
 alias dsysdig='dockit --privileged -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
-alias swagger-editor='dockit -p 127.0.0.1:8000:8080 docker.swagger.io/swaggerapi/swagger-editor'
-alias carbonyl='dockit fathyb/carbonyl' # Chrome in Terminal
+alias dswagger-editor='dockit -p 127.0.0.1:8000:8080 docker.swagger.io/swaggerapi/swagger-editor'
+alias dcarbonyl='dockit fathyb/carbonyl' # Chrome in Terminal
+alias dphp7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
