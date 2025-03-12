@@ -9,10 +9,11 @@ alias batcat='bat'
 alias v='nvim'
 alias c='code'
 alias C='code .'
+alias k='cursor'
+alias K='cursor .'
 alias p='python'
-alias tmp='pushd $(mktemp -d)'
-alias lbt='cd /opt/lalubuntu'
-alias ska='cd /opt/skillarch'
+alias cdtmp='pushd $(mktemp -d)'
+alias ska='/opt/skillarch'
 alias ska-help-bindings='i3-msg -t get_config | grep -oP "bindsym .*" | grep -vF "#bindsym" | fzf'
 alias ska-help-aliases='alias | fzf'
 alias ska-help-packages='pacman -Q | fzf'
@@ -23,9 +24,7 @@ alias batall='find . -type f | xargs bat'
 alias fastfetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/skillarch-full.png --logo-width 50'
 alias neofetch='fastfetch'
 alias hifetch='fastfetch'
-alias life='cd /opt/lalulife' # Might be released some day ;)
-alias lbt-update='bash /opt/lalubuntu/update.sh'
-alias sudo-unlock='su -c "faillock --user $USER --reset"'
+alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'
 
 # Tools Sysadmin
 ## ls, tree
@@ -41,23 +40,19 @@ alias ipaa="ip -br a"
 
 # Video, Audio, Stream
 alias webcam-guvcview='guvcview'
-alias yt-dl-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
-alias record-screen='f(){ ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0 -c:v libx264 -crf 0 -preset ultrafast "$1".mkv;  unset -f f; }; f'
-alias maxfullscreen='f(){ window_title=$(i3-msg -t get_tree | gron | grep -F "title = " | grep -ioP "\".*\"" | fzf); i3-msg "[title=$window_title] focus ; floating enable ; resize set 3842px 1082px; move position -1px -1px" ;  unset -f f; }; f'
-alias flameshotz='while true; do flameshot full -p /tmp/; sleep 1; done'
+alias yt-dlp-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
+alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
 alias rm='trash-put'
 alias te='trash-empty'
 alias cp='cp -i'
 alias show-disk-io='watch -cd -- iostat -h'
 alias show-open-ports="sudo ss -latepun | grep -i listen"
 alias ssh-yolo='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-alias tmux-bg='f(){ tmux new-window -d zsh -c "echo $@; $@; zsh";  unset -f f; }; f'
-alias tmux-split='f(){ tmux split-window -d zsh -c "echo $@; $@; zsh";  unset -f f; }; f'
-alias toqrcode='qrencode -t ANSI -o -'
+alias makeqrcode='qrencode -t ANSI -o -'
 alias upload='f(){ curl -F"file=@$1" https://0x0.st;  unset -f f; }; f'
 alias usleep='f(){ python3 -c "import time; time.sleep($1)";  unset -f f; }; f'
-alias wgetn="wget --no-check-certificate"
-alias wifi='nmtui'
+alias wget-yolo="wget --no-check-certificate"
+alias wifi-nmtui='nmtui'
 alias b64d='base64 -d'
 alias b64e='base64 -w 0'
 alias back-n='sed "s/\\\n/\n/g"'
@@ -66,87 +61,78 @@ alias cheat='f(){ curl -s "cheat.sh/$1";  unset -f f; }; f'
 alias clean-swap='sudo swapoff -a && sudo swapon -a'
 alias cpy='xclip -selection clipboard'
 alias paste='xclip -selection clipboard -o'
-alias decrypt='mdecrypt'
+alias mcrypt-dec='mdecrypt'
 alias digall='f(){ dig +answer +multiline "$1" any @8.8.8.8;  unset -f f; }; f'
-alias disable-ipv6='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1'
+alias ipv6-disable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1'
+alias ipv6-enable='sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0; sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=0'
 alias dns-127='echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf'
 alias dns-1='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf'
 alias dns-8='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf'
 alias dns-9='echo "nameserver 9.9.9.9" | sudo tee /etc/resolv.conf'
 alias ska-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
-alias encrypt='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$PASS" | xclip -selection c && tar -zcvf "$1.tar.gz" "$1" && echo "$PASS" && mcrypt "$1.tar.gz" && echo "$1.tar.gz $PASS" | xclip -selection c;  unset -f f; }; f'
-alias get-badchars='echo -e "\"\x27<?>][]{}_)(*;/\x5c"'
-alias pv='f(){ mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ;  unset -f f; }; f'
-alias get-bytes='for i in {0..255}; do python2 -c "print hex($i)[2:].rjust(2, str(0))"; done'
-alias get-chars='for i in {1..255}; do python2 -c "print chr($i)"; done'
+alias mcrypt-enc='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$PASS" | xclip -selection c && tar -zcvf "$1.tar.gz" "$1" && echo "$PASS" && mcrypt "$1.tar.gz" && echo "$1.tar.gz $PASS" | xclip -selection c;  unset -f f; }; f'
+alias get-badchars='echo -e "\x22\x27<?>][]{}_)(*;/\x5c"'
+alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
+alias pyreq='pip install -r requirements.txt'
+alias get-bytes-hex='python3 -c "for i in range(0,256): print(hex(i))"'
+alias get-bytes-raw='python3 -c "for i in range(0,256): print(chr(i))"'
+alias get-bytes-url='python3 -c "for i in range(0,256): print(hex(i).replace(\"0x\", \"%\"))"'
 alias get-du='du -ch -d 1'
-alias get-ip='curl -sS ipinfo.io ; echo'
+alias get-ip='curl -sS ipinfo.io/ip ; echo'
+alias get-ip-cpy='curl -sS ipinfo.io/ip | cpy'
 alias get-meteo='curl https://wttr.in/'
 alias get-pid-click='xprop _NET_WM_PID | cut -d" " -f3'
 alias get-pid-ps='ps fauxw | fzf | awk "{ print \$2}"'
 alias get-shell-size='echo "stty rows $LINES cols $COLUMNS"'
-alias git-cloneall-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
-alias git-cloneall-gitlab='curl -sk -H "Authorization: Bearer ${GITLAB_READ_TOKEN}" "https://gitlab.com/api/v4/projects?owned=true&simple=true" | jq -r ".[].ssh_url_to_repo" | parallel -j10 "git clone {}"'
-alias git-pullall='find . -maxdepth 2 -name ".git" | cut -d/ -f2 | parallel -j10 "cd {} && git pull"'
-alias nocolor='sed "s/\x1B\[[0-9;]\+[A-Za-z]//g"'
-alias nonullbyte='python -c "import sys; sys.stdout.write(sys.stdin.read().replace(chr(0), str()))"'
+alias git-clone-all-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
+alias git-clone-all-gitlab='curl -sk -H "Authorization: Bearer ${GITLAB_READ_TOKEN}" "https://gitlab.com/api/v4/projects?owned=true&simple=true" | jq -r ".[].ssh_url_to_repo" | parallel -j10 "git clone {}"'
+alias git-pull-all='find . -maxdepth 2 -name ".git" | cut -d/ -f2 | parallel -j10 "cd {} && git pull"'
+alias nocolor='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"'
+alias nonullbyte='sed "s/\x00//g"'
 alias probe-urls='f(){ while read url; do curl -sk "$url" -o /dev/null -w "%{http_code}:%{size_download}:%{url_effective}\n" ; done < "$@" ; ; unset -f f; }; f'
-alias pserv='python3 -m http.server -d /var/empty/empty/'
-alias urldecode="python3 -c \"import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))\""
-alias urlencode-deep='f(){ echo -n "$1" | xxd -p | tr -d "\n" | sed "s#..#%&#g";  unset -f f; }; f'
-alias urlencode="python3 -c \"import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=''))\""
+alias pserv='mkdir -pv /tmp/empty ; python3 -m http.server -d /tmp/empty'
+alias urldecode='python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))"'
+alias urlencode='python3 -c "import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=str()))"'
+alias urlencode-deep='f(){ echo -n "$1" | xxd -p -c 1000000 | sed "s#..#%&#g"; unset -f f; }; f'
 
 # Tools Hacking
-alias get-pass-exploits='f(){ xdg-open "https://www.exploitalert.com/search-results.html?search=$@" ;  unset -f f; }; f'
-alias get-pass-info='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ;  unset -f f; }; f'
-alias get-exploitalert='f(){ xdg-open "https://www.exploitalert.com/search-results.html?search=$@" ;  unset -f f; }; f'
-alias get-port-info='f(){ xdg-open "https://www.speedguide.net/port.php?port=$@" ;  unset -f f; }; f'
-alias get-bookhacktricks='f(){ xdg-open "https://book.hacktricks.xyz/?q=$@" ;  unset -f f; }; f'
-alias recon-certspotter='f(){ xdg-open "https://api.certspotter.com/v1/issuances?domain=$1&include_subdomains=true&expand=dns_names&expand=issuer&expand=cert" ;  unset -f f; }; f'
-alias recon-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ;  unset -f f; }; f'
-alias recon-crtsh='f(){ curl -sk "https://crt.sh/json?q=$1" | jq . ; unset -f f; }; f'
-alias recon-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
-alias capture-http='f(){ sudo unbuffer tcpdump -A -s 0 "tcp port $@ and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)" | tr "\\n" "\n" ; unset -f f; }; f'
-alias capture-creds="sudo tcpdump -i enp0s31f6 port http or port ftp or port smtp or port imap or port pop3 or port telnet -l -A | grep -iEB5 --line-buffered 'pass=|pwd=|log=|login=|user=|username=|pw=|passw=|passwd=|password=|pass:|user:|username:|password:|login:|pass |user |authorization:|token'"
-alias nmap-html='nmap --stylesheet https://raw.githubusercontent.com/honze-net/nmap-bootstrap-xsl/master/nmap-bootstrap.xsl'
-alias arm-vm='source /opt/arm_now/.py3/bin/activate && arm_now start --redir tcp:1234:1234 --clean --sync armv7-eabihf'
-alias bb-results='find . -iname "nuclei-*" -exec cat {} \; |  cut -d " " -f 3- | sort -uV | grep -vE "http-missing-security-headers|can-i-take-over-dns-fingerprint"; cfu-clean $(find . -name "fu-*.json")'
-alias binwalk="/usr/bin/binwalk --dd='.*'"
-alias cfu-clean-url='f(){ cfu-clean $@ | cut -d"|" -f4- ;  unset -f f; }; f'
-alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ;  unset -f f; }; f'
+alias getinfo-known-creds='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ;  unset -f f; }; f'
+alias getinfo-known-port='f(){ xdg-open "https://www.speedguide.net/port.php?port=$@" ;  unset -f f; }; f'
+alias getinfo-bookhacktricks='f(){ xdg-open "https://book.hacktricks.wiki/en/index.html?search=$@" ;  unset -f f; }; f'
+alias getinfo-certspotter='f(){ curl -sS "https://api.certspotter.com/v1/issuances?domain=$1&include_subdomains=true&expand=dns_names&expand=issuer&expand=cert" | jq ;  unset -f f; }; f'
+alias getinfo-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ;  unset -f f; }; f'
+alias getinfo-crtsh='f(){ curl -sk "https://crt.sh/json?q=$1" | jq . ; unset -f f; }; f'
+alias getinfo-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
+alias binwalk-dd="/usr/bin/binwalk --dd='.*'"
+alias fu='ffuf --of json -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
 alias cfu='f(){ jq -r ".results[] | [(.status|tostring), (.length|tostring), (.lines|tostring), (.words|tostring), .url] | join(\"|\")" $@ | sort -uV;  unset -f f; }; f'
+alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ;  unset -f f; }; f'
+alias cfu-clean-url='f(){ cfu-clean $@ | cut -d"|" -f4- ;  unset -f f; }; f'
 alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
 alias crli='crl -D /dev/stderr'
 alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
 alias killit='sudo kill -KILL'
-alias favhash="python3 -c 'from mmh3 import hash as h;from codecs import encode as e;from sys import argv;favicon = e(open(argv[1], \"rb\").read(), \"base64\");print(f\"https://www.shodan.io/search?query=http.favicon.hash%3A{h(favicon)}\")'"
-alias fu='ffuf -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
-alias jwt-tool='f(){ docker run -it --network host --rm -v "${PWD}:/tmp" -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool $@ ;  unset -f f; }; f'
-
-## [Deprecated for asdf & direnv] Python virtualenv shortcuts / Soon removed for asdf cleaner option
-alias py2='virtualenv -p python2 .py2 && source .py2/bin/activate'
-alias py3='virtualenv -p python3 .py3 && source .py3/bin/activate'
-alias pyreq='pip install -r requirements.txt'
-alias act="source .py*/bin/activate"
+alias favhash='f(){ pip install mmh3 &>/dev/null ; MMH3=$(python3 -c "from mmh3 import hash as h;from codecs import encode as e ; print(h(e(open(\"$1\", \"rb\").read(), \"base64\")))"); xdg-open "https://www.shodan.io/search?query=http.favicon.hash%3A$MMH3" ;  unset -f f; }; f'
 
 # Docker Utils
-alias dnorestart='docker update --restart=no $(docker ps -q)'
-alias dstopall='docker stop $(docker ps -q)'
-alias dkill='dnorestart && dstopall'
+alias dockit='docker run --rm -it --net=host -v "$PWD":/host -w /host'
 alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dexr='docker exec -it -u root $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dockns='sudo nsenter -a -t $(docker inspect -f "{{.State.Pid}}" $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1))'
-alias dockit='dockit -v "$PWD":/host -w /host --net=host'
-alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
+alias dnorestart='docker update --restart=no $(docker ps -q)'
+alias dstopall='docker stop $(docker ps -q)'
+alias dkillall='dnorestart && dstopall'
 alias dps='docker ps'
 alias wipe-docker-all='docker system prune -a -f --volumes'
 alias wipe-docker-image='docker rmi -f $(docker images -q)'
 alias wipe-docker-network='docker network rm $(docker network ls -q | tr "\n" " ")'
 alias wipe-docker-process='docker rm $(docker ps -a -q)'
 alias wipe-docker-volume='docker volume rm $(docker volume ls -q | tr "\n" " ")'
+alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it hard to build
 
 # Docker Tooling
 ## Git stuff
+# TODO lalu continue from here
 alias git-trufflehog='dockit trufflesecurity/trufflehog:latest'
 alias git-leaks="dockit zricethezav/gitleaks"
 alias git-allsecrets='dockit --entrypoint sh abhartiya/tools_gitallsecrets'
@@ -172,9 +158,10 @@ alias ssh-scan="dockit mozilla/ssh_scan /app/bin/ssh_scan"
 alias ssl-scan="dockit zeitgeist/docker-sslscan"
 alias ssl-test='dockit drwetter/testssl.sh'
 
-## Hash cracking
+## Hash & JWT
 alias john='dockit phocean/john_the_ripper_jumbo'
 alias hashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat'
+alias jwt-tool='f(){ docker run -it --network host --rm -v "${PWD}:/tmp" -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool $@ ;  unset -f f; }; f'
 
 ## Exploits
 alias metasploit='dockit -v /tmp/msf:/tmp/msf -e MSF_UID=0 -e MSF_GID=0 metasploitframework/metasploit-framework:latest /bin/bash'
