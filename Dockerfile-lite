@@ -15,16 +15,12 @@ ENV TZ=UTC
 WORKDIR /opt/skillarch
 
 # Install skillarch
-RUN make install-base
-RUN make install-cli-tools
-RUN make install-shell
-RUN make install-docker
-RUN make install-gui
-RUN make install-gui-tools
-RUN make install-offensive
-RUN make install-wordlists
-RUN make install-hardening
-RUN make install-tweaks
+RUN make install-base LITE=1
+RUN make install-cli-tools LITE=1
+RUN make install-shell LITE=1
+RUN make install-offensive LITE=1
+RUN make install-wordlists LITE=1
+RUN make install-tweaks LITE=1
 
 # Remove NOPASSWD capability after installation
 USER root
