@@ -64,6 +64,7 @@ make help
 ## TODO BugFix & Improvements
 
 - Huge alias refacto // WIP
+- Remove cache and prune stuff to make images lighter
 
 ## TODO Documentation
 
