@@ -160,7 +160,7 @@ install-offensive: sanity-check ## Install offensive tools
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
 
 	# Clone custom tools
-	cd /tmp # Avoid git clone in root
+	pushd /tmp # Avoid git clone in root
 	[ ! -d /opt/chisel ] && git clone https://github.com/jpillora/chisel && sudo mv chisel /opt/chisel
 	[ ! -d /opt/phpggc ] && git clone https://github.com/ambionics/phpggc && sudo mv phpggc /opt/phpggc
 	[ ! -d /opt/PyFuscation ] && git clone https://github.com/CBHue/PyFuscation && sudo mv PyFuscation /opt/PyFuscation
@@ -170,6 +170,7 @@ install-offensive: sanity-check ## Install offensive tools
 	[ ! -d /opt/exploitdb ] && git clone https://gitlab.com/exploit-database/exploitdb && sudo mv exploitdb /opt/exploitdb
 	[ ! -d /opt/pty4all ] && git clone https://github.com/laluka/pty4all && sudo mv pty4all /opt/pty4all
 	[ ! -d /opt/pypotomux ] && git clone https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux
+	popd
 	make clean
 
 install-wordlists: sanity-check ## Install wordlists
