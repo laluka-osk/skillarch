@@ -103,7 +103,6 @@ alias getinfo-certspotter='f(){ curl -sS "https://api.certspotter.com/v1/issuanc
 alias getinfo-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ;  unset -f f; }; f'
 alias getinfo-crtsh='f(){ curl -sk "https://crt.sh/json?q=$1" | jq . ; unset -f f; }; f'
 alias getinfo-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
-alias binwalk-dd="/usr/bin/binwalk --dd='.*'"
 alias fu='ffuf --of json -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
 alias cfu='f(){ jq -r ".results[] | [(.status|tostring), (.length|tostring), (.lines|tostring), (.words|tostring), .url] | join(\"|\")" $@ | sort -uV;  unset -f f; }; f'
 alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ;  unset -f f; }; f'
@@ -115,7 +114,7 @@ alias killit='sudo kill -KILL'
 alias favhash='f(){ pip install mmh3 &>/dev/null ; MMH3=$(python3 -c "from mmh3 import hash as h;from codecs import encode as e ; print(h(e(open(\"$1\", \"rb\").read(), \"base64\")))"); xdg-open "https://www.shodan.io/search?query=http.favicon.hash%3A$MMH3" ;  unset -f f; }; f'
 
 # Docker Utils
-alias dockit='docker run --rm -it --net=host -v "$PWD":/host -w /host'
+alias dockit='docker run --rm -it -v /tmp:/tmp -v "$PWD":/host -w /host'
 alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dexr='docker exec -it -u root $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dockns='sudo nsenter -a -t $(docker inspect -f "{{.State.Pid}}" $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1))'
@@ -132,54 +131,40 @@ alias php7='dockit php:7.4' # Arch suffers from "too new libraries" making it ha
 
 # Docker Tooling
 ## Git stuff
-# TODO lalu continue from here
-alias git-trufflehog='dockit trufflesecurity/trufflehog:latest'
+alias git-trufflehog='dockit trufflesecurity/trufflehog'
 alias git-leaks="dockit zricethezav/gitleaks"
-alias git-allsecrets='dockit --entrypoint sh abhartiya/tools_gitallsecrets'
 
 ## Recon
 alias recon-amass='dockit caffix/amass'
-alias recon-findomain='dockit edu4rdshl/findomain:latest findomain'
-alias recon-gcert='dockit hessman/gcert'
-alias recon-witnessme='dockit byt3bl33d3r/witnessme --threads 5 screenshot'
+alias recon-findomain='dockit edu4rdshl/findomain findomain'
 alias recon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
 
 ## Fuzz & Crawl
-alias supptruder="dockit elsicarius/supptruder"
-alias secator="dockit -v ~/.secator:/root/.secator freelabz/secator"
-alias htcap-crawl='f(){ OUT=$(echo "$1" | tr "/" "_"); dockit htcap htcap crawl -m aggressive -s domain -U "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" "$1" "/host/$OUT.db" ; dockit htcap htcap scan native "/host/$OUT.db"; dockit htcap htcap util report "/host/$OUT.db" "/host/$OUT.html" ; unset -f f; }; f'
-alias rustscan='dockit rustscan/rustscan'
-alias oneforall='dockit tardis07/oneforall'
+alias secator="dockit -v ~/.secator:/root/.secator freelabz/secator" # normalize offensive arsenal
+alias rustscan='dockit rustscan/rustscan' # web path enum
+alias oneforall='dockit -w /OneForAll -v /tmp/results:/OneForAll/results shmilylty/oneforall' # noisy recon
 alias getfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
 
 ## Compliance
 alias ssh-audit="dockit positronsecurity/ssh-audit"
-alias ssh-scan="dockit mozilla/ssh_scan /app/bin/ssh_scan"
-alias ssl-scan="dockit zeitgeist/docker-sslscan"
 alias ssl-test='dockit drwetter/testssl.sh'
 
 ## Hash & JWT
-alias john='dockit phocean/john_the_ripper_jumbo'
-alias hashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat'
-alias jwt-tool='f(){ docker run -it --network host --rm -v "${PWD}:/tmp" -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool $@ ;  unset -f f; }; f'
+alias john='dockit phocean/john_the_ripper_jumbo /jtr/run/john'
+alias jwt-tool='dockit -w /opt/jwt_tool -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool'
+alias hashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat' # Useful but it's better to install it with pacman
 
-## Exploits
-alias metasploit='dockit -v /tmp/msf:/tmp/msf -e MSF_UID=0 -e MSF_GID=0 metasploitframework/metasploit-framework:latest /bin/bash'
-alias wpscan="dockit wpscanteam/wpscan"
-alias drupwn="dockit immunit/drupwn"
+## Scan, Exploit
+alias msfconsole='dockit --net=host --entrypoint /usr/src/metasploit-framework/msfconsole metasploitframework/metasploit-framework'
+alias msfvenom='dockit --entrypoint /usr/src/metasploit-framework/msfvenom metasploitframework/metasploit-framework'
+alias wpscan="dockit wpscanteam/wpscan" # wordpress scanner
+alias droopescan="dockit droope/droopescan" # drupal scanner
 
-## Reverse
-alias retdec='dockit blacktop/retdec'
-
-## Network
-alias bettercap-wifi="bettercap -iface wlp0s20f3 -eval \"wifi.recon on;set wifi.show.sort clients desc;set ticker.commands 'clear; wifi.show';ticker on\""
+## Reverse, Forensic
+alias retdec='dockit blacktop/retdec' # binary to c code
+alias binwalk-dd="/usr/bin/binwalk --dd='.*'"
 
 ## Sysadmin
 alias dsysdig='dockit --privileged -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
-# alias quick-ssh-srv='dockit -d thelaluka/welcome:quick-ssh'
-# alias swagger-editor='dockit swaggerapi/swagger-editor'
-# alias crypt-pad='mkdir datastore; docker run --rm -it -p 3000:3000 -v "$PWD/datastore:/cryptpad/datastore" arno0x0x/docker-cryptpad'
-
-
-# Funky Stuff
+alias swagger-editor='dockit -p 127.0.0.1:8000:8080 docker.swagger.io/swaggerapi/swagger-editor'
 alias carbonyl='dockit fathyb/carbonyl' # Chrome in Terminal

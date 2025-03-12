@@ -66,7 +66,7 @@ install-cli-tools: sanity-check ## Install system packages
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	mise use -g php@latest
+	mise use -g php@latest -q
 
 install-shell: sanity-check ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
@@ -144,12 +144,13 @@ install-gui-tools: sanity-check ## Install system packages
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 
 install-offensive: sanity-check ## Install offensive tools
-	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks burpsuite
+	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks burpsuite hashcat bettercap
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
 
 	mise exec -- go install github.com/sw33tLie/sns@latest
 	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest
 	mise exec -- go install github.com/x90skysn3k/brutespray@latest
+	mise exec -- go install github.com/sensepost/gowitness@latest
 	sleep 30
 	zsh -c "source ~/.zshrc && pdtm -install-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
@@ -203,13 +204,13 @@ update: sanity-check ## Update SkillArch
 	@echo "SkillArch updated, please run make install to apply changes 🙏"
 
 docker-build:
-	docker build -t skillarch-lite:latest -f Dockerfile-lite .
+	docker build -t thelaluka/skillarch:lite -f Dockerfile-lite .
 
 docker-build-full:
-	docker build -t skillarch-full:latest -f Dockerfile-full .
+	docker build -t thelaluka/skillarch:full -f Dockerfile-full .
 
 docker-run:
-	docker run --rm -it --name=ska --net=host -v /tmp:/tmp skillarch-lite:latest
+	docker run --rm -it --name=ska --net=host -v /tmp:/tmp thelaluka/skillarch:lite
 
 docker-run-full:
-	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged skillarch-full:latest
+	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
