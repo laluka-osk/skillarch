@@ -66,7 +66,7 @@ install-cli-tools: sanity-check ## Install system packages
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	mise use -q -g php@latest
+	# mise use -q -g php@latest # FU size & php long build
 	make clean
 
 install-shell: sanity-check ## Install shell packages
