@@ -38,33 +38,33 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
 
-  docker-lite:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # docker-lite:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Cleanup runner
-        uses: ./.github/actions/cleanup
+  #     - name: Cleanup runner
+  #       uses: ./.github/actions/cleanup
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      - name: Login to DockerHub
-        if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       if: github.ref == 'refs/heads/main'
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile-lite
-          push: ${{ github.ref == 'refs/heads/main' }}
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: .
+  #         file: ./Dockerfile-lite
+  #         push: ${{ github.ref == 'refs/heads/main' }}
+  #         tags: |
+  #           ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
+  #           ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
+  #           ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
 
