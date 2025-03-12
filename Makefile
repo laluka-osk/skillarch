@@ -64,9 +64,9 @@ install-cli-tools: sanity-check ## Install system packages
 	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
-	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
+	yes|sudo pacman -S --noconfirm --needed php libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	mise use -q -g php@latest
+	# mise use -q -g php@latest
 	make clean
 
 install-shell: sanity-check ## Install shell packages
