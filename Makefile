@@ -9,7 +9,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-tweaks ## Install SkillArch
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-tweaks clean ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -38,7 +38,7 @@ install-base: sanity-check ## Install base packages
 	# Long Lived DATA & trash-cli Setup
 	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA
 	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash
-	true # Avoid make error if last dir already exists
+	make clean
 
 install-cli-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile gron exa fastfetch bat sysstat
@@ -66,7 +66,8 @@ install-cli-tools: sanity-check ## Install system packages
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	mise use -g php@latest -q
+	# mise use -g php@latest -q # TODO fix long build
+	make clean
 
 install-shell: sanity-check ## Install shell packages
 	# Install and Configure zsh and oh-my-zsh
@@ -79,6 +80,7 @@ install-shell: sanity-check ## Install shell packages
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ] && git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
 	[ ! -d ~/.ssh ] && mkdir ~/.ssh && chmod 700 ~/.ssh # Must exist for ssh-agent to work
 	for plugin in colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent; do zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true"; done
+	make clean
 
 	# Install and configure fzf, tmux, vim
 	[ ! -d ~/.fzf ] && git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all
@@ -97,7 +99,7 @@ install-docker: sanity-check ## Install docker
 	sleep 1 # Prevent too many docker socket calls and security locks
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl enable --now docker
-	true # Avoid make error if last dir already exists
+	make clean
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	[ ! -f /etc/machine-id ] && sudo systemd-machine-id-setup
@@ -133,6 +135,7 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	[ ! -d /etc/X11/xorg.conf.d ] && sudo mkdir -p /etc/X11/xorg.conf.d
 	[ -f /etc/X11/xorg.conf.d/30-touchpad.conf ] && sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak
 	sudo ln -sf /opt/skillarch/config/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+	make clean
 
 install-gui-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
@@ -142,6 +145,7 @@ install-gui-tools: sanity-check ## Install system packages
 	xargs -n1 code --install-extension < config/extensions.txt
 	yay --noconfirm --needed -S fswebcam cursor-bin
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
+	make clean
 
 install-offensive: sanity-check ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks burpsuite hashcat bettercap
@@ -166,7 +170,7 @@ install-offensive: sanity-check ## Install offensive tools
 	[ ! -d /opt/exploitdb ] && git clone https://gitlab.com/exploit-database/exploitdb && sudo mv exploitdb /opt/exploitdb
 	[ ! -d /opt/pty4all ] && git clone https://github.com/laluka/pty4all && sudo mv pty4all /opt/pty4all
 	[ ! -d /opt/pypotomux ] && git clone https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux
-	true # Avoid make error if last dir already exists
+	make clean
 
 install-wordlists: sanity-check ## Install wordlists
 	# If "LITE" is set in env, return early
@@ -184,18 +188,20 @@ install-wordlists: sanity-check ## Install wordlists
 	[ ! -d /opt/lists/Bug-Bounty-Wordlists ] && git clone https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists
 	[ ! -d /opt/lists/richelieu ] && git clone https://github.com/tarraschk/richelieu /opt/lists/richelieu
 	[ ! -d /opt/lists/webapp-wordlists ] && git clone https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists
-	true # Avoid make error if last dir already exists
+	make clean
 
 install-hardening: sanity-check ## Install hardening tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
+	make clean
 
 install-tweaks: sanity-check ## Manage user final tweaks
 	[ ! -d ~/.config/skillarch ] && mkdir -p ~/.config/skillarch
 	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo "# Place your final tweaks here" > ~/.config/skillarch/tweaks.sh
 	bash ~/.config/skillarch/tweaks.sh
 	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
+	make clean
 
 update: sanity-check ## Update SkillArch
 	@[ -n "$$(git status --porcelain)" ] && echo "Error: git state is dirty, please "git stash" your changes before updating" && exit 1
@@ -214,3 +220,20 @@ docker-run:
 
 docker-run-full:
 	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
+
+clean: ## Clean up system and remove unnecessary files
+	yes|sudo pacman -Scc
+	yes|sudo pacman -Sc
+	yes|sudo pacman -Rns $$(pacman -Qtdq) 2>/dev/null || true
+	rm -rf ~/.cache/pip
+	npm cache clean --force 2>/dev/null || true
+	mise cache clear
+	go clean -cache -modcache -i -r 2>/dev/null || true
+	sudo rm -rf /var/cache/*
+	rm -rf ~/.cache/*
+	sudo rm -rf /tmp/*
+	docker system prune -af 2>/dev/null || true
+	sudo journalctl --vacuum-time=1d
+	sudo find /var/log -type f -name "*.old" -delete
+	sudo find /var/log -type f -name "*.gz" -delete
+	sudo find /var/log -type f -exec truncate --size=0 {} \;
