@@ -32,6 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile-full
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
@@ -64,4 +65,6 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
+

@@ -64,7 +64,6 @@ make help
 ## TODO BugFix & Improvements
 
 - Huge alias refacto
-- Lite docker image
 
 ## TODO Documentation
 
