@@ -48,7 +48,7 @@ install-cli-tools: sanity-check ## Install system packages
 	[ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim
 	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
 	ln -sf /opt/skillarch/config/nvim/init.lua ~/.config/nvim/init.lua
-	nvim --headless +"Lazy! sync --quiet" +qa # Download and update plugins
+	nvim --headless +"Lazy! sync" +qa >/dev/null # Download and update plugins
 
 	# Install pipx & tools
 	yay --noconfirm --needed -S python-pipx
