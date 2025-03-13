@@ -119,6 +119,17 @@ Example Workflow:
   - Currently it's only started in i3 while not running in an hypervisor
   - In `~/config/i3/config` : `killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom`
 
+### Docker Usage
+
+https://hub.docker.com/r/thelaluka/skillarch
+
+```bash
+# lite image: CLI only
+make docker-run
+# full image: GUI stuff with X11 socket mounted!
+make docker-run-full
+```
+
 ### Main i3 bindings & aliases
 
 - For aliases checkout [config/aliases](/config/aliases)
