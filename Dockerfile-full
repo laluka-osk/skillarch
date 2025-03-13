@@ -1,4 +1,4 @@
-FROM skillarch:lite
+FROM thelaluka/skillarch:lite
 
 USER root
 echo "hacker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hacker
