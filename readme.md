@@ -23,7 +23,7 @@ make install # Then reboot && pick i3 at login
 > Please watch this intro video to onboard yourself! 🙏\
 > ➡️ TODO:(lalu) ⬅️
 
-<img src='assets/rice-01.png' width='500'>
+<img src='assets/rice-01.png' width='800'>
 
 ---
 
@@ -78,11 +78,14 @@ make help
 Example Workflow:
 
 1. Install Skillarch to the full
-1. Add your config changes in `~/.config/skillarch/tweaks.sh` like `sed -i 's#bg-0.jpg#nicebg.jpg#g' ~/.config/i3/config`
+1. Add your config changes in `~/.config/skillarch/tweaks.sh`
+  - Example: `sed -i 's#bg-0.jpg#nicebg.jpg#g' ~/.config/i3/config`
 1. ~ Do your daily work & hak ~
 1. One week later, you will run `ska-update`
-1. The git state will be `dirty` because of your in-place change, so `git stash` (save current state to a local tmp stack)
-1. Then run `ska-update` again, this will pull & install changes, including `make install-tweaks` that will run `~/.config/skillarch/tweaks.sh`
+1. The git state will be `dirty` because of your in-place change
+1. So `git stash` (save current state to a local tmp stack)
+1. Then run `ska-update` again, this will pull & install changes
+  - Including `make install-tweaks` that will run `~/.config/skillarch/tweaks.sh`
 1. Your state will be "dirty" again, but with the latest updates AND your custom config! 💎
 
 > Of course, things CAN and probably WILL break, it's arch in latest yo!\
@@ -114,7 +117,7 @@ Example Workflow:
   - It is basically `very slow` even with a good GPU
   - I advise to `not` use it, but do your things, PR opens!
   - Currently it's only started in i3 while not running in an hypervisor
-  - `config/i3/config` : `killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom`
+  - In `~/config/i3/config` : `killall -q picom ; grep -qF hypervisor /proc/cpuinfo || picom`
 
 ### Main i3 bindings & aliases
 
