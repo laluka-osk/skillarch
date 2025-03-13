@@ -41,7 +41,7 @@ install-base: sanity-check ## Install base packages
 	make clean
 
 install-cli-tools: sanity-check ## Install system packages
-	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta bottom  viu xsv jq asciinema htmlq neovim glow jless websocat superfile gron exa fastfetch bat sysstat
+	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta viu xsv asciinema htmlq neovim glow jless websocat superfile gron exa fastfetch bat sysstat
 	missing_exa_lib=$$(ldd $$(which exa) | grep -ioP 'libgit2.*not found' | cut -d' ' -f 1)
 	[ ! -z $$missing_exa_lib ] && sudo ln -s /usr/lib/libgit2.so  "/usr/lib/$$missing_exa_lib"
 	# nvim config
@@ -56,15 +56,11 @@ install-cli-tools: sanity-check ## Install system packages
 	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install -q "$$package" && pipx inject -q "$$package" setuptools; done
 
 	# Install mise and all php-build dependencies
-	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs
+	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	mise self-update
 	sleep 30
-	mise use -g usage@latest
-	sleep 30
-	for package in pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
+	for package in usage pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
-	# Install libs to build current latest, aka php 8.4.4
-	yes|sudo pacman -S --noconfirm --needed php libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	make clean
 
 install-shell: sanity-check ## Install shell packages

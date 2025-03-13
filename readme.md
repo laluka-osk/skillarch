@@ -217,7 +217,61 @@ bindsym $mod+c exec code
 bindsym $mod+k exec cursor
 ```
 
-### Main Changes Since [Lalubuntu](https://github.com/laluka/lalubuntu)
+### Installed Packages, Plugins, Tools
+
+- For an exhaustive view inspect [Makefile](/Makefile)
+
+```bash
+# Pipx tools
+argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep
+
+# OMZ plugins
+colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent
+
+# Pacman Packages
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k
+
+# Yay packages
+ffuf gau pdtm-bin waybackurls cursor-bin fswebcam i3-battery-popup-git python-pipx rofi-power-menu
+
+# Mise tools
+usage pdm rust terraform golang python nodejs
+# Mise golang tools
+sw33tLie/sns glitchedgitz/cook x90skysn3k/brutespray sensepost/gowitness
+
+# Pdtm tools
+aix alterx asnmap cdncheck chaos-client cloudlist cvemap dnsx httpx interactsh-client interactsh-server katana mapcidr naabu notify nuclei proxify shuffledns simplehttpserver subfinder tldfinder tlsx tunnelx uncover urlfinder
+
+# Cloned Tools
+https://github.com/LazyVim/starter
+https://github.com/jpillora/chisel
+https://github.com/ambionics/phpggc
+https://github.com/CBHue/PyFuscation
+https://github.com/christophetd/CloudFlair
+https://github.com/minos-org/minos-static
+https://github.com/offensive-security/exploit-database
+https://gitlab.com/exploit-database/exploitdb
+https://github.com/laluka/pty4all
+https://github.com/laluka/pypotomux
+
+# Clones Wordlists
+https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt
+https://github.com/swisskyrepo/PayloadsAllTheThings
+https://github.com/projectdiscovery/fuzzing-templates
+https://github.com/1N3/BruteX
+https://github.com/1N3/IntruderPayloads
+https://github.com/berzerk0/Probable-Wordlists
+https://github.com/cujanovic/Open-Redirect-Payloads
+https://github.com/danielmiessler/SecLists
+https://github.com/ignis-sec/Pwdb-Public
+https://github.com/Karanxa/Bug-Bounty-Wordlists
+https://github.com/tarraschk/richelieu
+https://github.com/p0dalirius/webapp-wordlists
+```
+
+---
+
+## Main Changes Since [Lalubuntu](https://github.com/laluka/lalubuntu)
 
 | What | Lalubuntu | SkillArch |
 |------|-----------|-----------|
