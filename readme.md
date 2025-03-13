@@ -222,12 +222,6 @@ bindsym $mod+k exec cursor
 - For an exhaustive view inspect [Makefile](/Makefile)
 
 ```bash
-# Pipx tools
-argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep
-
-# OMZ plugins
-colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent
-
 # Pacman Packages
 arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k
 
@@ -236,11 +230,18 @@ ffuf gau pdtm-bin waybackurls cursor-bin fswebcam i3-battery-popup-git python-pi
 
 # Mise tools
 usage pdm rust terraform golang python nodejs
+
 # Mise golang tools
 sw33tLie/sns glitchedgitz/cook x90skysn3k/brutespray sensepost/gowitness
 
 # Pdtm tools
 aix alterx asnmap cdncheck chaos-client cloudlist cvemap dnsx httpx interactsh-client interactsh-server katana mapcidr naabu notify nuclei proxify shuffledns simplehttpserver subfinder tldfinder tlsx tunnelx uncover urlfinder
+
+# Pipx tools
+argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep
+
+# OMZ plugins
+colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent
 
 # Cloned Tools
 https://github.com/LazyVim/starter
