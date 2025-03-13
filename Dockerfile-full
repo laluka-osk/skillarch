@@ -1,27 +1,15 @@
-FROM cachyos/cachyos:latest
+FROM skillarch:lite
 
-# Create hacker user and group, set password and configure sudo
-RUN groupadd hacker && \
-    useradd -m -g hacker -s /bin/bash hacker && \
-    echo "hacker:offenskill" | chpasswd && \
-    echo "hacker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hacker
+USER root
+echo "hacker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hacker
 
-# Add skillarch
-COPY . /opt/skillarch
-RUN chown -R hacker:hacker /opt/skillarch
 USER hacker
-ENV USER=hacker
-ENV TZ=UTC
 WORKDIR /opt/skillarch
 
 # Install skillarch
-RUN make install-base
-RUN make install-cli-tools
-RUN make install-shell
 RUN make install-docker
 RUN make install-gui
 RUN make install-gui-tools
-RUN make install-offensive
 RUN make install-wordlists
 RUN make install-hardening
 RUN make install-tweaks

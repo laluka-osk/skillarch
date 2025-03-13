@@ -214,7 +214,7 @@ update: sanity-check ## Update SkillArch
 docker-build:
 	docker build -t thelaluka/skillarch:lite -f Dockerfile-lite .
 
-docker-build-full:
+docker-build-full: docker-build
 	docker build -t thelaluka/skillarch:full -f Dockerfile-full .
 
 docker-run:
