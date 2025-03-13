@@ -65,8 +65,6 @@ install-cli-tools: sanity-check ## Install system packages
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	# Install libs to build current latest, aka php 8.4.4
 	yes|sudo pacman -S --noconfirm --needed php libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
-	[ ! -z "$$LITE" ] && echo "LITE mode ON, not building php" && exit
-	# mise use -q -g php@latest
 	make clean
 
 install-shell: sanity-check ## Install shell packages
@@ -175,8 +173,6 @@ install-offensive: sanity-check ## Install offensive tools
 	make clean
 
 install-wordlists: sanity-check ## Install wordlists
-	# If "LITE" is set in env, return early
-	[ ! -z "$$LITE" ] && echo "LITE mode ON, not cloning wordlists" && exit
 	[ ! -d /opt/lists ] && mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists
 	[ ! -f /opt/lists/rockyou.txt ] && curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt
 	[ ! -d /opt/lists/PayloadsAllTheThings ] && git clone https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings

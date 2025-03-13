@@ -1,12 +1,11 @@
 # Skillarch Helpers
 alias ska='/opt/skillarch'
-alias ska-help-bindings='i3-msg -t get_config | grep -oP "bindsym .*" | grep -vF "#bindsym" | fzf'
+alias ska-help-bindings='i3-msg -t get_config | grep -vF "#bindsym" | grep -oP "bindsym .*" | fzf'
 alias ska-help-aliases='alias | fzf'
 alias ska-help-packages='pacman -Q | fzf'
 alias ska-update='ska && make update && make install'
 alias ska-vbox-guestutils='sudo pacman -S virtualbox-guest-utils'
 alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'
-alias ska-keyboard-layout='f(){ gsettings set org.gnome.desktop.input-sources sources "[(\"xkb\", \"$1\")]" ;  unset -f f; }; f'
 alias fastfetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/skillarch-full.png --logo-width 50'
 alias neofetch='fastfetch'
 alias hifetch='fastfetch'
