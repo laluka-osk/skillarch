@@ -9,7 +9,7 @@ on:
     branches: [ main ]
 
 jobs:
-  docker-lite:
+  docker-build-push:
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space
