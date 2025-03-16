@@ -65,7 +65,9 @@ alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
 
 # Monitoring, Upload, Sleep
 alias show-disk-io='watch -cd -- iostat -h'
+alias sdi='show-disk-io'
 alias show-open-ports="sudo ss -latepun | grep -i listen"
+alias sop='show-open-ports'
 alias get-du='du -ch -d 1'
 alias get-pid-click='xprop _NET_WM_PID | cut -d" " -f3'
 alias get-pid-ps='ps fauxw | fzf | awk "{ print \$2}"'

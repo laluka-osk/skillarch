@@ -48,8 +48,8 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # Brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +20%   # && notify-send --icon=/dev/null --expire-time=500 "Brightness +20%"
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 20%- # && notify-send --icon=/dev/null --expire-time=500 "Brightness -20%"
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +20%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 20%-
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -89,12 +89,6 @@ bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-
-# split in horizontal orientation
-# bindsym $mod+h split h
-
-# split in vertical orientation
-# bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -212,7 +206,7 @@ for_window [title="Help: SkillArch Aliases"] floating enable
 for_window [title="Help: SkillArch packages"] floating enable
 
 # Add new rules for floating windows
-for_window [floating] resize set 1536 864
+for_window [floating] resize set 1536 864, resize set 1536 864, move position 192 108
 
 # HELP
 bindsym $mod+h exec kitty --title "Help: SkillArch Bindings" zsh -ic "ska-help-bindings"

@@ -281,6 +281,12 @@ https://github.com/tarraschk/richelieu
 https://github.com/p0dalirius/webapp-wordlists
 ```
 
+### Security
+
+- `opensnitch` is here to help you block outgoing packets and connections
+- `ufw` is here to help you block incoming packets and requests
+- Be careful though, [docker iptables shenanigans bypass ufw rules](https://richincapie.medium.com/docker-ufw-and-iptables-a-security-flaw-you-need-to-solve-now-40c85587b563)
+
 ---
 
 ## Main Changes Since [Lalubuntu](https://github.com/laluka/lalubuntu)
