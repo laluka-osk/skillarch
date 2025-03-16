@@ -204,6 +204,9 @@ client.urgent           #000000 #000000 #000000 #000000   #000000
 for_window [title="Help: SkillArch Bindings"] floating enable
 for_window [title="Help: SkillArch Aliases"] floating enable
 for_window [title="Help: SkillArch packages"] floating enable
+for_window [title="Settings"] floating enable
+for_window [title="Bluetooth Devices"] floating enable
+for_window [title="Volume Control"] floating enable
 
 # Add new rules for floating windows
 for_window [floating] resize set 1536 864, resize set 1536 864, move position 192 108
