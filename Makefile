@@ -57,7 +57,7 @@ install-cli-tools: sanity-check ## Install system packages
 
 	# Install mise and all php-build dependencies
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
-	mise self-update
+	# mise self-update # Currently broken, wait for upstream fix, pinged on 17/03/2025
 	sleep 30
 	for package in usage pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
