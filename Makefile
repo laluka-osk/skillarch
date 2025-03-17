@@ -110,6 +110,8 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	[ ! -d ~/.config/polybar ] && mkdir -p ~/.config/polybar
 	[ -f ~/.config/polybar/config.ini ] && [ ! -L ~/.config/polybar/config.ini ] && mv ~/.config/polybar/config.ini ~/.config/polybar/config.ini.skabak
 	ln -sf /opt/skillarch/config/polybar/config.ini ~/.config/polybar/config.ini
+	[ -f ~/.config/polybar/launch.sh ] && [ ! -L ~/.config/polybar/launch.sh ] && mv ~/.config/polybar/launch.sh ~/.config/polybar/launch.sh.skabak
+	ln -sf /opt/skillarch/config/polybar/launch.sh ~/.config/polybar/launch.sh
 
 	# rofi config
 	[ ! -d ~/.config/rofi ] && mkdir -p ~/.config/rofi
