@@ -90,7 +90,8 @@ element selected normal, element selected active {
 }
 
 element-icon {
-    size:   1em;
+    size:   24px;
+    show:   true;
 }
 
 element-text {
