@@ -323,3 +323,4 @@ https://github.com/p0dalirius/webapp-wordlists
 
 - Digital Ocean Vendor Images to allow an easy PoC of SkillArch
 - Arm docker builds to support Android 15 + Mac M cores in VM?
+- Polybar multi screen support + doc arandr + primary screen + auto apply
