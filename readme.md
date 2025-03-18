@@ -64,11 +64,10 @@ make help
 
 1. First, [fork this repo](https://github.com/laluka/skillarch/fork)
 1. Install `your` SkillArch with the usual install process
-1. Create your own branch `git checkout -b tweak-$USER`
 1. Then add your own tweaks `in-place`, add files if you need to!
-1. `git add foo ; git commit -m 'added foo' ; git push`
-1. From time to time, rebase your branch on main
-1. `git pull ; git pull --rebase origin main`
+1. Save them `git add foo ; git commit -m 'added foo' ; git push`
+1. From time to time, pull upstream changes and rebase
+1. `git pull --rebase origin main`
 1. Then update your system with `ska-update`
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
