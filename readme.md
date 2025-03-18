@@ -67,18 +67,22 @@ make help
 1. When you'll want to `add a tweak` or  `update your setup` 🫶
 
 ```bash
-# Save your changes on your repo
+# SAVE your changes on your repo
 git add foo ; git commit -m 'added foo' ; git push
 
-# Pull upstream changes
+# PULL upstream changes
 git fetch upstream
 git checkout main
 git merge upstream/main
-# Once merged, save your current state
+# Once merged, SAVE your current state
 git push origin main
 
-# Then run a full update
+# Then run a FULL UPDATE
 ska-update
+
+# If you want to see your current drift from upstream
+git diff upstream/main
+# Or visit https://github.com/laluka/skillarch/compare/main...laluka-osk:skillarch:main
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
