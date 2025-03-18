@@ -47,7 +47,6 @@ make help
 #   install-offensive   Install offensive tools
 #   install-wordlists   Install wordlists
 #   install-hardening   Install hardening tools
-#   install-tweaks      Manage user final tweaks
 #   update              Update SkillArch
 #   clean               Clean up system and remove unnecessary files
 ```
@@ -60,15 +59,27 @@ make help
 
 ## Documentation
 
-### Tweaks, Backups, Update
+### Customize, Backup, Update
 
-1. First, [fork this repo](https://github.com/laluka/skillarch/fork)
-1. Install `your` SkillArch with the usual install process
-1. Then add your own tweaks `in-place`, add files if you need to!
-1. Save them `git add foo ; git commit -m 'added foo' ; git push`
-1. From time to time, pull upstream changes and rebase
-1. `git pull --rebase origin main`
-1. Then update your system with `ska-update`
+- First, [fork this repo](https://github.com/laluka/skillarch/fork)
+- Then, install `your` SkillArch with the [usual install process](https://github.com/laluka/skillarch/tree/tweak-lalu?tab=readme-ov-file#how-to)
+
+```bash
+# Then ADD your own tweaks and extra files in-place and SAVE them
+git add foo ; git commit -m 'added foo' ; git push
+
+# Setup upstream (do it only once)
+git remote add upstream https://github.com/laluka/skillarch.git
+
+# Update - From time to time, pull upstream changes
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main`
+
+# Then update your system with
+ska-update
+```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
 > ⚠️ Your fork is also public, use `source ~/.myaliases` instead!

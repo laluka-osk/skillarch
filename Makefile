@@ -9,7 +9,7 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; printf "\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  %-18s %s\n", $$1, $$2 } /^##@/ { printf "\n%s\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ''
 
-install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-tweaks clean ## Install SkillArch
+install: install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening clean ## Install SkillArch
 	@echo "You are all set up! Enjoy ! 🌹"
 
 sanity-check:
@@ -190,13 +190,6 @@ install-hardening: sanity-check ## Install hardening tools
 	yes|sudo pacman -S --noconfirm --needed opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
-	make clean
-
-install-tweaks: sanity-check ## Manage user final tweaks
-	[ ! -d ~/.config/skillarch ] && mkdir -p ~/.config/skillarch
-	[ ! -f ~/.config/skillarch/tweaks.sh ] && echo -e "# Place your final tweaks here, like:\n# sed -i 's#/opt/skillarch/assets/bg-0.jpg#/some/other/nicebg.jpg#g' ~/.config/i3/config" > ~/.config/skillarch/tweaks.sh
-	bash ~/.config/skillarch/tweaks.sh
-	@echo "Final tweaks applied, please restart i3 (mod+shift+r) or logout/login if needed ✨"
 	make clean
 
 update: sanity-check ## Update SkillArch
