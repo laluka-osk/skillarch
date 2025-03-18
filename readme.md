@@ -60,27 +60,19 @@ make help
 
 ## Documentation
 
-### Custom Config, Backups, Update
-
-- `Update process` is supported
-  - The `ska-update` alias checks that `/opt/skillarch` if in a clean git state
-  - If dirty: It stops the update, you `MUST` clean your state (i.e. `git stast`), retry `ska-update`
-  - If clean: It will `git pull` and `make install`
-- `Custom tweaks` are supported
-  - Due to the impossibility to "unbind" an i3 binding or "overwrite" omz configs after loading,
-  - You `MUST` add your lines in `~/.config/skillarch/tweaks.sh` in a `modify-in-place` way (example inside)
-  - You `SHOULD` backup your `~/.config/skillarch/tweaks.sh` in your own way (git ffs!)
-- `Alternative Way` for a custom configs
-  - Fork this repo (give a star, subscribe, follow, poce blo) 🙃
-  - Monthly, pull upstream changes and `ska-update`
-  - If you are a `power user`, feel free to `PR your lovely tweaks`!
-
-### [Draft] Bbetter Tweak & Update Process
+### Tweaks, Backups, Update
 
 1. First, [fork this repo](https://github.com/laluka/skillarch/fork)
+1. Install `your` SkillArch with the usual install process
+1. Create your own branch `git checkout -b tweak-$USER`
 1. Then add your own tweaks `in-place`, add files if you need to!
 1. `git add foo ; git commit -m 'added foo' ; git push`
-1. WIP
+1. From time to time, rebase your branch on main
+1. `git pull ; git pull --rebase origin main`
+1. Then update your system with `ska-update`
+
+> ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
+> ⚠️ Your fork is also public, use `source ~/.myaliases` instead!
 
 Example Workflow:
 
