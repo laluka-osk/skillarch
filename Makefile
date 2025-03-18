@@ -227,3 +227,5 @@ clean: ## Clean up system and remove unnecessary files
 	sudo find /var/log -type f -name "*.old" -delete
 	sudo find /var/log -type f -name "*.gz" -delete
 	sudo find /var/log -type f -exec truncate --size=0 {} \;
+
+# Adding an extra line for update process testing purpose
