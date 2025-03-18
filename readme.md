@@ -7,7 +7,7 @@
 - ⚠️ Wait for `GA` for your main machine 🙏
 - ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
-## How To
+## How To Install
 
 - First, download the `Desktop Edition` at https://cachyos.org/download/
 - Install it, pick the `Gnome` flavor
@@ -61,44 +61,29 @@ make help
 
 ### Customize, Backup, Update
 
-- First, [fork this repo](https://github.com/laluka/skillarch/fork)
-- Then, install `your` SkillArch with the [usual install process](https://github.com/laluka/skillarch/tree/tweak-lalu?tab=readme-ov-file#how-to)
+1. [Fork this repo](https://github.com/laluka/skillarch/fork)
+1. Install `your` SkillArch with the [usual install process](https://github.com/laluka/skillarch/tree/tweak-lalu?tab=readme-ov-file#how-to)
+1. Add the upstream source: `git remote add upstream https://github.com/laluka/skillarch.git`
+1. When you'll want to `add a tweak` or  `update your setup` 🫶
 
 ```bash
-# Then ADD your own tweaks and extra files in-place and SAVE them
+# Save your changes on your repo
 git add foo ; git commit -m 'added foo' ; git push
 
-# Setup upstream (do it only once)
-git remote add upstream https://github.com/laluka/skillarch.git
-
-# Update - From time to time, pull upstream changes
+# Pull upstream changes
 git fetch upstream
 git checkout main
 git merge upstream/main
-git push origin main`
+# Once merged, save your current state
+git push origin main
 
-# Then update your system with
+# Then run a full update
 ska-update
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
-> ⚠️ Your fork is also public, use `source ~/.myaliases` instead!
-
-Example Workflow:
-
-1. Install Skillarch to the full
-1. Add your config changes in `~/.config/skillarch/tweaks.sh`
-1. Example: `sed -i 's#bg-0.jpg#nicebg.jpg#g' ~/.config/i3/config`
-1. ~ Do your daily work & hak ~
-1. One week later, you will run `ska-update`
-1. The git state will be `dirty` because of your in-place change
-1. So `git stash` (save current state to a local tmp stack)
-1. Then run `ska-update` again, this will pull & install changes
-1. Including `make install-tweaks` that will run `~/.config/skillarch/tweaks.sh`
-1. Your state will be "dirty" again, but with the latest updates AND your custom config! 💎
-
-> Of course, things CAN and probably WILL break, it's arch in latest yo!\
-> Feel free to open an Issue/PR or come chat in the OffenSkill Community Discord! 😘
+> ⚠️ Your fork is also PUBLIC, use `source ~/.myaliases` instead!\
+> ⚠️ I know git is hard, but it's so powerful it's worth it, trust me.
 
 ### Ska Helpers, i3 bindings, aliases, tools
 
