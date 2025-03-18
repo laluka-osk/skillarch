@@ -75,6 +75,13 @@ make help
   - Monthly, pull upstream changes and `ska-update`
   - If you are a `power user`, feel free to `PR your lovely tweaks`!
 
+### [Draft] Bbetter Tweak & Update Process
+
+1. First, [fork this repo](https://github.com/laluka/skillarch/fork)
+1. Then add your own tweaks `in-place`, add files if you need to!
+1. `git add foo ; git commit -m 'added foo' ; git push`
+1. WIP
+
 Example Workflow:
 
 1. Install Skillarch to the full
