@@ -108,6 +108,10 @@ make help
 - The docker `latest` is actually the `lite` image with everything CLI related
 - The docker `full` image contains GUI stuff and wordlists
 - Why `sleep` in `Makefile`? Building TOO fast was triggering github limit-rate
+- If for some reasons, multiple polybar appear, it's because no primary monitor is assigned
+ - Check it's actually true: `polybar  --list-monitors` # Should have one primary label
+ - Fix it by openin `arandr` + right click to set `primary` on your main screen.
+ - Reload i3 with `mod+Shift+r`, then make it permanent, aka goto doc `Multiple Monitor`
 
 ### VM & VirtualBox Stuff
 
