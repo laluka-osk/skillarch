@@ -198,16 +198,16 @@ update: sanity-check ## Update SkillArch
 	@git pull
 	@echo "SkillArch updated, please run make install to apply changes 🙏"
 
-docker-build:
+docker-build:  ## Build lite docker image locally
 	docker build -t thelaluka/skillarch:lite -f Dockerfile-lite .
 
-docker-build-full: docker-build
+docker-build-full: docker-build  ## Build full docker image locally
 	docker build -t thelaluka/skillarch:full -f Dockerfile-full .
 
-docker-run:
+docker-run:  ## Run lite docker image locally
 	docker run --rm -it --name=ska --net=host -v /tmp:/tmp thelaluka/skillarch:lite
 
-docker-run-full:
+docker-run-full:  ## Run full docker image locally
 	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
 
 clean: ## Clean up system and remove unnecessary files
