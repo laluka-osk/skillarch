@@ -7,7 +7,17 @@
 - ⚠️ Wait for `GA` for your main machine 🙏
 - ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
+> The install takes 15/20mn 🕑️\
+> Please watch this intro video to onboard yourself! 🙏\
+> ➡️ TODO:(lalu) ⬅️
+
+<img src='assets/rice-01.png' width='800'>
+
+---
+
 ## How To Install
+
+### SIMPLE / NO-CUSTOMIZE / NO-BACKUP
 
 - First, download the `Desktop Edition` at https://cachyos.org/download/
 - Install it, pick the `Gnome` flavor
@@ -19,47 +29,7 @@ sudo mv skillarch /opt/skillarch && cd /opt/skillarch
 make install # Then reboot && pick i3 at login
 ```
 
-> The install takes 15/20mn 🕑️\
-> Please watch this intro video to onboard yourself! 🙏\
-> ➡️ TODO:(lalu) ⬅️
-
-<img src='assets/rice-01.png' width='800'>
-
----
-
-## Get Help
-
-```bash
-make help
-# Welcome to SkillArch! 🌹
-
-# Usage: make [target]
-# Targets:
-
-#   help                Show this help message
-#   install             Install SkillArch
-#   install-base        Install base packages
-#   install-cli-tools   Install system packages
-#   install-shell       Install shell packages
-#   install-docker      Install docker
-#   install-gui         Install gui, i3, polybar, kitty, rofi, picom
-#   install-gui-tools   Install system packages
-#   install-offensive   Install offensive tools
-#   install-wordlists   Install wordlists
-#   install-hardening   Install hardening tools
-#   update              Update SkillArch
-#   clean               Clean up system and remove unnecessary files
-```
-
-> Or join the SkillArch Discord server 🍀\
-> ➡️ https://discord.com/invite/tH8wEpNKWS ⬅️\
-> Yes, I help in the SkillArch channel, not in DMs! 😇
-
----
-
-## Documentation
-
-### Customize, Backup, Update
+###  ADVANCED / FULL-CUSTOMIZE / FULL-BACKUP
 
 1. [Fork this repo](https://github.com/laluka/skillarch/fork)
 1. Install `your` SkillArch with the [usual install process](https://github.com/laluka/skillarch/tree/tweak-lalu?tab=readme-ov-file#how-to)
@@ -78,7 +48,7 @@ git merge upstream/main
 git push origin main
 
 # Then run a FULL UPDATE
-ska-update
+ska-update-simple
 
 # If you want to see your current drift from upstream
 git diff upstream/main
@@ -89,6 +59,40 @@ git diff upstream/main
 > ⚠️ Your fork is also PUBLIC, use `source ~/.myaliases` instead!\
 > ⚠️ I know git is hard, but it's so powerful it's worth it, trust me.
 
+---
+
+## Documentation
+
+### Get Help
+
+```bash
+make help
+# Welcome to SkillArch! 🌹
+# Usage: make [target]
+# Targets:
+#   help                Show this help message
+#   install             Install SkillArch
+#   install-base        Install base packages
+#   install-cli-tools   Install system packages
+#   install-shell       Install shell packages
+#   install-docker      Install docker
+#   install-gui         Install gui, i3, polybar, kitty, rofi, picom
+#   install-gui-tools   Install system packages
+#   install-offensive   Install offensive tools
+#   install-wordlists   Install wordlists
+#   install-hardening   Install hardening tools
+#   update              Update SkillArch
+#   docker-build        Build lite docker image locally
+#   docker-build-full   Build full docker image locally
+#   docker-run          Run lite docker image locally
+#   docker-run-full     Run full docker image locally
+#   clean               Clean up system and remove unnecessary files
+```
+
+> Or join the SkillArch Discord server 🍀\
+> ➡️ https://discord.com/invite/tH8wEpNKWS ⬅️\
+> Yes, I help in the SkillArch channel, not in DMs! 😇
+
 ### Ska Helpers, i3 bindings, aliases, tools
 
 | Alias | Description |
@@ -97,7 +101,8 @@ git diff upstream/main
 | `ska-help-bindings` | Fuzzy-find i3 bindings |
 | `ska-help-packages` | Fuzzy-find installed packages |
 | `ska-sudo-unlock` | Unlock current user after 3 sudo fails |
-| `ska-update` | Update SkillArch repo & starts install |
+| `ska-update-simple` | Update SkillArch repo & starts install |
+| `ska-update-advanced` | Helper to Pull Upstream & merge |
 
 ### MISC Gotchas
 
@@ -245,7 +250,7 @@ bindsym $mod+k exec cursor
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie audacity
 
 # Yay packages
 ffuf gau pdtm-bin waybackurls cursor-bin fswebcam i3-battery-popup-git python-pipx rofi-power-menu
