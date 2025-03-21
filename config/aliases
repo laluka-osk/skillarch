@@ -128,7 +128,7 @@ alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86
 alias crli='crl -D /dev/stderr'
 
 # Docker Utils
-alias dockit='docker run --rm -it -v /tmp:/tmp -v "$PWD":/host -w /host'
+alias dockit='docker run --rm -it -v /tmp:/tmp -v "$PWD":/skahost -w /skahost'
 alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dexr='docker exec -it -u root $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dockns='sudo nsenter -a -t $(docker inspect -f "{{.State.Pid}}" $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1))'
