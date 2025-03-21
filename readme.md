@@ -39,20 +39,18 @@ make install # Then reboot && pick i3 at login
 ```bash
 # SAVE your changes on your repo
 git add foo ; git commit -m 'added foo' ; git push
-
-# PULL upstream changes
-git fetch upstream
-git checkout main
+# Then, from a CLEAN git state
+ska && git status
+# PULL & CHECKOUT upstream changes
+git fetch upstream && git checkout main
+# MERGE upstream changes
 git merge upstream/main
-# Once merged, SAVE your current state
+# SAVE your new current state
 git push origin main
-
-# Then run a FULL UPDATE
-ska-update-simple
-
-# If you want to see your current drift from upstream
+# Check & Compare your current drift from upstream
 git diff upstream/main
-# Or visit https://github.com/laluka/skillarch/compare/main...laluka-osk:skillarch:main
+# Reapply with latest changes
+ska-update-simple
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
