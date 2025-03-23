@@ -1,5 +1,6 @@
 # Skillarch Helpers
 alias ska='/opt/skillarch'
+alias skao='/opt/skillarch-original'
 alias ska-help-bindings='i3-msg -t get_config | grep -vF "#bindsym" | grep -oP "bindsym .*" | fzf'
 alias ska-help-aliases='alias | fzf'
 alias ska-help-packages='pacman -Q | fzf'
