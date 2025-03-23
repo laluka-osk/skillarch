@@ -14,15 +14,17 @@ install: install-base install-cli-tools install-shell install-docker install-gui
 
 sanity-check:
 	set -x
-	@# Ensure we are in /opt/skillarch and temporary disable screensaver
-	@[ "$$(pwd)" != "/opt/skillarch" ] && echo "You must be in /opt/skillarch to run this command" && exit 1
+	@# Ensure we are in /opt/skillarch or /opt/skillarch-original (maintainer only)
+	@[ "$$(pwd)" != "/opt/skillarch" ] && [ "$$(pwd)" != "/opt/skillarch-original" ] && echo "You must be in /opt/skillarch or /opt/skillarch-original to run this command" && exit 1
 	@sudo id || (echo "Error: sudo access is required" ; exit 1)
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
-	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl
+	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl archlinux-keyring
+	sudo pacman-key --noconfirm --populate archlinux
+	sudo pacman-key --noconfirm --refresh-keys
 
 	# Add chaotic-aur to pacman
 	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
