@@ -97,7 +97,7 @@ install-docker: sanity-check ## Install docker
 
 install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 	[ ! -f /etc/machine-id ] && sudo systemd-machine-id-setup
-	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl
+	yes|sudo pacman -S --noconfirm --needed i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
@@ -205,10 +205,11 @@ docker-build-full: docker-build  ## Build full docker image locally
 	docker build -t thelaluka/skillarch:full -f Dockerfile-full .
 
 docker-run:  ## Run lite docker image locally
-	docker run --rm -it --name=ska --net=host -v /tmp:/tmp thelaluka/skillarch:lite
+	sudo docker run --rm -it --name=ska --net=host -v /tmp:/tmp thelaluka/skillarch:lite
 
 docker-run-full:  ## Run full docker image locally
-	docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
+	xhost +
+	sudo docker run --rm -it --name=ska --net=host -v /tmp:/tmp -e DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ --privileged thelaluka/skillarch:full
 
 clean: ## Clean up system and remove unnecessary files
 	[ ! -f /.dockerenv ] && exit
