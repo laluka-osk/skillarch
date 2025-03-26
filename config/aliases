@@ -47,6 +47,8 @@ alias cp='cp -i'
 ## Networking
 alias ipa="ip -br a | grep -vF DOWN"
 alias ipaa="ip -br a"
+alias nc='ncat'
+alias ncl='ncat -lnvp'
 alias ssh-yolo='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 alias wifi-nmtui='nmtui'
 alias wget-yolo="wget --no-check-certificate"

@@ -104,7 +104,8 @@ make help
 
 ### MISC Gotchas
 
-- Kitty visual/rectangle select is done with `ctrl+alt+click/drag`
+- If `make install` or `ska-update-simple` loop on a y/n question, fix your pacman config first! 😉
+- Kitty visual/rectangle select is done with `ctrl+alt+click/drag`, you're welcome!
 - The docker `latest` is actually the `lite` image with everything CLI related
 - The docker `full` image contains GUI stuff and wordlists
 - Why `sleep` in `Makefile`? Building TOO fast was triggering github limit-rate

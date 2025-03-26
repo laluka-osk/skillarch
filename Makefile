@@ -146,7 +146,8 @@ install-gui-tools: sanity-check ## Install system packages
 	make clean
 
 install-offensive: sanity-check ## Install offensive tools
-	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks burpsuite hashcat bettercap
+	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
+	sudo sed -i 's#$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
 
 	# Hide stdout and Keep stderr for CI builds
