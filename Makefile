@@ -137,7 +137,7 @@ install-gui: sanity-check ## Install gui, i3, polybar, kitty, rofi, picom
 
 install-gui-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed vlc-luajit # Must be done before obs-studio-browser to avoid conflicts
-	yes|sudo pacman -S --noconfirm --needed arandr blueman cheese code code-marketplace discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine obs-studio-browser emote guvcview audacity
+	yes|sudo pacman -S --noconfirm --needed arandr blueman cheese code code-marketplace discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine obs-studio-browser emote guvcview audacity polkit-gnome
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service
 	xargs -n1 code --install-extension < config/extensions.txt
@@ -148,7 +148,7 @@ install-gui-tools: sanity-check ## Install system packages
 install-offensive: sanity-check ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
 	sudo sed -i 's#$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
-	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls
+	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls fabric-ai-bin
 
 	# Hide stdout and Keep stderr for CI builds
 	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null

@@ -94,11 +94,12 @@ alias paste='xclip -selection clipboard -o'
 alias mcrypt-enc='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$PASS" | xclip -selection c && tar -zcvf "$1.tar.gz" "$1" && echo "$PASS" && mcrypt "$1.tar.gz" && echo "$1.tar.gz $PASS" | xclip -selection c;  unset -f f; }; f'
 alias mcrypt-dec='mdecrypt'
 alias get-meteo='curl https://wttr.in/'
+alias fab='fabric-ai'
 
 # Python
 alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
 alias pyreq='pip install -r requirements.txt'
-alias pysrv='mkdir -pv /tmp/empty ; python3 -m http.server -d /tmp/empty'
+alias pysrv='mkdir -pv /tmp/empty ; python -m http.server -d /tmp/empty'
 
 # Data Generation & Modification
 alias get-badchars='echo -e "\x22\x27<?>][]{}_)(*;/\x5c"'
