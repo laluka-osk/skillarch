@@ -111,7 +111,7 @@ make help
 
 ### VM & VirtualBox Stuff
 
-- The `ska-vbox-guestutils` alias will auto-install `virtualbox-guest-utils`
+- The `ska-vbox-install-guestutils` alias will auto-install `virtualbox-guest-utils`
 - In `VirtualBox`, when i3 starts it will run `VBoxClient-all` for clipboard & goodies
 - Transparency `CAN` work with `picom` but:
   - It requires to enable `enable hardware virtualization`
