@@ -102,6 +102,10 @@ bindsym $mod+Shift+f floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+Shift+BackSpace focus mode_toggle
 
+# scratchpad
+bindsym $mod+shift+a move to scratchpad
+bindsym $mod+a scratchpad show
+
 # focus the parent container
 # bindsym $mod+q focus parent
 
