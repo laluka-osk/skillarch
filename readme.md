@@ -2,12 +2,7 @@
 
 <img src='assets/skillarch-full.png' width='250'>
 
-- ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-- ⚠️ SkillArch is in `BETA` for now ⚒️
-- ⚠️ Wait for `GA` for your main machine 🙏
-- ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-
-> The install takes 15/20mn 🕑️\
+> The lite/full install takes 20/30 minutes 🕑️\
 > Please watch this intro video to onboard yourself! 🙏\
 > ➡️ TODO:(lalu) ⬅️
 
