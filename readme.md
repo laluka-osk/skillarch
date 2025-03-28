@@ -172,8 +172,8 @@ bindsym $mod+m exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym $mod+Return exec /usr/bin/kitty
 bindsym $mod+Shift+Return exec /usr/bin/google-chrome-stable
 bindsym $mod+Shift+Q kill
-bindsym $mod+space exec --no-startup-id rofi -show run
-bindsym $mod+Shift+space exec --no-startup-id rofi -show drun
+bindsym $mod+space exec --no-startup-id rofi -show drun
+bindsym $mod+Shift+space exec --no-startup-id rofi -show run
 bindsym $mod+Control+space exec --no-startup-id rofi -show window
 
 # Power & Lock
@@ -222,7 +222,7 @@ bindsym $mod+Shift+agrave move container to workspace number $ws10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
-# Resize
+# Resize & Scratchpad
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym Left resize shrink width 10 px or 10 ppt
 bindsym Down resize grow height 10 px or 10 ppt
@@ -232,6 +232,8 @@ bindsym Return mode "default"
 bindsym Escape mode "default"
 bindsym $mod+r mode "default"
 bindsym $mod+r mode "resize"
+bindsym $mod+shift+a move to scratchpad
+bindsym $mod+a scratchpad show
 
 # Custom Apps & Settings
 bindsym $mod+p exec flameshot gui
