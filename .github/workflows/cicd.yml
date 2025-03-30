@@ -9,8 +9,12 @@ on:
     branches: [ main ]
 
 jobs:
-  docker:
+  build:
+    name: Build Docker Images
     runs-on: ubuntu-latest
+    outputs:
+      lite_tag: ${{ steps.tag_lite.outputs.tag }}
+      full_tag: ${{ steps.tag_full.outputs.tag }}
     steps:
       - name: Free Disk Space
         uses: endersonmenezes/free-disk-space@v2
@@ -38,107 +42,112 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build lite
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile-lite
-          push: false
-          load: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
+      - name: Build and tag lite
+        id: tag_lite
+        run: |
+          echo "tag=${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}" >> $GITHUB_OUTPUT
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }} -f Dockerfile-lite .
 
-      - name: Run Trivy on lite image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          scanners: 'misconfig,secret'
-          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
-          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
+      - name: Build and tag full
+        id: tag_full
+        run: |
+          echo "tag=${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}" >> $GITHUB_OUTPUT
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }} -f Dockerfile-full .
 
-      - name: Run TruffleHog on lite image
-        if: github.ref == 'refs/heads/main'
-        uses: docker://ghcr.io/trufflesecurity/trufflehog
-        with:
-          args: docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite' --results=verified --exclude-detectors=Mailgun
-
-      - name: Push lite if scans pass
-        if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile-lite
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
-
-      - name: Build full
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile-full
-          push: false
-          load: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
-
-      - name: Run Trivy on full image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          scanners: 'misconfig,secret'
-          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
-          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
-
-      - name: Run TruffleHog on full image
-        if: github.ref == 'refs/heads/main'
-        uses: docker://ghcr.io/trufflesecurity/trufflehog
-        with:
-          args: docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full' --results=verified --exclude-detectors=Mailgun
-
-      - name: Push full if scans pass
-        if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile-full
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
-            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
-
-  semgrep:
-    name: semgrep
+  scan-lite:
+    name: Security Scan (Lite)
+    needs: build
     runs-on: ubuntu-latest
-    container:
-      image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@v4
-      - run: |
-          semgrep ci
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build.outputs.lite_tag }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          scanners: 'misconfig,secret'
+          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
+          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
+
+      - name: Run TruffleHog
+        if: github.ref == 'refs/heads/main'
+        uses: docker://ghcr.io/trufflesecurity/trufflehog
+        with:
+          args: docker --image '${{ needs.build.outputs.lite_tag }}' --results=verified --exclude-detectors=Mailgun
+
+  scan-full:
+    name: Security Scan (Full)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build.outputs.full_tag }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          scanners: 'misconfig,secret'
+          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
+          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
+
+      - name: Run TruffleHog
+        if: github.ref == 'refs/heads/main'
+        uses: docker://ghcr.io/trufflesecurity/trufflehog
+        with:
+          args: docker --image '${{ needs.build.outputs.full_tag }}' --results=verified --exclude-detectors=Mailgun
+
+  push:
+    name: Push Images
+    needs: [build, scan-lite, scan-full]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push lite
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile-lite
+          push: true
+          tags: |
+            ${{ needs.build.outputs.lite_tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
+
+      - name: Push full
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile-full
+          push: true
+          tags: |
+            ${{ needs.build.outputs.full_tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
+
+  code-security:
+    name: Code Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Semgrep
+        uses: docker://semgrep/semgrep
+        with:
+          args: ci
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
-  gitleaks:
-    name: gitleaks
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: gitleaks/gitleaks-action@v2
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
