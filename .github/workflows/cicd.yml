@@ -38,28 +38,90 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push lite
+      - name: Build lite
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile-lite
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: false
+          load: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
+
+      - name: Run Trivy on lite image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          scanners: 'misconfig,secret'
+          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
+          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
+
+      - name: Run TruffleHog on lite image
+        if: github.ref == 'refs/heads/main'
+        uses: docker://ghcr.io/trufflesecurity/trufflehog
+        with:
+          args: docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite' --results=verified --exclude-detectors=Mailgun
+
+      - name: Push lite if scans pass
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile-lite
+          push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:lite-${{ github.sha }}
 
-      - name: Build and Push full
+      - name: Build full
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile-full
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: false
+          load: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
+            ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
+
+      - name: Run Trivy on full image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          scanners: 'misconfig,secret'
+          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates'
+          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
+
+      - name: Run TruffleHog on full image
+        if: github.ref == 'refs/heads/main'
+        uses: docker://ghcr.io/trufflesecurity/trufflehog
+        with:
+          args: docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full' --results=verified --exclude-detectors=Mailgun
+
+      - name: Push full if scans pass
+        if: github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile-full
+          push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
-  
+
   semgrep:
     name: semgrep
     runs-on: ubuntu-latest
@@ -70,34 +132,8 @@ jobs:
       - run: |
           semgrep ci
         env:
-          # Generate a token from Semgrep AppSec Platform > Setting
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
-
-  trivy:
-    name: trivy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Trivy in fs mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          scanners: 'misconfig,secret'
-      - name: Run Trivy in image mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          scanners: 'misconfig,secret'
-          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/opt/exploitdb,/home/hacker/.rustup/toolchains,/home/hacker/.local/go,/opt/phpggc,/opt/pypotomux/wordlists,/usr/NX/etc/keys,/usr/NX/share/keys,/home/hacker/.nuclei-templates' # Chunky boys
-          skip-files: '/home/hacker/.local/share/pipx/venvs/yt-dlp/lib/python3.13/site-packages/yt_dlp/extractor/shahid.py,/home/hacker/.local/share/mise/installs/go/1.24.1/src/crypto/x509/platform_root_key.pem'
-  
   gitleaks:
     name: gitleaks
     runs-on: ubuntu-latest
@@ -106,13 +142,3 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  trufflesecurity:
-    name: trufflesecurity
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/trufflesecurity/trufflehog
-    steps:
-      - name: Run trufflehog
-        run: |
-          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun
