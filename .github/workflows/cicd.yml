@@ -67,7 +67,8 @@ jobs:
       image: semgrep/semgrep
     steps:
       - uses: actions/checkout@v4
-      - run: semgrep ci
+      - run: |
+          semgrep ci --metrics=off --no-git-ignore --max-target-depth=10 --timeout=0 --max-memory=0
         env:
           # Connect to Semgrep AppSec Platform through your SEMGREP_APP_TOKEN.
           # Generate a token from Semgrep AppSec Platform > Settings
