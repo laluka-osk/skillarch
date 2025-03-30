@@ -114,6 +114,8 @@ jobs:
       image: ghcr.io/trufflesecurity/trufflehog
     steps:
       - uses: actions/checkout@v4
+      - name: Configure Git safe directory
+        run: git config --global --add safe.directory /__w/skillarch/skillarch
       - name: Run trufflehog in fs mode
         uses: trufflesecurity/trufflehog@main
         with:
