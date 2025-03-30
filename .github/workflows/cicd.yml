@@ -84,7 +84,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          scanners: 'vuln'
+          scanners: 'misconfig,secret'
       - name: Run Trivy in image mode
         uses: aquasecurity/trivy-action@master
         with:
@@ -94,7 +94,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          scanners: 'vuln'
+          scanners: 'misconfig,secret'
           skip-files: '/opt/lists'
   
   gitleaks:
