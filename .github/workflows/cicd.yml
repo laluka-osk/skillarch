@@ -118,4 +118,4 @@ jobs:
       - name: Run trufflehog in image mode
         uses: trufflesecurity/trufflehog@main
         with:
-          extra_args: --results=verified,unknown --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest'
+          extra_args: docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified,unknown
