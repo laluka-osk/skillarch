@@ -95,7 +95,7 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           scanners: 'misconfig,secret'
-          skip-files: '/opt/lists'
+          skip-files: 'opt/lists'
   
   gitleaks:
     name: gitleaks on repo
