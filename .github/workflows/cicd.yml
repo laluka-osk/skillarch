@@ -115,7 +115,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git safe directory
-        run: git config --global --add safe.directory '*'
+        run: |
+          apt update && apt install -y jq
+          git config --global --add safe.directory '*'
       - name: Run trufflehog in fs mode
         uses: trufflesecurity/trufflehog@main
         with:
