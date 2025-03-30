@@ -119,4 +119,4 @@ jobs:
           # extra_args: --results=verified,unknown
       - name: Run trufflehog in image mode
         run: |
-          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-paths '/opt/lists,/opt/ghidra,/opt/metasploit'
+          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --help
