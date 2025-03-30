@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: Main CICD Workflow
 
 on:
   push:
@@ -59,3 +59,32 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full-${{ github.sha }}
+  
+  semgrep:
+    name: semgrep
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep ci
+        # env:
+          # Connect to Semgrep AppSec Platform through your SEMGREP_APP_TOKEN.
+          # Generate a token from Semgrep AppSec Platform > Settings
+          # and add it to your GitHub secrets.
+          # SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+
+  trivy:
+    name: trivy
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
