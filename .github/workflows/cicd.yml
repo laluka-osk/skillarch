@@ -95,7 +95,7 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           scanners: 'misconfig,secret'
-          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/home/hacker/.rustup/toolchains' # Chunky boys
+          skip-dirs: '/opt/lists,/opt/ghidra,/opt/metasploit,/home/hacker/.rustup/toolchains,/home/hacker/.local/go' # Chunky boys
   
   gitleaks:
     name: gitleaks
