@@ -272,6 +272,25 @@ argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp 
 # OMZ plugins
 colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent
 
+# VsCode Extensions
+bibhasdn.unique-lines
+eriklynd.json-tools
+mechatroner.rainbow-csv
+mitchdenny.ecdc
+ms-azuretools.vscode-docker
+ms-python.debugpy
+ms-python.python
+ms-python.vscode-pylance
+ms-vscode-remote.remote-containers
+ms-vscode-remote.remote-ssh
+ms-vscode-remote.remote-ssh-edit
+ms-vscode.remote-explorer
+ms-vsliveshare.vsliveshare
+pomdtr.excalidraw-editor
+trailofbits.weaudit
+yzane.markdown-pdf
+zobo.php-intellisense
+
 # Cloned Tools
 https://github.com/LazyVim/starter
 https://github.com/jpillora/chisel
