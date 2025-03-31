@@ -334,9 +334,3 @@ https://github.com/p0dalirius/webapp-wordlists
 - https://github.com/newmanls/rofi-themes-collection
 - https://github.com/orhun/config
 - https://github.com/regolith-linux/regolith-desktop
-
----
-
-## BugFix & Improvements
-
-- Digital Ocean Vendor Images to allow an easy PoC of SkillArch
