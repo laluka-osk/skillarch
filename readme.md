@@ -109,6 +109,7 @@ make help
  - Check it's actually true: `polybar  --list-monitors` # Should have one primary label
  - Fix it by openin `arandr` + right click to set `primary` on your main screen.
  - Reload i3 with `mod+Shift+r`, then make it permanent, aka goto doc `Multiple Monitor`
+- No [CachyOs on ARM](https://discuss.cachyos.org/t/arm-future-for-cachyos/727), therefore no SkillArch on ARM.
 
 ### VM & VirtualBox Stuff
 
@@ -339,5 +340,3 @@ https://github.com/p0dalirius/webapp-wordlists
 ## BugFix & Improvements
 
 - Digital Ocean Vendor Images to allow an easy PoC of SkillArch
-- Arm docker builds to support Android 15 + Mac M cores in VM?
-- Consider two workflows, default "noconfig" install, and the custom "fork + pull upsteam" maj process
