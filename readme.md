@@ -1,4 +1,4 @@
-# SkillArch - [![Docker Build](https://github.com/laluka/skillarch/actions/workflows/docker.yml/badge.svg)](https://github.com/laluka/skillarch/actions/workflows/docker.yml)
+# SkillArch - [![Security Checks & Docker Builds](https://github.com/laluka/skillarch/actions/workflows/cicd.yml/badge.svg)](https://github.com/laluka/skillarch/actions/workflows/cicd.yml)
 
 <img src='assets/skillarch-full.png' width='250'>
 
@@ -27,7 +27,7 @@ make install # Then reboot && pick i3 at login
 ###  ADVANCED / FULL-CUSTOMIZE / FULL-BACKUP
 
 1. [Fork this repo](https://github.com/laluka/skillarch/fork)
-1. Install `your` SkillArch with the [usual install process](https://github.com/laluka/skillarch/tree/tweak-lalu?tab=readme-ov-file#how-to)
+1. Install `your` SkillArch with the [usual install process](https://github.com/laluka/SkillArch#simple--no-customize--no-backup)
 1. Add the upstream source: `git remote add upstream https://github.com/laluka/skillarch.git`
 1. When you'll want to `add a tweak` or  `update your setup` 🫶
 
