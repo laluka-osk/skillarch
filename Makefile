@@ -29,7 +29,7 @@ install-base: sanity-check ## Install base packages
 	sudo pacman-key --refresh-keys
 
 	# Add chaotic-aur to pacman
-	sudo pacman-key --recv-key 3056513887B78AEB --keyserver https://keyserver.ubuntu.com
+	sudo pacman-key --add <(curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x3056513887B78AEB")
 	sudo pacman-key --lsign-key 3056513887B78AEB
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
