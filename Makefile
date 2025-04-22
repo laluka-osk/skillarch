@@ -25,12 +25,14 @@ install-base: sanity-check ## Install base packages
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
 	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl archlinux-keyring
+	sudo pacman-key --init
 	sudo pacman-key --populate archlinux
 	sudo pacman-key --refresh-keys
 
 	# Add chaotic-aur to pacman
 	sudo pacman-key --add <(curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x3056513887B78AEB")
-	sudo pacman-key --lsign-key 3056513887B78AEB
+	sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com ## TODO POC
+	sudo pacman-key --lsign-key 3056513887B78AEB ## TODO POC
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 	sudo pacman --noconfirm -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
@@ -83,7 +85,7 @@ install-shell: sanity-check ## Install shell packages
 	make clean
 
 	# Install and configure fzf, tmux, vim
-	[ ! -d ~/.fzf ] && git clone --depth=1 --depth 1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all
+	[ ! -d ~/.fzf ] && git clone --depth=1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all
 	[ -f ~/.tmux.conf ] && [ ! -L ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.skabak
 	ln -sf /opt/skillarch/config/tmux.conf ~/.tmux.conf
 	[ -f ~/.vimrc ] && [ ! -L ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.skabak
