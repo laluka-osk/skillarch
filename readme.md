@@ -100,16 +100,14 @@ make help
 ### MISC Gotchas
 
 - If `make install` or `ska-update-simple` loop on a y/n question, fix your pacman config first! 😉
-- The main config is azerty (shhh I know), here is a refetrence to [tweak your config back to qwerty](https://github.com/CachyOS/cachyos-i3wm-settings/blob/develop/etc/skel/.config/i3/config)
+- The main config is azerty (shhh I know), here is a reference to [tweak your config back to qwerty](https://github.com/CachyOS/cachyos-i3wm-settings/blob/develop/etc/skel/.config/i3/config)
 - Kitty visual/rectangle select is done with `ctrl+alt+click/drag`, you're welcome!
 - The docker `latest` is actually the `lite` image with everything CLI related
 - The docker `full` image contains GUI stuff and wordlists
 - Why `sleep` in `Makefile`? Building TOO fast was triggering github limit-rate
-- If for some reasons, multiple polybar appear, it's because no primary monitor is assigned
- - Check it's actually true: `polybar  --list-monitors` # Should have one primary label
- - Fix it by openin `arandr` + right click to set `primary` on your main screen.
- - Reload i3 with `mod+Shift+r`, then make it permanent, aka goto doc `Multiple Monitor`
 - No [CachyOs on ARM](https://discuss.cachyos.org/t/arm-future-for-cachyos/727), therefore no SkillArch on ARM.
+- Extensions are installed for VsCode. Cursor packaging is weird, so while it's open: `ctrl+shift+p` > `Import VsCode Extensions`
+- Chrome extensions are not installed by default. Have a look to [/config/chrome-extensions.lst](/config/chrome-extensions.lst)
 
 ### VM & VirtualBox Stuff
 
@@ -134,6 +132,11 @@ echo "$HOME/.screenlayout/arandr-main-layout.sh &" > ~/.xprofile
 chmod +x ~/.xprofile
 # Logout, Login, should work first try!
 ```
+
+- If for some reasons, multiple polybar appear, it's because no primary monitor is assigned
+ - Check it's actually true: `polybar  --list-monitors` # Should have one primary label
+ - Fix it by openin `arandr` + right click to set `primary` on your main screen.
+ - Reload i3 with `mod+Shift+r`, then make it permanent, aka goto doc `Multiple Monitor`
 
 ### Docker Usage
 
@@ -248,7 +251,7 @@ bindsym $mod+k exec cursor
 
 ### Installed Packages, Plugins, Tools
 
-- For an exhaustive view inspect [Makefile](/Makefile)
+- For an exhaustive view inspect [/Makefile](/Makefile)
 
 ```bash
 # Pacman Packages
