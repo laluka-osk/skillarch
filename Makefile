@@ -22,6 +22,7 @@ install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
 	sudo sed -e "s#.*ParallelDownloads.*#ParallelDownloads = 10#g" -i /etc/pacman.conf
 	echo 'BUILDDIR="/dev/shm/makepkg"' | sudo tee /etc/makepkg.conf.d/00-skillarch.conf
+	sudo cachyos-rate-mirrors # Increase install speed & Update repos
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
 	yes|sudo pacman -S --noconfirm --needed git vim tmux wget curl archlinux-keyring
