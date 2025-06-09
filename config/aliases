@@ -27,6 +27,7 @@ alias k='cursor'
 alias K='cursor .'
 alias p='python'
 alias cdtmp='pushd $(mktemp -d)'
+alias ff='f(){ find . -iname "*$1*" 2>/dev/null; unset -f f; }; f'
 
 # Git stuff
 alias git-clone-all-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
@@ -88,6 +89,9 @@ alias b64e='base64 -w 0'
 alias back-n='sed -u "s/\\\n/\n/g"'
 alias back-t='sed -u "s/\\\t/\t/g"'
 alias cgrep='grep --color=always'
+alias lgrep='grep --line-buffered'
+alias sortn='sort -V | uniq -c | sort -n'
+alias grephilight='export GREP_COLORS="mt=30;46"'
 alias cheat='f(){ curl -s "cheat.sh/$1";  unset -f f; }; f'
 alias clean-swap='sudo swapoff -a && sudo swapon -a'
 alias cpy='xclip -selection clipboard'
@@ -109,9 +113,10 @@ alias get-bytes-raw='python3 -c "for i in range(0,256): print(chr(i))"'
 alias get-bytes-url='python3 -c "for i in range(0,256): print(hex(i).replace(\"0x\", \"%\"))"'
 alias nocolor='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"'
 alias nonullbyte='sed "s/\x00//g"'
-alias urldecode='python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))"'
-alias urlencode='python3 -c "import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=str()))"'
-alias urlencode-deep='f(){ echo -n "$1" | xxd -p -c 1000000 | sed "s#..#%&#g"; unset -f f; }; f'
+alias urldec='python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))"'
+alias urlenc='python3 -c "import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=str()))"'
+alias urlencall='f(){ echo -n "$1" | xxd -p -c 1000000 | sed "s#..#%&#g"; unset -f f; }; f'
+alias urld="perl -MURI::Escape -ne 'print uri_unescape(\$_);'" # url decode stdin stream
 
 # Web Based Recon
 alias getinfo-known-creds='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ;  unset -f f; }; f'
@@ -146,6 +151,8 @@ alias dwipe-image='docker rmi -f $(docker images -q)'
 alias dwipe-network='docker network rm $(docker network ls -q | tr "\n" " ")'
 alias dwipe-process='docker rm $(docker ps -a -q)'
 alias dwipe-volume='docker volume rm $(docker volume ls -q | tr "\n" " ")'
+alias di='docker inspect $(docker ps | grep -vF "NAMES" | fzf | cut -d" " -f1) | jq'
+alias dip='docker inspect $(docker ps | grep -vF "NAMES" | fzf | cut -d" " -f1) | jq -r ".[0].NetworkSettings.IPAddress"'
 
 # Docker Tooling
 ## Git stuff
@@ -161,7 +168,9 @@ alias drecon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0
 alias dsecator="dockit -v ~/.secator:/root/.secator freelabz/secator" # normalize offensive arsenal
 alias drustscan='dockit rustscan/rustscan' # web path enum
 alias doneforall='dockit -w /OneForAll -v /tmp/results:/OneForAll/results shmilylty/oneforall' # noisy recon
-alias dgetfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
+alias getfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
+alias getcan='f(){ echo "skanary$(date +%s%N)"; unset -f f; }; f'
+alias getcaninfo='f(){ date -d "@${1:0:-9}" "+%Y-%m-%d %H:%M:%S.${1: -9}"; unset -f f; }; f'
 
 ## Compliance
 alias dssh-audit="dockit positronsecurity/ssh-audit"
