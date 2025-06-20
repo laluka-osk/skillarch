@@ -102,7 +102,7 @@ alias get-meteo='curl https://wttr.in/'
 alias fab='fabric-ai -s'
 
 # Python
-alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
+alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type list env._.python.venv.uv_create_args -- --seed ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
 alias pyreq='pip install -r requirements.txt'
 alias pysrv='mkdir -pv /tmp/empty ; python -m http.server -d /tmp/empty'
 
