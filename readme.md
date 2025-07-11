@@ -1,8 +1,8 @@
 # SkillArch - [![Security Checks & Docker Builds](https://github.com/laluka/skillarch/actions/workflows/cicd.yml/badge.svg)](https://github.com/laluka/skillarch/actions/workflows/cicd.yml)
 
-<img src='assets/skillarch-full.png' width='250'>
+<img src='assets/logo-round-cold.png' width='250'><img src='assets/logo-round-hot.png' width='250'>
 
-> The lite/full install takes 20/30 minutes 🕑️\
+> The lite/full install takes 10/20 minutes 🕑️\
 > Please watch this intro video to onboard yourself! 🙏\
 > ➡️ TBD ⬅️
 
