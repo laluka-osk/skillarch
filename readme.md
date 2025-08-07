@@ -2,9 +2,12 @@
 
 <img src='assets/logo-round-cold.png' width='250'><img src='assets/logo-round-hot.png' width='250'>
 
-> The lite/full install takes 10/20 minutes 🕑️\
-> Please watch this intro video to onboard yourself! 🙏\
-> ➡️ TBD ⬅️
+> The lite/full install takes 10/15 minutes 🕑️\
+> Please watch this short intro video to onboard yourself! 🙏
+
+[![](https://img.youtube.com/vi/HB1hxJgGoDo/0.jpg)](https://youtu.be/HB1hxJgGoDo)
+
+> And here is a gentle rice 😇
 
 <img src='assets/rice-01.png' width='800'>
 
@@ -110,6 +113,8 @@ make help
 - Chrome extensions are not installed by default. Have a look to [/config/chrome-extensions.lst](/config/chrome-extensions.lst)
 
 ### VM & VirtualBox Stuff
+
+> I've had tons of issues with VirtualBox laterly, and things worked PERFECTLY on Gnome Boxes (from `qemu-full` and `gnome-extra`), I strongly suggest using it instead, see the install guide above.
 
 - The `ska-vbox-install-guestutils` alias will auto-install `virtualbox-guest-utils`
 - In `VirtualBox`, when i3 starts it will run `VBoxClient-all` for clipboard & goodies
