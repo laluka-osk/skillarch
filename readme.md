@@ -25,6 +25,9 @@
 git clone https://github.com/laluka/skillarch
 sudo mv skillarch /opt/skillarch && cd /opt/skillarch
 make install # Then reboot && pick i3 at login
+
+# Update by running this command (will pull changes & apply them):
+ska-update-simple
 ```
 
 ###  ADVANCED / FULL-CUSTOMIZE / FULL-BACKUP
@@ -39,8 +42,12 @@ make install # Then reboot && pick i3 at login
 1. When you'll want to `add a tweak` or  `update your setup` 🫶
 
 ```bash
+# Update by running this command (simply follow the process):
+ska-update-advanced
+
+# "The process" is mostly like below:
 # SAVE your changes on your repo
-git add foo ; git commit -m 'added foo' ; git push
+git add foo ; git commit -m i-added-foo ; git push
 # Then, from a CLEAN git state
 ska && git status
 # PULL & CHECKOUT upstream changes
