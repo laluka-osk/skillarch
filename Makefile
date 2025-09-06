@@ -183,7 +183,6 @@ install-wordlists: sanity-check ## Install wordlists
 	[ ! -d /opt/lists ] && mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists
 	[ ! -f /opt/lists/rockyou.txt ] && curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt
 	[ ! -d /opt/lists/PayloadsAllTheThings ] && git clone --depth=1 https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings
-	[ ! -d /opt/lists/fuzzing-templates ] && git clone --depth=1 https://github.com/projectdiscovery/fuzzing-templates /opt/lists/fuzzing-templates
 	[ ! -d /opt/lists/BruteX ] && git clone --depth=1 https://github.com/1N3/BruteX /opt/lists/BruteX
 	[ ! -d /opt/lists/IntruderPayloads ] && git clone --depth=1 https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads
 	[ ! -d /opt/lists/Probable-Wordlists ] && git clone --depth=1 https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists

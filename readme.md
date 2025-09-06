@@ -326,7 +326,6 @@ https://github.com/hugsy/gef
 # Clones Wordlists
 https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt
 https://github.com/swisskyrepo/PayloadsAllTheThings
-https://github.com/projectdiscovery/fuzzing-templates
 https://github.com/1N3/BruteX
 https://github.com/1N3/IntruderPayloads
 https://github.com/berzerk0/Probable-Wordlists
