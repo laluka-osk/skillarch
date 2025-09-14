@@ -65,7 +65,8 @@ alias get-ip-cpy='curl -sS ipinfo.io/ip | cpy'
 
 # Video, Audio
 alias webcam-guvcview='guvcview'
-alias yt-dlp-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3  :ytfav' # https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc
+alias yt-dlp-likes='yt-dlp --cookies-from-browser chrome -x --audio-format mp3  :ytfav'
+alias yt-mp3="yt-dlp --extract-audio --audio-format mp3"
 alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
 
 # Monitoring, Upload, Sleep
