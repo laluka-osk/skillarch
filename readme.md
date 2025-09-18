@@ -13,7 +13,7 @@
 
 ### SIMPLE / NO-CUSTOMIZE / NO-BACKUP
 
-> Please watch this 5mn intro video to onboard yourself! 🙏
+> 🔴🎬🙏 Please watch this 5mn intro video to onboard yourself! 🙏🎬🔴
 
 [![](https://img.youtube.com/vi/HB1hxJgGoDo/0.jpg)](https://youtu.be/HB1hxJgGoDo)
 
@@ -32,7 +32,7 @@ ska-update-simple
 
 ###  ADVANCED / FULL-CUSTOMIZE / FULL-BACKUP
 
-> Please watch this 10mn intro video to onboard yourself! 🙏
+> 🔴🎬🙏 Please watch this 10mn intro video to onboard yourself! 🙏🎬🔴
 
 [![](https://img.youtube.com/vi/Wq6CmJJnTJk/0.jpg)](https://youtu.be/Wq6CmJJnTJk)
 
@@ -69,6 +69,10 @@ ska-update-simple
 ---
 
 ## Documentation
+
+> 🔴🎬🙏 Please watch this 1h FULL TOUR video so you can make the most out of your SkillArch Adventure! 🙏🎬🔴
+
+[![](https://img.youtube.com/vi/pUm7KEgM2g8/0.jpg)](https://youtu.be/pUm7KEgM2g8)
 
 ### Get Help
 
