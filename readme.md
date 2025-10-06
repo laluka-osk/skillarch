@@ -13,7 +13,7 @@
 
 ### SIMPLE / NO-CUSTOMIZE / NO-BACKUP
 
-> Please watch this 5mn intro video to onboard yourself! 🙏
+> 🔴🎬🙏 Please watch this 5mn intro video to onboard yourself! 🙏🎬🔴
 
 [![](https://img.youtube.com/vi/HB1hxJgGoDo/0.jpg)](https://youtu.be/HB1hxJgGoDo)
 
@@ -32,7 +32,7 @@ ska-update-simple
 
 ###  ADVANCED / FULL-CUSTOMIZE / FULL-BACKUP
 
-> Please watch this 10mn intro video to onboard yourself! 🙏
+> 🔴🎬🙏 Please watch this 10mn intro video to onboard yourself! 🙏🎬🔴
 
 [![](https://img.youtube.com/vi/Wq6CmJJnTJk/0.jpg)](https://youtu.be/Wq6CmJJnTJk)
 
@@ -69,6 +69,10 @@ ska-update-simple
 ---
 
 ## Documentation
+
+> 🔴🎬🙏 Please watch this 1h FULL TOUR video so you can make the most out of your SkillArch Adventure! 🙏🎬🔴
+
+[![](https://img.youtube.com/vi/pUm7KEgM2g8/0.jpg)](https://youtu.be/pUm7KEgM2g8)
 
 ### Get Help
 
@@ -271,7 +275,7 @@ bindsym $mod+k exec cursor
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie audacity xorg-xhost gnu-netcat archlinux-keyring jdk21-openjdk polkit-gnome
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cheese cloc cmake code code-marketplace curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote exa expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine obs-studio-browser okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc-luajit websocat wget wireshark-qt xclip xsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
 
 # Yay packages
 ffuf gau pdtm-bin waybackurls cursor-bin fswebcam i3-battery-popup-git python-pipx rofi-power-menu fabric-ai-bin
