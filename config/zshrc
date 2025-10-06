@@ -120,3 +120,6 @@ eval "$(register-python-argcomplete --no-defaults exegol)"
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/.pdtm/go/bin
 source /opt/precious/lalu-alias.rc
+
+# Scaleway CLI autocomplete initialization.
+eval "$(scw autocomplete script shell=zsh)"
