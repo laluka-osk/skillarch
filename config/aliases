@@ -44,6 +44,7 @@ alias t3="t -L 3 $@"
 alias rm='trash-put'
 alias te='trash-empty'
 alias cp='cp -i'
+compdef _files trash-put # fix trash-put file completion
 
 ## Networking
 alias ipa="ip -br a | grep -vF DOWN"
