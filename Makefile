@@ -61,7 +61,7 @@ install-cli-tools: sanity-check ## Install system packages
 	# Install pipx & tools
 	yay --noconfirm --needed -S python-pipx
 	pipx ensurepath
-	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep; do pipx install -q "$$package" && pipx inject -q "$$package" setuptools; done
+	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep defaultcreds-cheat-sheet; do pipx install -q "$$package" && pipx inject -q "$$package" setuptools; done
 
 	# Install mise and all php-build dependencies
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
