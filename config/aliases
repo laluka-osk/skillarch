@@ -128,7 +128,7 @@ alias getinfo-certspotter='f(){ curl -sS "https://api.certspotter.com/v1/issuanc
 alias getinfo-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ;  unset -f f; }; f'
 alias getinfo-crtsh='f(){ curl -sk "https://crt.sh/json?q=$1" | jq . ; unset -f f; }; f'
 alias getinfo-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
-alias getinfo-favhash='f(){ pip install mmh3 &>/dev/null ; MMH3=$(python3 -c "from mmh3 import hash as h;from codecs import encode as e ; print(h(e(open(\"$1\", \"rb\").read(), \"base64\")))"); xdg-open "https://www.shodan.io/search?query=http.favicon.hash%3A$MMH3" ;  unset -f f; }; f'
+alias getinfo-leakix='f(){ curl -sk "https://leakix.net/api/graph/hostname/$1?v[]=hostname&v[]=ip&d=auto&l=auto" | jq | grep -ioP "hostname/[^\"]+" | cut -d/ -f2 | sort -uV ; unset -f f; }; f'
 unalias gau # gau real tool instead of omz git alias
 
 # Web Fuzzing
