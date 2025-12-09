@@ -16,7 +16,8 @@ sanity-check:
 	set -x
 	@# Ensure we are in /opt/skillarch or /opt/skillarch-original (maintainer only)
 	@[ "$$(pwd)" != "/opt/skillarch" ] && [ "$$(pwd)" != "/opt/skillarch-original" ] && echo "You must be in /opt/skillarch or /opt/skillarch-original to run this command" && exit 1
-	@sudo id || (echo "Error: sudo access is required" ; exit 1)
+	@xset s off ; xset -dpms ; xset s noblank
+	@sudo -v || (echo "Error: sudo access is required" ; exit 1)
 
 install-base: sanity-check ## Install base packages
 	# Clean up, Update, Basics
@@ -47,11 +48,9 @@ install-base: sanity-check ## Install base packages
 	make clean
 
 install-cli-tools: sanity-check ## Install system packages
-	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta viu xsv asciinema htmlq neovim glow jless websocat superfile gron exa fastfetch bat sysstat cronie
+	yes|sudo pacman -S --noconfirm --needed base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta viu qsv asciinema htmlq neovim glow jless websocat superfile gron eza fastfetch bat sysstat cronie
 	sudo ln -sf /usr/bin/bat /usr/local/bin/batcat
 	bash -c "$$(curl -fsSL https://gef.blah.cat/sh)"
-	missing_exa_lib=$$(ldd $$(which exa) | grep -ioP 'libgit2.*not found' | cut -d' ' -f 1)
-	[ ! -z $$missing_exa_lib ] && sudo ln -s /usr/lib/libgit2.so  "/usr/lib/$$missing_exa_lib"
 	# nvim config
 	[ ! -d ~/.config/nvim ] && git clone --depth=1 https://github.com/LazyVim/starter ~/.config/nvim
 	[ -f ~/.config/nvim/init.lua ] && [ ! -L ~/.config/nvim/init.lua ] && mv ~/.config/nvim/init.lua ~/.config/nvim/init.lua.skabak
