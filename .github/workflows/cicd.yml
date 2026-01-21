@@ -127,6 +127,6 @@ jobs:
         run: |
           cat <<EOF > /tmp/trufflehog-exclude.txt
           /opt/exploitdb/exploits
-          /opt/visual-studio-code/resources/app/extensions/github-authentication/dist/extension.js
+          /opt/visual-studio-code/resources/app/extensions/github-authentication/dist
           EOF
           trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun --exclude-paths=/tmp/trufflehog-exclude.txt --fail
