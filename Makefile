@@ -146,7 +146,7 @@ install-gui-tools: sanity-check ## Install system packages
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
-	yay --noconfirm --needed -S fswebcam cursor-bin
+	yay --noconfirm --needed -S fswebcam cursor-bin cheese-git
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	make clean
 
