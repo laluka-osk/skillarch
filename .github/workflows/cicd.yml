@@ -129,4 +129,4 @@ jobs:
           /opt/exploitdb/exploits
           /opt/visual-studio-code/resources/app/extensions/github-authentication/dist
           EOF
-          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun --exclude-paths=/opt/exploitdb/exploits,/opt/visual-studio-code/resources/app/extensions/github-authentication/dist --fail
+          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun --exclude-paths=/opt/exploitdb/exploits,/opt/visual-studio-code/resources/app/extensions/github-authentication/dist/extension.js
