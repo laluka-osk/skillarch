@@ -123,4 +123,8 @@ jobs:
     steps:
       - name: Run trufflehog
         run: |
-          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun
+          cat <<EOF > /tmp/trufflehog-exclude.txt
+          ^/opt/exploitdb/exploits/hardware/webapps/29516\.txt$
+          ^/opt/exploitdb/exploits/windows/local/47615\.txt$
+          EOF
+          trufflehog docker --image '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest' --results=verified --exclude-detectors=Mailgun --exclude-paths=/tmp/trufflehog-exclude.txt --fail
