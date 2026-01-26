@@ -73,7 +73,7 @@ install-cli-tools: sanity-check ## Install system packages
 	yes|sudo pacman -S --noconfirm --needed mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	# mise self-update # Currently broken, wait for upstream fix, pinged on 17/03/2025
 	sleep 30
-	for package in usage pdm rust terraform golang python nodejs; do mise use -g "$$package@latest" ; sleep 10; done
+	for package in usage pdm rust terraform golang python nodejs uv; do mise use -g "$$package@latest" ; sleep 10; done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	make clean
 
@@ -162,6 +162,7 @@ install-offensive: sanity-check ## Install offensive tools
 	yes|sudo pacman -S --noconfirm --needed metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
 	sudo sed -i 's#$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
 	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls fabric-ai-bin
+	[ -f /usr/bin/pdtm ] && sudo chown "$$USER:$$USER" /usr/bin/pdtm && sudo mv /usr/bin/pdtm ~/.pdtm/go/bin
 
 	# Hide stdout and Keep stderr for CI builds
 	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null
@@ -170,6 +171,7 @@ install-offensive: sanity-check ## Install offensive tools
 	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null
 	sleep 30
 	zsh -c "source ~/.zshrc && pdtm -install-all -v"
+	zsh -c "source ~/.zshrc && pdtm -update-all -v"
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
 
 	# Clone custom tools
