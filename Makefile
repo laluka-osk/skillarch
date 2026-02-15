@@ -121,7 +121,15 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	$(PACMAN_INSTALL) mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	# mise self-update # Currently broken, wait for upstream fix, pinged on 17/03/2025
 	sleep 30
-	for package in usage pdm rust terraform golang python nodejs uv; do mise use -g "$$package@latest" ; sleep 10; done
+	for package in usage pdm rust terraform golang python nodejs uv; do \
+		for attempt in 1 2 3; do \
+			mise use -g "$$package@latest" && break || { \
+				echo -e "$(C_WARN) mise install $$package failed (attempt $$attempt/3), retrying in 30s...$(C_RST)" ; \
+				sleep 30 ; \
+			} ; \
+		done ; \
+		sleep 10 ; \
+	done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	$(MAKE) clean
 	echo -e "$(C_OK) CLI tools & runtimes installed!$(C_RST)"
