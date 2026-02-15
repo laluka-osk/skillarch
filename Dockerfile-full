@@ -12,6 +12,7 @@ RUN make install-gui
 RUN make install-gui-tools
 RUN make install-wordlists
 RUN make install-hardening
+RUN make test-full
 
 # Remove NOPASSWD capability after installation
 USER root

@@ -19,6 +19,7 @@ RUN make install-base
 RUN make install-cli-tools
 RUN make install-shell
 RUN make install-offensive
+RUN make test-lite
 
 # Remove NOPASSWD capability after installation
 USER root
