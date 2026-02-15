@@ -99,7 +99,8 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	echo -e "$(C_INFO) Installing CLI tools & runtimes...$(C_RST)"
 	$(PACMAN_INSTALL) base-devel bison bzip2 ca-certificates cloc cmake dos2unix expect ffmpeg foremost gdb gnupg htop bottom hwinfo icu inotify-tools iproute2 jq llvm lsof ltrace make mlocate mplayer ncurses net-tools ngrep nmap openssh openssl parallel perl-image-exiftool pkgconf python-virtualenv re2c readline ripgrep rlwrap socat sqlite sshpass tmate tor traceroute trash-cli tree unzip vbindiff xclip xz yay zip veracrypt git-delta viu qsv asciinema htmlq neovim glow jless websocat superfile gron eza fastfetch bat sysstat cronie tree-sitter
 	sudo ln -sf /usr/bin/bat /usr/local/bin/batcat
-	bash -c "$$(curl -fsSL https://gef.blah.cat/sh)"
+	bash -c "$$(curl -fsSL https://gef.blah.cat/sh)" || true
+	[ ! -f ~/.gdbinit-gef.py ] && curl -fsSL -o ~/.gdbinit-gef.py https://raw.githubusercontent.com/hugsy/gef/main/gef.py && echo "source ~/.gdbinit-gef.py" >> ~/.gdbinit || echo "gef already installed"
 	# nvim config
 	[ ! -d ~/.config/nvim ] && git clone --depth=1 https://github.com/LazyVim/starter ~/.config/nvim || true
 	$(call ska-link,/opt/skillarch/config/nvim/init.lua,$$HOME/.config/nvim/init.lua)
