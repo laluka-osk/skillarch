@@ -171,6 +171,7 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 	echo -e "$(C_INFO) Installing GUI & window manager...$(C_RST)"
 	[ ! -f /etc/machine-id ] && sudo systemd-machine-id-setup || true
 	$(PACMAN_INSTALL) xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
+	$(MAKE) clean
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
@@ -206,11 +207,12 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 	# Pre-create flatpak repo dir so post-install hooks don't fail in Docker (flatpak may be pulled as a dependency)
 	[ -f /.dockerenv ] && sudo mkdir -p /var/lib/flatpak/repo || true
 	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
+	$(MAKE) clean
 	[ ! -f /.dockerenv ] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio && flatpak install -y flathub org.gnome.Snapshot || true
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service || true
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
-	yay --noconfirm --needed -S fswebcam cursor-bin
+	for pkg in fswebcam cursor-bin; do yay --noconfirm --needed -S "$$pkg" || echo -e "$(C_WARN) Failed to install $$pkg, continuing...$(C_RST)"; done
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	$(MAKE) clean
 	echo -e "$(C_OK) GUI applications installed!$(C_RST)"
@@ -218,6 +220,7 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 install-offensive: sanity-check ## Install offensive & security tools
 	echo -e "$(C_INFO) Installing offensive tools...$(C_RST)"
 	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
+	$(MAKE) clean
 	sudo sed -i 's#$$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin; do yay --noconfirm --needed -S "$$pkg" || echo -e "$(C_WARN) Failed to install $$pkg, continuing...$(C_RST)"; done
 	[ -f /usr/bin/pdtm ] && sudo chown "$$USER:$$USER" /usr/bin/pdtm && sudo mv /usr/bin/pdtm ~/.pdtm/go/bin || true
@@ -556,12 +559,14 @@ clean: ## Clean up system and remove unnecessary files
 	yes|sudo pacman -Sc || true
 	sudo pacman -Rns $$(pacman -Qtdq) 2>/dev/null || true
 	rm -rf ~/.cache/pip || true
+	rm -rf ~/.cache/yay || true
 	npm cache clean --force 2>/dev/null || true
 	mise cache clear || true
 	go clean -cache -modcache -i -r 2>/dev/null || true
 	sudo rm -rf /var/cache/* || true
 	rm -rf ~/.cache/* || true
 	sudo rm -rf /tmp/* || true
+	sudo rm -rf /dev/shm/makepkg/* || true
 	docker system prune -af 2>/dev/null || true
 	sudo journalctl --vacuum-time=1d || true
 	sudo find /var/log -type f -name "*.old" -delete 2>/dev/null || true
