@@ -2,6 +2,8 @@ FROM thelaluka/skillarch:lite
 
 USER root
 RUN echo "hacker ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/hacker
+COPY . /opt/skillarch
+RUN chown -R hacker:hacker /opt/skillarch
 
 USER hacker
 WORKDIR /opt/skillarch
