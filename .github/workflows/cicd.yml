@@ -45,7 +45,7 @@ jobs:
           context: .
           file: ./Dockerfile-lite
           push: ${{ github.ref == 'refs/heads/main' }}
-          build-args: |
+          secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
@@ -58,8 +58,6 @@ jobs:
           context: .
           file: ./Dockerfile-full
           push: ${{ github.ref == 'refs/heads/main' }}
-          build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/skillarch:full
