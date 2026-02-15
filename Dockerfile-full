@@ -8,6 +8,10 @@ RUN chown -R hacker:hacker /opt/skillarch
 USER hacker
 WORKDIR /opt/skillarch
 
+# GitHub token to avoid API rate limits during mise/go installs
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+
 # Install skillarch
 RUN make install-docker
 RUN make install-gui

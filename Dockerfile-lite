@@ -14,6 +14,10 @@ ENV USER=hacker
 ENV TZ=UTC
 WORKDIR /opt/skillarch
 
+# GitHub token to avoid API rate limits during mise/go installs
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+
 # Install skillarch
 RUN make install-base
 RUN make install-cli-tools
