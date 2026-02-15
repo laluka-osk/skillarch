@@ -71,12 +71,12 @@ install-base: sanity-check ## Install base packages
 	sudo sed -e "s#.*ParallelDownloads.*#ParallelDownloads = 10#g" -i /etc/pacman.conf
 	echo 'BUILDDIR="/dev/shm/makepkg"' | sudo tee /etc/makepkg.conf.d/00-skillarch.conf
 	[ ! -f /.dockerenv ] && sudo cachyos-rate-mirrors || true # Increase install speed & Update repos (skip in Docker)
+	sudo pacman-key --init
+	sudo pacman-key --populate archlinux cachyos
+	sudo pacman-key --refresh-keys
 	yes|sudo pacman -Scc
 	yes|sudo pacman -Syu
 	$(PACMAN_INSTALL) git vim tmux wget curl archlinux-keyring
-	sudo pacman-key --init
-	sudo pacman-key --populate archlinux
-	sudo pacman-key --refresh-keys
 
 	# Add chaotic-aur to pacman
 	curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x3056513887B78AEB" | sudo pacman-key --add -
