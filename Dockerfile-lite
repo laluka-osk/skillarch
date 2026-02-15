@@ -14,15 +14,15 @@ ENV USER=hacker
 ENV TZ=UTC
 WORKDIR /opt/skillarch
 
-# GitHub token to avoid API rate limits during mise/go installs
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=${GITHUB_TOKEN}
-
 # Install skillarch
 RUN make install-base
-RUN make install-cli-tools
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null) ; \
+    make install-cli-tools
 RUN make install-shell
-RUN make install-offensive
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null) ; \
+    make install-offensive
 RUN make test-lite
 
 # Remove NOPASSWD capability after installation

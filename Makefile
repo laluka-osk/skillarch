@@ -203,9 +203,10 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 
 install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc.)
 	echo -e "$(C_INFO) Installing GUI applications...$(C_RST)"
-	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg flatpak arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
-	flatpak install -y flathub com.obsproject.Studio
-	flatpak install -y flathub org.gnome.Snapshot
+	# Pre-create flatpak repo dir so post-install hooks don't fail in Docker (flatpak may be pulled as a dependency)
+	[ -f /.dockerenv ] && sudo mkdir -p /var/lib/flatpak/repo || true
+	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
+	[ ! -f /.dockerenv ] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio && flatpak install -y flathub org.gnome.Snapshot || true
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service || true
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
@@ -532,7 +533,7 @@ backup: ## Backup current configs before overwriting
 # ============================================================
 
 docker-build: ## Build lite Docker image locally
-	docker build -t thelaluka/skillarch:lite -f Dockerfile-lite .
+	docker build --secret id=GITHUB_TOKEN,env=GITHUB_TOKEN -t thelaluka/skillarch:lite -f Dockerfile-lite .
 
 docker-build-full: docker-build ## Build full Docker image locally
 	docker build -t thelaluka/skillarch:full -f Dockerfile-full .
