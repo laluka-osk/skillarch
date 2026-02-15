@@ -209,7 +209,7 @@ install-offensive: sanity-check ## Install offensive & security tools
 	echo -e "$(C_INFO) Installing offensive tools...$(C_RST)"
 	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
 	sudo sed -i 's#$$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
-	yay --noconfirm --needed -S ffuf gau pdtm-bin waybackurls fabric-ai-bin
+	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin; do yay --noconfirm --needed -S "$$pkg" || echo -e "$(C_WARN) Failed to install $$pkg, continuing...$(C_RST)"; done
 	[ -f /usr/bin/pdtm ] && sudo chown "$$USER:$$USER" /usr/bin/pdtm && sudo mv /usr/bin/pdtm ~/.pdtm/go/bin || true
 
 	# Hide stdout and Keep stderr for CI builds
