@@ -22,7 +22,7 @@ define ska-step
 	echo -e "$(C_INFO)$(C_BOLD)[$(1)/$(2)]$(C_RST) $(C_INFO)$(3)...$(C_RST)"
 endef
 
-PACMAN_INSTALL := yes | sudo pacman -S --noconfirm --needed
+PACMAN_INSTALL := sudo pacman -S --noconfirm --needed
 
 help: ## Show this help message
 	@echo 'Welcome to SkillArch! <3'
@@ -74,8 +74,8 @@ install-base: sanity-check ## Install base packages
 	sudo pacman-key --init
 	sudo pacman-key --populate archlinux cachyos
 	sudo pacman-key --refresh-keys
-	yes|sudo pacman -Scc
-	yes|sudo pacman -Syu
+	sudo pacman --noconfirm -Scc
+	sudo pacman --noconfirm -Syu
 	$(PACMAN_INSTALL) git vim tmux wget curl archlinux-keyring
 
 	# Add chaotic-aur to pacman
@@ -87,12 +87,11 @@ install-base: sanity-check ## Install base packages
 	# Ensure chaotic-aur is present in /etc/pacman.conf
 	grep -vP '\[chaotic-aur\]|Include = /etc/pacman.d/chaotic-mirrorlist' /etc/pacman.conf | sudo tee /etc/pacman.conf > /dev/null
 	echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' | sudo tee -a /etc/pacman.conf > /dev/null
-	yes|sudo pacman -Syu
+	sudo pacman --noconfirm -Syu
 
 	# Long Lived DATA & trash-cli Setup
 	[ ! -d /DATA ] && sudo mkdir -pv /DATA && sudo chown "$$USER:$$USER" /DATA && sudo chmod 770 /DATA || true
 	[ ! -d /.Trash ] && sudo mkdir -pv /.Trash && sudo chown "$$USER:$$USER" /.Trash && sudo chmod 770 /.Trash && sudo chmod +t /.Trash || true
-	$(MAKE) clean
 	echo -e "$(C_OK) Base packages installed!$(C_RST)"
 
 install-cli-tools: sanity-check ## Install CLI tools & runtimes
@@ -120,18 +119,15 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	# Install mise and all php-build dependencies
 	$(PACMAN_INSTALL) mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	# mise self-update # Currently broken, wait for upstream fix, pinged on 17/03/2025
-	sleep 30
 	for package in usage pdm rust terraform golang python nodejs uv; do \
 		for attempt in 1 2 3; do \
 			mise use -g "$$package@latest" && break || { \
-				echo -e "$(C_WARN) mise install $$package failed (attempt $$attempt/3), retrying in 30s...$(C_RST)" ; \
-				sleep 30 ; \
+				echo -e "$(C_WARN) mise install $$package failed (attempt $$attempt/3), retrying in 5s...$(C_RST)" ; \
+				sleep 5 ; \
 			} ; \
 		done ; \
-		sleep 10 ; \
 	done
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
-	$(MAKE) clean
 	echo -e "$(C_OK) CLI tools & runtimes installed!$(C_RST)"
 
 install-shell: sanity-check ## Install shell, zsh, oh-my-zsh, fzf, tmux
@@ -145,7 +141,6 @@ install-shell: sanity-check ## Install shell, zsh, oh-my-zsh, fzf, tmux
 	[ ! -d ~/.oh-my-zsh/plugins/zsh-syntax-highlighting ] && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/plugins/zsh-syntax-highlighting || true
 	[ ! -d ~/.ssh ] && mkdir ~/.ssh && chmod 700 ~/.ssh || true # Must exist for ssh-agent to work
 	for plugin in colored-man-pages docker extract fzf mise npm terraform tmux zsh-autosuggestions zsh-completions zsh-syntax-highlighting ssh-agent z ; do zsh -c "source ~/.zshrc && omz plugin enable $$plugin || true" || true; done
-	$(MAKE) clean
 
 	# Install and configure fzf, tmux, vim
 	[ ! -d ~/.fzf ] && git clone --depth=1 https://github.com/junegunn/fzf ~/.fzf && ~/.fzf/install --all || true
@@ -164,14 +159,12 @@ install-docker: sanity-check ## Install Docker & Docker Compose
 	sleep 1 # Prevent too many docker socket calls and security locks
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl enable --now docker || true
-	$(MAKE) clean
 	echo -e "$(C_OK) Docker installed!$(C_RST)"
 
 install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 	echo -e "$(C_INFO) Installing GUI & window manager...$(C_RST)"
 	[ ! -f /etc/machine-id ] && sudo systemd-machine-id-setup || true
 	$(PACMAN_INSTALL) xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
-	$(MAKE) clean
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
@@ -199,7 +192,6 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 	[ ! -d /etc/X11/xorg.conf.d ] && sudo mkdir -p /etc/X11/xorg.conf.d || true
 	[ -f /etc/X11/xorg.conf.d/30-touchpad.conf ] && sudo mv /etc/X11/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf.skabak || true
 	sudo ln -sf /opt/skillarch/config/xorg.conf.d/30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
-	$(MAKE) clean
 	echo -e "$(C_OK) GUI & window manager installed!$(C_RST)"
 
 install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc.)
@@ -207,64 +199,61 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 	# Pre-create flatpak repo dir so post-install hooks don't fail in Docker (flatpak may be pulled as a dependency)
 	[ -f /.dockerenv ] && sudo mkdir -p /var/lib/flatpak/repo || true
 	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
-	$(MAKE) clean
 	[ ! -f /.dockerenv ] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio && flatpak install -y flathub org.gnome.Snapshot || true
 	# Do not start services in docker
 	[ ! -f /.dockerenv ] && sudo systemctl disable --now nxserver.service || true
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
 	for pkg in fswebcam cursor-bin; do yay --noconfirm --needed -S "$$pkg" || echo -e "$(C_WARN) Failed to install $$pkg, continuing...$(C_RST)"; done
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
-	$(MAKE) clean
 	echo -e "$(C_OK) GUI applications installed!$(C_RST)"
 
 install-offensive: sanity-check ## Install offensive & security tools
 	echo -e "$(C_INFO) Installing offensive tools...$(C_RST)"
 	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
-	$(MAKE) clean
 	sudo sed -i 's#$$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin; do yay --noconfirm --needed -S "$$pkg" || echo -e "$(C_WARN) Failed to install $$pkg, continuing...$(C_RST)"; done
 	[ -f /usr/bin/pdtm ] && sudo chown "$$USER:$$USER" /usr/bin/pdtm && sudo mv /usr/bin/pdtm ~/.pdtm/go/bin || true
 
-	# Hide stdout and Keep stderr for CI builds
-	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null
-	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest > /dev/null
-	mise exec -- go install github.com/x90skysn3k/brutespray@latest > /dev/null
-	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null
-	sleep 30
-	zsh -c "source ~/.zshrc && pdtm -install-all -v"
-	zsh -c "source ~/.zshrc && pdtm -update-all -v"
-	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates"
+	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
+	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null &
+	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest > /dev/null &
+	mise exec -- go install github.com/x90skysn3k/brutespray@latest > /dev/null &
+	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null &
+	wait
+	zsh -c "source ~/.zshrc && pdtm -install-all -v" || true
+	zsh -c "source ~/.zshrc && pdtm -update-all -v" || true
+	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates" || true
 
-	# Clone custom tools
-	pushd /tmp # Avoid git clone --depth=1 in root
-	[ ! -d /opt/chisel ] && git clone --depth=1 https://github.com/jpillora/chisel && sudo mv chisel /opt/chisel || true
-	[ ! -d /opt/phpggc ] && git clone --depth=1 https://github.com/ambionics/phpggc && sudo mv phpggc /opt/phpggc || true
-	[ ! -d /opt/PyFuscation ] && git clone --depth=1 https://github.com/CBHue/PyFuscation && sudo mv PyFuscation /opt/PyFuscation || true
-	[ ! -d /opt/CloudFlair ] && git clone --depth=1 https://github.com/christophetd/CloudFlair && sudo mv CloudFlair /opt/CloudFlair || true
-	[ ! -d /opt/minos-static ] && git clone --depth=1 https://github.com/minos-org/minos-static && sudo mv minos-static /opt/minos-static || true
-	[ ! -d /opt/exploit-database ] && git clone --depth=1 https://github.com/offensive-security/exploit-database && sudo mv exploit-database /opt/exploit-database || true
-	[ ! -d /opt/exploitdb ] && git clone --depth=1 https://gitlab.com/exploit-database/exploitdb && sudo mv exploitdb /opt/exploitdb || true
-	[ ! -d /opt/pty4all ] && git clone --depth=1 https://github.com/laluka/pty4all && sudo mv pty4all /opt/pty4all || true
-	[ ! -d /opt/pypotomux ] && git clone --depth=1 https://github.com/laluka/pypotomux && sudo mv pypotomux /opt/pypotomux || true
-	popd
-	$(MAKE) clean
+	# Clone custom tools -- run in parallel
+	ska_clone() { [ ! -d "/opt/$$2" ] && git clone --depth=1 "$$1" "/tmp/$$2" && sudo mv "/tmp/$$2" "/opt/$$2" || true ; }
+	ska_clone https://github.com/jpillora/chisel chisel &
+	ska_clone https://github.com/ambionics/phpggc phpggc &
+	ska_clone https://github.com/CBHue/PyFuscation PyFuscation &
+	ska_clone https://github.com/christophetd/CloudFlair CloudFlair &
+	ska_clone https://github.com/minos-org/minos-static minos-static &
+	ska_clone https://github.com/offensive-security/exploit-database exploit-database &
+	ska_clone https://gitlab.com/exploit-database/exploitdb exploitdb &
+	ska_clone https://github.com/laluka/pty4all pty4all &
+	ska_clone https://github.com/laluka/pypotomux pypotomux &
+	wait
 	echo -e "$(C_OK) Offensive tools installed!$(C_RST)"
 
 install-wordlists: sanity-check ## Install wordlists (SecLists, rockyou, etc.)
 	echo -e "$(C_INFO) Installing wordlists...$(C_RST)"
-	[ ! -d /opt/lists ] && mkdir /tmp/lists && sudo mv /tmp/lists /opt/lists || true
-	[ ! -f /opt/lists/rockyou.txt ] && curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt || true
-	[ ! -d /opt/lists/PayloadsAllTheThings ] && git clone --depth=1 https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings || true
-	[ ! -d /opt/lists/BruteX ] && git clone --depth=1 https://github.com/1N3/BruteX /opt/lists/BruteX || true
-	[ ! -d /opt/lists/IntruderPayloads ] && git clone --depth=1 https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads || true
-	[ ! -d /opt/lists/Probable-Wordlists ] && git clone --depth=1 https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists || true
-	[ ! -d /opt/lists/Open-Redirect-Payloads ] && git clone --depth=1 https://github.com/cujanovic/Open-Redirect-Payloads /opt/lists/Open-Redirect-Payloads || true
-	[ ! -d /opt/lists/SecLists ] && git clone --depth=1 https://github.com/danielmiessler/SecLists /opt/lists/SecLists || true
-	[ ! -d /opt/lists/Pwdb-Public ] && git clone --depth=1 https://github.com/ignis-sec/Pwdb-Public /opt/lists/Pwdb-Public || true
-	[ ! -d /opt/lists/Bug-Bounty-Wordlists ] && git clone --depth=1 https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists || true
-	[ ! -d /opt/lists/richelieu ] && git clone --depth=1 https://github.com/tarraschk/richelieu /opt/lists/richelieu || true
-	[ ! -d /opt/lists/webapp-wordlists ] && git clone --depth=1 https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists || true
-	$(MAKE) clean
+	[ ! -d /opt/lists ] && sudo mkdir -p /opt/lists && sudo chown "$$USER:$$USER" /opt/lists || true
+	# Download all wordlists in parallel
+	( [ ! -f /opt/lists/rockyou.txt ] && curl -L https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -o /opt/lists/rockyou.txt || true ) &
+	( [ ! -d /opt/lists/PayloadsAllTheThings ] && git clone --depth=1 https://github.com/swisskyrepo/PayloadsAllTheThings /opt/lists/PayloadsAllTheThings || true ) &
+	( [ ! -d /opt/lists/BruteX ] && git clone --depth=1 https://github.com/1N3/BruteX /opt/lists/BruteX || true ) &
+	( [ ! -d /opt/lists/IntruderPayloads ] && git clone --depth=1 https://github.com/1N3/IntruderPayloads /opt/lists/IntruderPayloads || true ) &
+	( [ ! -d /opt/lists/Probable-Wordlists ] && git clone --depth=1 https://github.com/berzerk0/Probable-Wordlists /opt/lists/Probable-Wordlists || true ) &
+	( [ ! -d /opt/lists/Open-Redirect-Payloads ] && git clone --depth=1 https://github.com/cujanovic/Open-Redirect-Payloads /opt/lists/Open-Redirect-Payloads || true ) &
+	( [ ! -d /opt/lists/SecLists ] && git clone --depth=1 https://github.com/danielmiessler/SecLists /opt/lists/SecLists || true ) &
+	( [ ! -d /opt/lists/Pwdb-Public ] && git clone --depth=1 https://github.com/ignis-sec/Pwdb-Public /opt/lists/Pwdb-Public || true ) &
+	( [ ! -d /opt/lists/Bug-Bounty-Wordlists ] && git clone --depth=1 https://github.com/Karanxa/Bug-Bounty-Wordlists /opt/lists/Bug-Bounty-Wordlists || true ) &
+	( [ ! -d /opt/lists/richelieu ] && git clone --depth=1 https://github.com/tarraschk/richelieu /opt/lists/richelieu || true ) &
+	( [ ! -d /opt/lists/webapp-wordlists ] && git clone --depth=1 https://github.com/p0dalirius/webapp-wordlists /opt/lists/webapp-wordlists || true ) &
+	wait
 	echo -e "$(C_OK) Wordlists installed!$(C_RST)"
 
 install-hardening: sanity-check ## Install hardening tools (opensnitch)
@@ -272,7 +261,6 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	$(PACMAN_INSTALL) opensnitch
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
-	$(MAKE) clean
 	echo -e "$(C_OK) Hardening tools installed!$(C_RST)"
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
@@ -555,8 +543,8 @@ docker-run-full: ## Run full Docker image locally
 clean: ## Clean up system and remove unnecessary files
 	set +e # Cleanup should be best-effort, never fail the build
 	[ ! -f /.dockerenv ] && exit 0
-	yes|sudo pacman -Scc || true
-	yes|sudo pacman -Sc || true
+	sudo pacman --noconfirm -Scc || true
+	sudo pacman --noconfirm -Sc || true
 	sudo pacman -Rns $$(pacman -Qtdq) 2>/dev/null || true
 	rm -rf ~/.cache/pip || true
 	rm -rf ~/.cache/yay || true

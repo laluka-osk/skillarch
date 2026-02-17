@@ -12,6 +12,7 @@ RUN chown -R hacker:hacker /opt/skillarch
 USER hacker
 ENV USER=hacker
 ENV TZ=UTC
+ENV LC_ALL=C
 WORKDIR /opt/skillarch
 
 # Install skillarch
@@ -24,6 +25,7 @@ RUN --mount=type=secret,id=GITHUB_TOKEN \
     export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null) ; \
     make install-offensive
 RUN make test-lite
+RUN make clean
 
 # Remove NOPASSWD capability after installation
 USER root
