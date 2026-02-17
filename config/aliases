@@ -1,4 +1,10 @@
-# Skillarch Helpers
+# ================================================================
+#  SkillArch Aliases
+# ================================================================
+
+# ────────────────────────────────────────
+#  SkillArch Helpers
+# ────────────────────────────────────────
 alias ska='/opt/skillarch'
 alias skao='/opt/skillarch-original'
 alias ska-help-bindings='i3-msg -t get_config | grep -vF "#bindsym" | grep -oP "bindsym .*" | fzf'
@@ -14,7 +20,9 @@ alias neofetch='fastfetch'
 alias hifetch='fastfetch'
 alias didi='sudo pacman -Sy discord'
 
-## Directories, Git, Ide
+# ────────────────────────────────────────
+#  Directories, Navigation & Editors
+# ────────────────────────────────────────
 alias dl='cd ~/Downloads'
 alias da='cd /DATA'
 alias tn='tmux new'
@@ -30,13 +38,17 @@ alias p='python'
 alias cdtmp='pushd $(mktemp -d)'
 alias ff='f(){ find . -iname "*$1*" 2>/dev/null; unset -f f; }; f'
 
-# Git stuff
+# ────────────────────────────────────────
+#  Git
+# ────────────────────────────────────────
 alias git-clone-all-github='curl -sk -H "Authorization: token ${GITHUB_READ_TOKEN}" "https://api.github.com/search/repositories?q=user:$GITHUB_USER" | jq -r ".items[].ssh_url" | parallel -j10 "git clone {}"'
 alias git-clone-all-gitlab='curl -sk -H "Authorization: Bearer ${GITLAB_READ_TOKEN}" "https://gitlab.com/api/v4/projects?owned=true&simple=true" | jq -r ".[].ssh_url_to_repo" | parallel -j10 "git clone {}"'
 alias git-pull-all='find . -maxdepth 2 -name ".git" | cut -d/ -f2 | parallel -j10 "cd {} && git pull"'
 alias gdh='git diff HEAD'
 
-## File Management
+# ────────────────────────────────────────
+#  File Management
+# ────────────────────────────────────────
 alias l="eza -ll --group-directories-first $@"
 alias la="l -a $@"
 alias t="l -T $@"
@@ -47,7 +59,9 @@ alias te='trash-empty'
 alias cp='cp -i'
 compdef _files trash-put # fix trash-put file completion
 
-## Networking
+# ────────────────────────────────────────
+#  Networking
+# ────────────────────────────────────────
 alias ipa="ip -br a | grep -vF DOWN"
 alias ipaa="ip -br a"
 alias nc='ncat'
@@ -66,13 +80,17 @@ alias get-ip='curl -sS ipinfo.io/ip ; echo'
 alias get-ip-cpy='curl -sS ipinfo.io/ip | cpy'
 alias pub='export PUB=$(curl -s ipv4.ident.me|| curl -sS ifconfig.io); echo -n $PUB | cpy; echo $PUB'
 
-# Video, Audio
+# ────────────────────────────────────────
+#  Video, Audio & Screenshots
+# ────────────────────────────────────────
 alias webcam-guvcview='guvcview'
 alias yt-dlp-likes='yt-dlp --cookies-from-browser chrome -x --audio-format mp3  :ytfav'
 alias yt-mp3="yt-dlp --extract-audio --audio-format mp3"
 alias flameshotz='while true; do flameshot full -p ~/Downloads; sleep 1; done'
 
-# Monitoring, Upload, Sleep
+# ────────────────────────────────────────
+#  Monitoring & System
+# ────────────────────────────────────────
 alias show-disk-io='watch -cd -- iostat -h'
 alias sdi='show-disk-io'
 alias show-open-ports="sudo ss -latepun | grep -i listen"
@@ -84,7 +102,9 @@ alias get-shell-size='echo "stty rows $LINES cols $COLUMNS"'
 alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
 alias killit='sudo kill -KILL'
 
-# Misc Utils
+# ────────────────────────────────────────
+#  Misc Utilities
+# ────────────────────────────────────────
 alias upload='f(){ curl -F"file=@$1" https://0x0.st;  unset -f f; }; f'
 alias usleep='f(){ python3 -c "import time; time.sleep($1)";  unset -f f; }; f'
 alias nosleep='systemd-inhibit --what sleep:idle sleep 999999'
@@ -106,12 +126,16 @@ alias mcrypt-dec='mdecrypt'
 alias get-meteo='curl https://wttr.in/'
 alias fab='fabric-ai -s'
 
-# Python
+# ────────────────────────────────────────
+#  Python
+# ────────────────────────────────────────
 alias pv='f(){ if [ -z "$1" ] ; then echo "Use: pv 3.12" ; else mise use "python@$1" ; mise config set env._.python.venv.path .venv ; mise config set --type list env._.python.venv.uv_create_args -- --seed ; mise config set --type bool env._.python.venv.create true ; mise exec -- which python ; mise exec -- python --version ; fi;  unset -f f; }; f'
 alias pyreq='pip install -r requirements.txt'
 alias pysrv='mkdir -pv /tmp/empty ; python -m http.server -d /tmp/empty'
 
-# Data Generation & Modification
+# ────────────────────────────────────────
+#  Data Generation & Encoding
+# ────────────────────────────────────────
 alias get-badchars='echo -e "\x22\x27<?>][]{}_)(*;/\x5c"'
 alias get-bytes-hex='python3 -c "for i in range(0,256): print(hex(i))"'
 alias get-bytes-raw='python3 -c "for i in range(0,256): print(chr(i))"'
@@ -123,7 +147,9 @@ alias urlenc='python3 -c "import sys; from urllib.parse import quote; print(quot
 alias urlencall='f(){ echo -n "$1" | xxd -p -c 1000000 | sed "s#..#%&#g"; unset -f f; }; f'
 alias urld="perl -MURI::Escape -ne 'print uri_unescape(\$_);'" # url decode stdin stream
 
-# Web Based Recon
+# ────────────────────────────────────────
+#  Web Recon
+# ────────────────────────────────────────
 alias getinfo-known-creds='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ;  unset -f f; }; f'
 alias getinfo-known-port='f(){ xdg-open "https://www.speedguide.net/port.php?port=$@" ;  unset -f f; }; f'
 alias getinfo-bookhacktricks='f(){ xdg-open "https://book.hacktricks.wiki/en/index.html?search=$@" ;  unset -f f; }; f'
@@ -134,7 +160,9 @@ alias getinfo-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=
 alias getinfo-leakix='f(){ curl -sk "https://leakix.net/api/graph/hostname/$1?v[]=hostname&v[]=ip&d=auto&l=auto" | jq | grep -ioP "hostname/[^\"]+" | cut -d/ -f2 | sort -uV ; unset -f f; }; f'
 unalias gau 2>/dev/null # gau real tool instead of omz git alias
 
-# Web Fuzzing
+# ────────────────────────────────────────
+#  Web Fuzzing
+# ────────────────────────────────────────
 alias probe-urls='f(){ while read url; do curl -sk "$url" -o /dev/null -w "%{http_code}:%{size_download}:%{url_effective}\n" ; done < "$@" ; ; unset -f f; }; f'
 alias fu='ffuf --of json -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
 alias cfu='f(){ jq -r ".results[]|[.status,.length,.lines,.words,.url]|@tsv" "$@"|sort -uV; unset -f f; }; f'
@@ -145,7 +173,9 @@ alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86
 alias crli='crl -D /dev/stderr'
 alias crlix='crli -x http://127.0.0.1:8080/'
 
-# Docker Utils
+# ────────────────────────────────────────
+#  Docker Management
+# ────────────────────────────────────────
 alias dockit='docker run --rm -it -v /tmp:/tmp -v "$PWD":/skahost -w /skahost'
 alias dex='docker exec -it $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
 alias dexr='docker exec -it -u root $(docker ps | grep -vF "CONTAINER ID" | fzf | cut -d" " -f1)'
@@ -162,17 +192,20 @@ alias dwipe-volume='docker volume rm $(docker volume ls -q | tr "\n" " ")'
 alias di='docker inspect $(docker ps | grep -vF "NAMES" | fzf | cut -d" " -f1) | jq'
 alias dip='docker inspect $(docker ps | grep -vF "NAMES" | fzf | cut -d" " -f1) | jq | grep -P "(172|10)\."'
 
-# Docker Tooling
-## Git stuff
+# ────────────────────────────────────────
+#  Docker Tooling: Security & Recon
+# ────────────────────────────────────────
+
+## Git scanning
 alias dtrufflehog='dockit trufflesecurity/trufflehog'
 alias dgitleaks="dockit zricethezav/gitleaks"
 
-## Recon
+## Recon & Enumeration
 alias drecon-amass='dockit caffix/amass'
 alias drecon-findomain='dockit edu4rdshl/findomain -t'
 alias drecon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
 
-## Fuzz & Crawl
+## Fuzzing & Crawling
 alias dsecator="dockit -v ~/.secator:/root/.secator freelabz/secator" # normalize offensive arsenal
 alias drustscan='dockit rustscan/rustscan' # web path enum
 alias doneforall='dockit -w /OneForAll -v /tmp/results:/OneForAll/results shmilylty/oneforall' # noisy recon
@@ -180,26 +213,26 @@ alias getfuzz='echo "AA<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\"BB'
 alias getcan='f(){ echo "skanary$(date +%s%N)"; unset -f f; }; f'
 alias getcaninfo='f(){ date -d "@${1:0:-9}" "+%Y-%m-%d %H:%M:%S.${1: -9}"; unset -f f; }; f'
 
-## Compliance
+## Compliance & Auditing
 alias dssh-audit="dockit positronsecurity/ssh-audit"
 alias dssl-test='dockit drwetter/testssl.sh'
 
-## Hash & JWT
+## Hash & JWT Cracking
 alias djohn='dockit phocean/john_the_ripper_jumbo /jtr/run/john'
 alias djwt-tool='dockit -w /opt/jwt_tool -v "${HOME}/.jwt_tool:/root/.jwt_tool" ticarpi/jwt_tool'
 alias dhashcat='dockit dizcza/docker-hashcat:intel-cpu hashcat' # Useful but it's better to install it with pacman
 
-## Scan, Exploit
+## Exploit Frameworks & Scanning
 alias dmsfconsole='dockit --net=host --entrypoint /usr/src/metasploit-framework/msfconsole metasploitframework/metasploit-framework'
 alias dmsfvenom='dockit --entrypoint /usr/src/metasploit-framework/msfvenom metasploitframework/metasploit-framework'
 alias dwpscan="dockit wpscanteam/wpscan" # wordpress scanner
 alias ddroopescan="dockit droope/droopescan" # drupal scanner
 
-## Reverse, Forensic
+## Reverse Engineering & Forensics
 alias dretdec='dockit blacktop/retdec' # binary to c code
 alias dbinwalk-dd="/usr/bin/binwalk --dd='.*'"
 
-## Sysadmin
+## Sysadmin & Dev Tools
 alias dsysdig='dockit --privileged -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro --entrypoint /usr/bin/sysdig docker.io/sysdig/sysdig --modern-bpf --unbuffer'
 alias dswagger-editor='dockit -p 127.0.0.1:8000:8080 docker.swagger.io/swaggerapi/swagger-editor'
 alias dcarbonyl='dockit fathyb/carbonyl' # Chrome in Terminal
