@@ -221,6 +221,16 @@ install-offensive: sanity-check ## Install offensive & security tools
 	mise exec -- go install github.com/x90skysn3k/brutespray@latest > /dev/null &
 	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null &
 	wait
+
+	# Install GitHub binary releases -- gobypass403 & wpprobe
+	( wget -q "$$(curl -sL https://api.github.com/repos/slicingmelon/gobypass403/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')" -O /tmp/gobypass403 \
+		&& chmod +x /tmp/gobypass403 && sudo mv /tmp/gobypass403 /usr/local/bin/gobypass403 ) &
+	( TAG=$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r '.tag_name') \
+		&& wget -q "$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r ".assets[] | select(.name | contains(\"linux_amd64\") and contains(\"$$TAG\")) | .browser_download_url")" -O /tmp/wpprobe \
+		&& chmod +x /tmp/wpprobe && sudo mv /tmp/wpprobe /usr/local/bin/wpprobe \
+		&& wpprobe update-db ) &
+	wait
+
 	# pdtm hits GitHub API rate limits (60 req/h unauthenticated) -- retry after rate limit reset
 	for attempt in 1 2 3; do \
 		zsh -c "source ~/.zshrc && pdtm -install-all -v" && break || { \
@@ -315,10 +325,12 @@ test: ## Validate installation (smoke tests)
 	ska_check "nuclei"     "which nuclei || [ -f ~/.pdtm/go/bin/nuclei ]"
 	ska_check "httpx"      "which httpx || [ -f ~/.pdtm/go/bin/httpx ]"
 	ska_check "subfinder"  "which subfinder || [ -f ~/.pdtm/go/bin/subfinder ]"
-	ska_check "gef"        "[ -f ~/.gdbinit-gef.py ]"
-	ska_check "metasploit" "which msfconsole"
-	ska_check "hashcat"    "which hashcat"
-	ska_check "bettercap"  "which bettercap"
+	ska_check "gef"          "[ -f ~/.gdbinit-gef.py ]"
+	ska_check "metasploit"   "which msfconsole"
+	ska_check "hashcat"      "which hashcat"
+	ska_check "bettercap"    "which bettercap"
+	ska_check "gobypass403"  "which gobypass403"
+	ska_check "wpprobe"      "which wpprobe"
 	echo -e "\n$(C_BOLD)--- Shell & Config ---$(C_RST)"
 	ska_check "oh-my-zsh"  "[ -d ~/.oh-my-zsh ]"
 	ska_check "zshrc link" "[ -L ~/.zshrc ]"
@@ -365,9 +377,11 @@ test-lite: ## Validate lite Docker image install
 	for bin in ffuf hashcat bettercap msfconsole; do
 		ska_check "$$bin" "which $$bin"
 	done
-	ska_check "nuclei"    "which nuclei || [ -f ~/.pdtm/go/bin/nuclei ]"
-	ska_check "httpx"     "which httpx || [ -f ~/.pdtm/go/bin/httpx ]"
-	ska_check "gef"       "[ -f ~/.gdbinit-gef.py ]"
+	ska_check "nuclei"      "which nuclei || [ -f ~/.pdtm/go/bin/nuclei ]"
+	ska_check "httpx"       "which httpx || [ -f ~/.pdtm/go/bin/httpx ]"
+	ska_check "gobypass403" "which gobypass403"
+	ska_check "wpprobe"     "which wpprobe"
+	ska_check "gef"         "[ -f ~/.gdbinit-gef.py ]"
 	echo -e "\n$(C_BOLD)--- Shell & Config ---$(C_RST)"
 	ska_check "oh-my-zsh" "[ -d ~/.oh-my-zsh ]"
 	ska_check "zshrc"     "[ -L ~/.zshrc ]"
