@@ -6,6 +6,7 @@ COPY . /opt/skillarch
 RUN chown -R hacker:hacker /opt/skillarch
 
 USER hacker
+ENV LC_ALL=C
 WORKDIR /opt/skillarch
 
 # Install all targets in a single layer so clean reclaims space within the same layer
