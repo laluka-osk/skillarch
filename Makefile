@@ -300,8 +300,7 @@ test: ## Validate installation (smoke tests)
 			echo -e "  $(C_OK)[PASS]$(C_RST) $$1"
 			PASS=$$((PASS + 1))
 		else
-			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1  $(C_WARN)(cmd: $$2)$(C_RST)"
-			eval "$$2" 2>&1 | head -3 | sed 's/^/         /' || true
+			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1"
 			FAIL=$$((FAIL + 1))
 		fi
 	}
@@ -366,8 +365,7 @@ test-lite: ## Validate lite Docker image install
 			echo -e "  $(C_OK)[PASS]$(C_RST) $$1"
 			PASS=$$((PASS + 1))
 		else
-			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1  $(C_WARN)(cmd: $$2)$(C_RST)"
-			eval "$$2" 2>&1 | head -3 | sed 's/^/         /' || true
+			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1"
 			FAIL=$$((FAIL + 1))
 		fi
 	}
@@ -411,8 +409,7 @@ test-full: test ## Validate full Docker image install (runs test + extras)
 			echo -e "  $(C_OK)[PASS]$(C_RST) $$1"
 			PASS=$$((PASS + 1))
 		else
-			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1  $(C_WARN)(cmd: $$2)$(C_RST)"
-			eval "$$2" 2>&1 | head -3 | sed 's/^/         /' || true
+			echo -e "  $(C_ERR)[FAIL]$(C_RST) $$1"
 			FAIL=$$((FAIL + 1))
 		fi
 	}
