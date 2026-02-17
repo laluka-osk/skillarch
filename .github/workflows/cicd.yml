@@ -124,5 +124,3 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/skillarch/skillarch
           gitleaks detect --source . --redact -v --exit-code=2 --report-format=sarif --report-path=results.sarif --log-level=debug
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
