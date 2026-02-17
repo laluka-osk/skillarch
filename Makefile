@@ -73,10 +73,11 @@ install-base: sanity-check ## Install base packages
 	[ ! -f /.dockerenv ] && sudo cachyos-rate-mirrors || true # Increase install speed & Update repos (skip in Docker)
 	sudo pacman-key --init
 	sudo pacman-key --populate archlinux cachyos
-	sudo pacman-key --refresh-keys
 	sudo pacman --noconfirm -Scc
 	sudo pacman --noconfirm -Syu
 	$(PACMAN_INSTALL) git vim tmux wget curl archlinux-keyring
+	# Re-populate after archlinux-keyring update to pick up any new packager keys
+	sudo pacman-key --populate archlinux
 
 	# Add chaotic-aur to pacman
 	curl -sS "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x3056513887B78AEB" | sudo pacman-key --add -
