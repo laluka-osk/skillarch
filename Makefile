@@ -220,8 +220,13 @@ install-offensive: sanity-check ## Install offensive & security tools
 	mise exec -- go install github.com/x90skysn3k/brutespray@latest > /dev/null &
 	mise exec -- go install github.com/sensepost/gowitness@latest > /dev/null &
 	wait
-	zsh -c "source ~/.zshrc && pdtm -install-all -v" || true
-	zsh -c "source ~/.zshrc && pdtm -update-all -v" || true
+	# pdtm hits GitHub API rate limits (60 req/h unauthenticated) -- retry after rate limit reset
+	for attempt in 1 2 3; do \
+		zsh -c "source ~/.zshrc && pdtm -install-all -v" && break || { \
+			echo -e "$(C_WARN) pdtm install failed (attempt $$attempt/3), likely rate-limited. Waiting 15m for reset...$(C_RST)" ; \
+			sleep 900 ; \
+		} ; \
+	done || true
 	zsh -c "source ~/.zshrc && nuclei -update-templates -update-template-dir ~/.nuclei-templates" || true
 
 	# Clone custom tools -- run in parallel
@@ -524,7 +529,7 @@ backup: ## Backup current configs before overwriting
 # ============================================================
 
 docker-build: ## Build lite Docker image locally
-	docker build --secret id=GITHUB_TOKEN,env=GITHUB_TOKEN -t thelaluka/skillarch:lite -f Dockerfile-lite .
+	docker build -t thelaluka/skillarch:lite -f Dockerfile-lite .
 
 docker-build-full: docker-build ## Build full Docker image locally
 	docker build -t thelaluka/skillarch:full -f Dockerfile-full .

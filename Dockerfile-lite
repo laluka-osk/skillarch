@@ -17,13 +17,9 @@ WORKDIR /opt/skillarch
 
 # Install skillarch
 RUN make install-base
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null) ; \
-    make install-cli-tools
+RUN make install-cli-tools
 RUN make install-shell
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null) ; \
-    make install-offensive
+RUN make install-offensive
 RUN make test-lite
 RUN make clean
 
