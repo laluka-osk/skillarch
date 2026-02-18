@@ -225,8 +225,7 @@ install-offensive: sanity-check ## Install offensive & security tools
 	# Install GitHub binary releases -- gobypass403 & wpprobe (sequential to save API budget for pdtm)
 	( wget -q "$$(curl -sL https://api.github.com/repos/slicingmelon/gobypass403/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')" -O /tmp/gobypass403 \
 		&& chmod +x /tmp/gobypass403 && sudo mv /tmp/gobypass403 /usr/local/bin/gobypass403 ) || true
-	( TAG=$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r '.tag_name') \
-		&& wget -q "$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r ".assets[] | select(.name | contains(\"linux_amd64\") and contains(\"$$TAG\")) | .browser_download_url")" -O /tmp/wpprobe \
+	( wget -q "$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url')" -O /tmp/wpprobe \
 		&& chmod +x /tmp/wpprobe && sudo mv /tmp/wpprobe /usr/local/bin/wpprobe \
 		&& wpprobe update-db ) || true
 
