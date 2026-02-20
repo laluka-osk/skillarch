@@ -12,14 +12,12 @@ C_ERR  := \033[1;31m
 C_BOLD := \033[1m
 SKA_LOG := /var/tmp/skillarch-install_$$(date +%Y%m%d_%H%M%S).log
 
+STEP = @echo -e "$(C_BOLD)$(C_INFO)==>  [$(1)/$(2)]$(C_RST) $(C_INFO)$(3)...$(C_RST)"
+
 define ska-link
 	# Backup existing file (if not already a symlink) and create symlink
 	[ -f $(2) ] && [ ! -L $(2) ] && mv $(2) $(2).skabak || true
 	ln -sf $(1) $(2)
-endef
-
-define ska-step
-	echo -e "$(C_INFO)$(C_BOLD)[$(1)/$(2)]$(C_RST) $(C_INFO)$(3)...$(C_RST)"
 endef
 
 PACMAN_INSTALL := sudo pacman -S --noconfirm --needed
