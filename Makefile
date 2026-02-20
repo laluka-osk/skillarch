@@ -36,7 +36,7 @@ install: ## Install SkillArch (full)
 	echo "" > $(SKA_LOG)
 	exec > >(tee -a $(SKA_LOG)) 2>&1
 	curStep=1
-	numSteps=13
+	numSteps=9
 	$(call STEP,$$((curStep++)),$$numSteps,Installing base packages)
 	$(MAKE) install-base
 	$(call STEP,$$((curStep++)),$$numSteps,Installing CLI tools & runtimes)
