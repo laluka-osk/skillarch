@@ -115,7 +115,3 @@ source $ZSH/oh-my-zsh.sh
 source /opt/skillarch/config/aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(register-python-argcomplete --no-defaults exegol)"
-
-# Created by `pipx` on 2025-03-03 15:05:01
-export PATH=$PATH:~/.local/bin
-export PATH=$PATH:~/.pdtm/go/bin
