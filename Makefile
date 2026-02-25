@@ -128,14 +128,19 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	eval "$$(mise activate bash)" || true
 
-	# Install uv tools
-	for package in argcomplete bypass-url-parser dirsearch exegol pre-commit sqlmap wafw00f yt-dlp semgrep defaultcreds-cheat-sheet; do
-		uv tool install -w setuptools "$$package" || {
+	# Install uv tools (dirsearch needs setuptools, the others don't)
+	for package in argcomplete bypass-url-parser exegol pre-commit sqlmap wafw00f yt-dlp semgrep defaultcreds-cheat-sheet; do
+		uv tool install "$$package" || {
 			$(call WARN,Retrying $$package install...)
 			uv tool uninstall "$$package" || true
-			uv tool install -q -w setuptools "$$package"
+			uv tool install -q "$$package"
 		}
 	done
+	uv tool install -w setuptools dirsearch || {
+		$(call WARN,Retrying dirsearch install...)
+		uv tool uninstall dirsearch || true
+		uv tool install -q -w setuptools dirsearch
+	}
 	$(call DONE,CLI tools & runtimes installed!)
 
 install-shell: sanity-check ## Install shell, zsh, oh-my-zsh, fzf, tmux
@@ -220,7 +225,6 @@ install-offensive: sanity-check ## Install offensive & security tools
 	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
 	sudo sed -i 's#$$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
-	[ -f /usr/bin/pdtm ] && { mkdir -p ~/.pdtm/go/bin; sudo chown "$$USER:$$USER" /usr/bin/pdtm; sudo mv /usr/bin/pdtm ~/.pdtm/go/bin; ~/.pdtm/go/bin/pdtm -u pdtm; } || true
 
 	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
 	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null &
