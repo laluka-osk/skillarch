@@ -115,3 +115,4 @@ source $ZSH/oh-my-zsh.sh
 source /opt/skillarch/config/aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(register-python-argcomplete --no-defaults exegol)"
+source /opt/precious/lalu-alias.rc
