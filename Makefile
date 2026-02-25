@@ -134,7 +134,6 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	for package in argcomplete bypass-url-parser exegol pre-commit sqlmap wafw00f yt-dlp semgrep defaultcreds-cheat-sheet; do
 		uv tool install "$$package" || {
 			$(call WARN,Retrying $$package install...)
-			uv tool uninstall "$$package" || true
 			uv tool install -q "$$package"
 		}
 	done
@@ -143,6 +142,7 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 		uv tool uninstall dirsearch || true
 		uv tool install -q -w setuptools dirsearch
 	}
+	uv tool upgrade --all || true
 	$(call DONE,CLI tools & runtimes installed!)
 
 install-shell: sanity-check ## Install shell, zsh, oh-my-zsh, fzf, tmux
