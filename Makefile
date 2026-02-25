@@ -130,18 +130,13 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	mise exec -- go env -w "GOPATH=/home/$$USER/.local/go"
 	eval "$$(mise activate bash)" || true
 
-	# Install uv tools (dirsearch needs setuptools, the others don't)
+	# Install uv tools
 	for package in argcomplete bypass-url-parser exegol pre-commit sqlmap wafw00f yt-dlp semgrep defaultcreds-cheat-sheet; do
 		uv tool install "$$package" || {
 			$(call WARN,Retrying $$package install...)
 			uv tool install -q "$$package"
 		}
 	done
-	uv tool install -w setuptools dirsearch || {
-		$(call WARN,Retrying dirsearch install...)
-		uv tool uninstall dirsearch || true
-		uv tool install -q -w setuptools dirsearch
-	}
 	uv tool upgrade --all || true
 	$(call DONE,CLI tools & runtimes installed!)
 
