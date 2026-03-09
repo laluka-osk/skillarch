@@ -299,9 +299,12 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
 	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
 	# cloud-init: VM provisioning for Proxmox, DigitalOcean, AWS, GCP, etc.
+	# Replace gnu-netcat with openbsd-netcat (cloud-init dependency, nothing depends on gnu-netcat)
+	sudo pacman -Rdd --noconfirm gnu-netcat 2>/dev/null || true
 	$(PACMAN_INSTALL) cloud-init
 	# Enable cloud-init services so the VM auto-configures on first boot (network, SSH keys, hostname, etc.)
-	[[ ! -f /.dockerenv ]] && sudo systemctl enable cloud-init-local.service cloud-init.service cloud-config.service cloud-final.service || true
+	# cloud-init 25.x split services: cloud-init-local, cloud-init-main, cloud-init-network, cloud-config, cloud-final
+	[[ ! -f /.dockerenv ]] && sudo systemctl enable cloud-init-local.service cloud-init-main.service cloud-init-network.service cloud-config.service cloud-final.service || true
 	# Proxmox compatibility: enable NoCloud + ConfigDrive datasources (Proxmox uses NoCloud via CDROM/SMBIOS)
 	# DigitalOcean compatibility: enable DigitalOcean datasource
 	sudo sed -i 's/^#\?\s*datasource_list:.*/datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]/' /etc/cloud/cloud.cfg 2>/dev/null \
