@@ -289,17 +289,15 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
 
-install-remote-access: sanity-check ## Install KasmVNC & Mullvad VPN
+install-remote-access: sanity-check ## Install x11vnc, noVNC & Mullvad VPN
 	$(call INFO,Installing remote access tools...)
-	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
-	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
-	# KasmVNC config: SSL disabled (served over SSH port-forward only)
-	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
-	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
+	# x11vnc + Xvfb + noVNC: browser-based remote desktop (attach to existing or create virtual display)
+	$(PACMAN_INSTALL) x11vnc xorg-server-xvfb xorg-xdpyinfo
+	yay --noconfirm --needed -S novnc || $(call WARN,Failed to install novnc$(comma) continuing...)
 	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
 	$(PACMAN_INSTALL) mullvad-vpn-daemon
 	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
-	$(call DONE,Remote access tools installed! Start KasmVNC with: kasmvncserver :1)
+	$(call DONE,Remote access tools installed! Start VNC with: ska-vnc)
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
 	@[[ -n "$$(git status --porcelain)" ]] && echo "Error: git state is dirty, please \"git stash\" your changes before updating" && exit 1 || true

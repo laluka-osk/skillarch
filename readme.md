@@ -92,7 +92,7 @@ make help
 #   install-offensive   Install offensive tools
 #   install-wordlists   Install wordlists
 #   install-hardening   Install hardening tools
-#   install-remote-access Install KasmVNC & Mullvad VPN
+#   install-remote-access Install x11vnc, noVNC & Mullvad VPN
 #   update              Update SkillArch
 #   docker-build        Build lite docker image locally
 #   docker-build-full   Build full docker image locally
@@ -115,7 +115,7 @@ make help
 | `ska-sudo-unlock` | Unlock current user after 3 sudo fails |
 | `ska-update-simple` | Update SkillArch repo & starts install |
 | `ska-update-advanced` | Helper to Pull Upstream & merge |
-| `ska-vnc` | Set VNC password & start KasmVNC server |
+| `ska-vnc` | Start x11vnc + noVNC (attach to screen or create virtual) |
 
 ### MISC Gotchas
 
@@ -276,10 +276,10 @@ bindsym $mod+c exec code
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer mullvad-vpn-daemon ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo x11vnc xorg-server xorg-server-xvfb xorg-xdpyinfo i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer mullvad-vpn-daemon ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
 
 # Yay packages
-ffuf gau pdtm-bin waybackurls fswebcam kasmvncserver-bin caido-desktop caido-cli i3-battery-popup-git rofi-power-menu fabric-ai-bin
+ffuf gau pdtm-bin waybackurls fswebcam novnc caido-desktop caido-cli i3-battery-popup-git rofi-power-menu fabric-ai-bin
 
 # Flatpak packages
 com.obsproject.Studio org.gnome.Snapshot
@@ -358,20 +358,20 @@ The following systemd services are installed but **disabled and stopped by defau
 | `opensnitchd` | `opensnitch` | `sudo systemctl start opensnitchd` | `sudo systemctl enable opensnitchd` | Egress firewall (opt-in) |
 | `mullvad-daemon` | `mullvad-vpn-daemon` | `sudo systemctl start mullvad-daemon` | `sudo systemctl enable mullvad-daemon` | Mullvad VPN daemon |
 | `nxserver` | `nomachine` | `sudo systemctl start nxserver` | `sudo systemctl enable nxserver` | NoMachine remote desktop |
-| *(user-level)* | `kasmvncserver-bin` | `kasmvncserver :1` | `systemctl --user enable kasmvncserver@:1` | Remote desktop via browser (VNC) |
+| *(user-level)* | `x11vnc` + `novnc` | `ska-vnc` | n/a | Remote desktop via browser (x11vnc + noVNC) |
 
-**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. SSL is disabled by default (config at `~/.vnc/kasmvnc.yaml`) — access it via SSH port-forward only:
+**x11vnc + noVNC** (`x11vnc`, `novnc`, `xorg-server-xvfb`): Browser-based remote desktop. Attaches to your existing X display, or creates a virtual one via Xvfb if no display is found. Listens on localhost only — use SSH port-forward for remote access:
 
 ```bash
-# Create VNC user (no sudo! runs as your user)
-kasmvncpasswd -u $USER -w -r
-# Start server
-kasmvncserver :1
+# Start (interactive, prompts for optional password)
+ska-vnc
 # From your local machine, SSH port-forward:
-ssh -L 8443:localhost:8443 user@host
-# Access: http://localhost:8443
-# Stop
-kasmvncserver -kill :1
+ssh -L 6080:localhost:6080 user@host
+# Access: http://localhost:6080/vnc.html?autoconnect=true
+# Stop: Ctrl+C in the ska-vnc terminal
+
+# ska-vnc accepts optional args: ska-vnc [vnc_port] [web_port] [display] [resolution]
+ska-vnc 5900 6080 :99 1920x1080x24
 ```
 
 **Mullvad VPN** (`mullvad-vpn-daemon`): Privacy-focused VPN. After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.
