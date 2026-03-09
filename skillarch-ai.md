@@ -372,7 +372,7 @@ SSL is disabled (config: `~/.vnc/kasmvnc.yaml`). Access via SSH port-forward onl
 ska-vnc
 # Or manual setup:
 kasmvncpasswd -u $USER -w -r
-kasmvncserver :1
+kasmvncserver :1 -config ~/.vnc/kasmvnc.yaml
 # From your local machine, SSH port-forward:
 ssh -L 8443:localhost:8443 user@host
 # Access: http://localhost:8443
