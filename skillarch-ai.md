@@ -27,11 +27,11 @@ make install-shell      # Zsh, oh-my-zsh, fzf, tmux, vim, dotfile symlinks
 make install-docker     # Docker + Docker Compose, user added to docker group
 make install-gui        # i3, polybar, kitty, rofi, picom, touchpad config
 make install-gui-tools  # Chrome, VSCode, Ghidra, Discord, VLC, Wireshark
-make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools
+make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools, Mullvad VPN
 make install-wordlists  # All wordlists to /opt/lists/
 make install-hardening  # opensnitch (installed, opt-in)
-make install-remote-access # x11vnc + noVNC + Xvfb, Mullvad VPN daemon (disabled by default)
 make update             # git pull + prompt to re-run make install
+make cloud              # (Standalone, NOT in make install) KasmVNC for cloud/remote desktop
 make test               # Full smoke tests
 make test-lite          # Lite Docker image smoke tests
 make test-full          # Full Docker image smoke tests (GUI + wordlists)
@@ -60,7 +60,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `ska-update-simple` | `ska && make update && make install` |
 | `ska-update-advanced` | Print git merge workflow for forked setups |
 | `ska-sudo-unlock` | Reset faillock after 3 bad sudo attempts |
-| `ska-vnc` | Start x11vnc + noVNC (attach to screen or create virtual via Xvfb) |
+| `ska-vnc` | Prompt for VNC password, set it, start KasmVNC on :1 |
 | `ska-vbox-install-guestutils` | Install VirtualBox guest utils |
 | `fastfetch` / `neofetch` / `hifetch` | fastfetch with SkillArch logo |
 
@@ -286,7 +286,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 `bat`, `eza`, `fzf`, `ripgrep`, `fd`, `jq`, `glow`, `jless`, `gron`, `htmlq`, `qsv`, `viu`, `superfile`, `fastfetch`, `asciinema`, `bottom`, `htop`, `tmux`, `git-delta`, `lazygit`, `fq`, `fx`, `websocat`, `cloc`, `tree`, `rlwrap`, `parallel`, `tmate`, `trash-cli`, `sysstat`, `inotify-tools`
 
 ### Security / Offensive (pacman)
-`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`
+`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`, `mullvad-vpn-daemon`
 
 ### Security / Offensive (yay/AUR)
 `ffuf`, `gau`, `pdtm-bin`, `waybackurls`, `fabric-ai-bin`, `caido-desktop`, `caido-cli`, `gobypass403` (GitHub release), `wpprobe` (GitHub release)
@@ -344,22 +344,8 @@ All services below are **disabled/stopped by default** unless noted:
 |---|---|---|---|
 | `docker` | enabled (bare metal) | auto | Container runtime |
 | `opensnitchd` | disabled (opt-in) | `sudo systemctl start opensnitchd` | Egress firewall |
-| `mullvad-daemon` | disabled | `sudo systemctl start mullvad-daemon` | Mullvad VPN (pacman: `mullvad-vpn-daemon`) |
+| `mullvad-daemon` | disabled | `sudo systemctl start mullvad-daemon` | Mullvad VPN — installed via `install-offensive` (pacman: `mullvad-vpn-daemon`) |
 | `nxserver` | disabled | `sudo systemctl start nxserver` | NoMachine remote desktop |
-| *(user-level)* | n/a | `ska-vnc` | x11vnc + noVNC remote desktop (pacman: `x11vnc`, `xorg-server-xvfb`; yay: `novnc`) |
-
-### x11vnc + noVNC Usage
-Attaches to existing X display or creates a virtual one via Xvfb. Listens on localhost — use SSH port-forward for remote access.
-```bash
-# Start (prompts for optional password, Ctrl+C to stop)
-ska-vnc
-# From your local machine:
-ssh -L 6080:localhost:6080 user@host
-# Access: http://localhost:6080/vnc.html?autoconnect=true
-
-# Optional args: ska-vnc [vnc_port] [web_port] [display] [resolution]
-ska-vnc 5900 6080 :99 1920x1080x24
-```
 
 ### Mullvad VPN Usage
 ```bash
@@ -369,6 +355,29 @@ mullvad connect
 mullvad status
 mullvad disconnect
 mullvad-gui            # GUI client
+```
+
+### Cloud Target (`make cloud` — standalone, NOT part of `make install`)
+
+Installs KasmVNC (`kasmvncserver-bin`). SSL is disabled via config, so no `openssl-1.1` dependency needed.
+
+| Service | Status | Start | Purpose |
+|---|---|---|---|
+| *(user-level)* | not installed by default | `ska-vnc` or `kasmvncserver :1` | KasmVNC remote desktop (yay: `kasmvncserver-bin`) |
+
+#### KasmVNC Usage
+SSL is disabled (config: `~/.vnc/kasmvnc.yaml`). Access via SSH port-forward only.
+```bash
+# Quick start (prompts for password, starts server):
+ska-vnc
+# Or manual setup:
+kasmvncpasswd -u $USER -w -r
+kasmvncserver :1
+# From your local machine, SSH port-forward:
+ssh -L 8443:localhost:8443 user@host
+# Access: http://localhost:8443
+# Stop server
+kasmvncserver -kill :1
 ```
 
 ---
@@ -389,7 +398,7 @@ All configs live in `/opt/skillarch/config/` and are symlinked into `$HOME`:
 | `~/.config/kitty/kitty.conf` | `config/kitty/kitty.conf` |
 | `~/.config/picom.conf` | `config/picom.conf` |
 | `~/.config/rofi/config.rasi` | `config/rofi/config.rasi` |
-
+| `~/.vnc/kasmvnc.yaml` | `config/kasmvnc.yaml` |
 | `/etc/X11/xorg.conf.d/30-touchpad.conf` | `config/xorg.conf.d/30-touchpad.conf` |
 
 ---

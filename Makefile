@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -c
-.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-remote-access update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
+.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening cloud update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
 
 # -- Colors & UX Helpers --
 C_RST   := \033[0m
@@ -41,7 +41,7 @@ install: ## Install SkillArch (full)
 	echo "" > $(SKA_LOG)
 	exec > >(tee -a $(SKA_LOG)) 2>&1
 	curStep=1
-	numSteps=10
+	numSteps=9
 	$(call STEP,$$((curStep++)),$$numSteps,Installing base packages)
 	$(MAKE) install-base
 	$(call STEP,$$((curStep++)),$$numSteps,Installing CLI tools & runtimes)
@@ -60,8 +60,6 @@ install: ## Install SkillArch (full)
 	$(MAKE) install-wordlists
 	$(call STEP,$$((curStep++)),$$numSteps,Installing hardening tools)
 	$(MAKE) install-hardening
-	$(call STEP,$$((curStep++)),$$numSteps,Installing remote access tools)
-	$(MAKE) install-remote-access
 	
 	$(MAKE) clean
 	$(MAKE) test
@@ -221,7 +219,7 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 
 install-offensive: sanity-check ## Install offensive & security tools
 	$(call INFO,Installing offensive tools...)
-	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap
+	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap mullvad-vpn-daemon
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin caido-desktop caido-cli; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 
 	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
@@ -261,6 +259,8 @@ install-offensive: sanity-check ## Install offensive & security tools
 	ska_clone https://github.com/laluka/pty4all &
 	ska_clone https://github.com/laluka/pypotomux &
 	wait
+	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
+	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
 	$(call DONE,Offensive tools installed!)
 
 install-wordlists: sanity-check ## Install wordlists (SecLists, rockyou, etc.)
@@ -289,15 +289,14 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
 
-install-remote-access: sanity-check ## Install x11vnc, noVNC & Mullvad VPN
-	$(call INFO,Installing remote access tools...)
-	# x11vnc + Xvfb + noVNC: browser-based remote desktop (attach to existing or create virtual display)
-	$(PACMAN_INSTALL) x11vnc xorg-server-xvfb xorg-xdpyinfo
-	yay --noconfirm --needed -S novnc || $(call WARN,Failed to install novnc$(comma) continuing...)
-	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
-	$(PACMAN_INSTALL) mullvad-vpn-daemon
-	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
-	$(call DONE,Remote access tools installed! Start VNC with: ska-vnc)
+cloud: sanity-check ## (Standalone) Install KasmVNC for cloud/remote desktop — NOT part of make install
+	$(call INFO,Installing cloud/remote desktop tools...)
+	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
+	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
+	# KasmVNC config: SSL disabled (served over SSH port-forward only)
+	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
+	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
+	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
 	@[[ -n "$$(git status --porcelain)" ]] && echo "Error: git state is dirty, please \"git stash\" your changes before updating" && exit 1 || true
