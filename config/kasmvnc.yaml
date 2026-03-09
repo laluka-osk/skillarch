@@ -1,4 +1,11 @@
+desktop:
+  resolution:
+    width: 1920
+    height: 1080
+  allow_resize: true
 network:
   protocol: http
+  websocket_port: 8443
+  interface: 127.0.0.1
   ssl:
     require_ssl: false
