@@ -302,11 +302,12 @@ install-remote-access: sanity-check ## Install KasmVNC & Mullvad VPN
 			-keyout /etc/ssl/private/ssl-cert-snakeoil.key \
 			-out /etc/ssl/certs/ssl-cert-snakeoil.pem \
 			-subj "/CN=localhost"
-		sudo chmod 644 /etc/ssl/private/ssl-cert-snakeoil.key
 		$(call OK,Self-signed SSL certs generated for KasmVNC)
 	else
 		$(call INFO,SSL snakeoil certs already exist$(comma) skipping generation)
 	fi
+	# Ensure KasmVNC can read the key without root group membership (self-signed localhost cert, no security concern)
+	sudo chmod 644 /etc/ssl/private/ssl-cert-snakeoil.key
 	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
 	$(PACMAN_INSTALL) mullvad-vpn-daemon
 	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
