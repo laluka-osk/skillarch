@@ -15,27 +15,36 @@ alias ska-update-advanced='echo "# SAVE your changes on your repo" ; echo "git a
 alias ska-vbox-install-guestutils='sudo pacman -S virtualbox-guest-utils && sudo usermod -aG vboxsf "$USER"'
 alias ska-vbox-install='sudo pacman -S virtualbox virtualbox-host-dkms && echo -e "\n\n\nNow reboot to load the vbox drivers"'
 alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'
-alias ska-vnc='f(){
-  VNC_PORT="${1:-5900}"; WEB_PORT="${2:-6080}"; VNC_DISPLAY="${3:-:99}"; RES="${4:-1920x1080x24}";
-  echo -n "VNC password (empty=none): " && read -rs pass && echo;
-  cleanup(){ echo "[ska-vnc] Stopping..."; kill $PIDS 2>/dev/null; wait 2>/dev/null; echo "[ska-vnc] Stopped."; };
-  trap cleanup EXIT INT TERM; PIDS="";
-  if xdpyinfo -display "$DISPLAY" &>/dev/null 2>&1; then
-    VNC_DISPLAY="$DISPLAY"; echo "[ska-vnc] Attaching to existing display $VNC_DISPLAY";
+ska-vnc() {
+  local VNC_PORT="${1:-5900}" WEB_PORT="${2:-6080}" VNC_DISPLAY="${3:-:99}" RES="${4:-1920x1080x24}"
+  local pass="" PIDS=""
+  echo -n "VNC password (empty=none): " && read -rs pass && echo
+  cleanup() { echo "[ska-vnc] Stopping..."; kill $PIDS 2>/dev/null; wait 2>/dev/null; echo "[ska-vnc] Stopped."; }
+  trap cleanup EXIT INT TERM
+  # Check for a real X11 display (not Wayland) by testing x11vnc can open it
+  if [ -n "${DISPLAY:-}" ] && x11vnc -display "$DISPLAY" -query 2>/dev/null | grep -q .; then
+    VNC_DISPLAY="$DISPLAY"
+    echo "[ska-vnc] Attaching to existing X11 display $VNC_DISPLAY"
   else
-    echo "[ska-vnc] No display found, starting Xvfb on $VNC_DISPLAY ($RES)";
-    Xvfb "$VNC_DISPLAY" -screen 0 "$RES" -ac +extension GLX +render -noreset &
-    PIDS="$PIDS $!"; sleep 1;
-  fi;
-  VNC_ARGS="-display $VNC_DISPLAY -rfbport $VNC_PORT -shared -forever -noxdamage -listen localhost";
-  if [ -n "$pass" ]; then VNC_ARGS="$VNC_ARGS -passwd $pass"; else VNC_ARGS="$VNC_ARGS -nopw"; fi;
-  x11vnc $VNC_ARGS &
-  PIDS="$PIDS $!"; sleep 1;
-  websockify --web /usr/share/novnc "$WEB_PORT" "localhost:$VNC_PORT" &
-  PIDS="$PIDS $!"; sleep 1;
-  echo "[ska-vnc] noVNC ready: http://localhost:$WEB_PORT/vnc.html?autoconnect=true";
-  echo "[ska-vnc] Ctrl+C to stop"; wait;
-  unset -f f; }; f'
+    echo "[ska-vnc] No usable X11 display found, starting Xvfb on $VNC_DISPLAY ($RES)"
+    Xvfb "$VNC_DISPLAY" -screen 0 "$RES" -ac +extension GLX +render -noreset &>/dev/null &
+    PIDS="$PIDS $!"
+    sleep 1
+  fi
+  local pw_args="-nopw"
+  if [ -n "$pass" ]; then pw_args="-passwd $pass"; fi
+  x11vnc -display "$VNC_DISPLAY" -rfbport "$VNC_PORT" -shared -forever -noxdamage -listen localhost $pw_args &>/dev/null &
+  PIDS="$PIDS $!"
+  sleep 1
+  if ! kill -0 ${PIDS##* } 2>/dev/null; then echo "[ska-vnc] ERROR: x11vnc failed to start"; return 1; fi
+  websockify --web /usr/share/novnc "$WEB_PORT" "localhost:$VNC_PORT" &>/dev/null &
+  PIDS="$PIDS $!"
+  sleep 1
+  if ! kill -0 ${PIDS##* } 2>/dev/null; then echo "[ska-vnc] ERROR: websockify failed to start"; return 1; fi
+  echo "[ska-vnc] noVNC ready: http://localhost:$WEB_PORT/vnc.html?autoconnect=true"
+  echo "[ska-vnc] Ctrl+C to stop"
+  wait
+}
 alias fastfetch='/usr/bin/fastfetch --logo /opt/skillarch/assets/logo-round-hot.png --logo-width 50'
 alias neofetch='fastfetch'
 alias hifetch='fastfetch'
