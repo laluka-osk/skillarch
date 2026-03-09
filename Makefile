@@ -289,7 +289,7 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
 
-cloud: sanity-check ## (Standalone) Install KasmVNC for cloud/remote desktop — NOT part of make install
+cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remote desktop — NOT part of make install
 	$(call INFO,Installing cloud/remote desktop tools...)
 	# openssl-1.1: KasmVNC binary is linked against libssl.so.1.1
 	yay --noconfirm --needed -S openssl-1.1 || $(call WARN,Failed to install openssl-1.1$(comma) continuing...)
@@ -298,6 +298,16 @@ cloud: sanity-check ## (Standalone) Install KasmVNC for cloud/remote desktop —
 	# KasmVNC config: SSL disabled (served over SSH port-forward only)
 	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
 	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
+	# cloud-init: VM provisioning for Proxmox, DigitalOcean, AWS, GCP, etc.
+	$(PACMAN_INSTALL) cloud-init
+	# Enable cloud-init services so the VM auto-configures on first boot (network, SSH keys, hostname, etc.)
+	[[ ! -f /.dockerenv ]] && sudo systemctl enable cloud-init-local.service cloud-init.service cloud-config.service cloud-final.service || true
+	# Proxmox compatibility: enable NoCloud + ConfigDrive datasources (Proxmox uses NoCloud via CDROM/SMBIOS)
+	# DigitalOcean compatibility: enable DigitalOcean datasource
+	sudo sed -i 's/^#\?\s*datasource_list:.*/datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]/' /etc/cloud/cloud.cfg 2>/dev/null \
+		|| echo 'datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
+	# Preserve the existing user instead of creating a default "arch" user
+	sudo sed -i 's/^\(\s*name:\s*\).*/\1'"$$USER"'/' /etc/cloud/cloud.cfg 2>/dev/null || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
