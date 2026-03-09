@@ -282,7 +282,7 @@ arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzi
 ffuf gau pdtm-bin waybackurls fswebcam caido-desktop caido-cli i3-battery-popup-git rofi-power-menu fabric-ai-bin
 
 # Yay packages (cloud target only — not part of make install)
-kasmvncserver-bin
+openssl-1.1 kasmvncserver-bin
 
 # Flatpak packages
 com.obsproject.Studio org.gnome.Snapshot
@@ -368,7 +368,7 @@ The following systemd services are installed but **disabled and stopped by defau
 
 > **Not part of `make install`** — this is a standalone target for maintainer/cloud use only.
 
-Installs KasmVNC (`kasmvncserver-bin`). SSL is disabled via config, so no `openssl-1.1` dependency needed.
+Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVNC binary is linked against libssl.so.1.1).
 
 | Service | Package | Start | Purpose |
 |---------|---------|-------|---------|

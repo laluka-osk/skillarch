@@ -291,6 +291,8 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 
 cloud: sanity-check ## (Standalone) Install KasmVNC for cloud/remote desktop — NOT part of make install
 	$(call INFO,Installing cloud/remote desktop tools...)
+	# openssl-1.1: KasmVNC binary is linked against libssl.so.1.1
+	yay --noconfirm --needed -S openssl-1.1 || $(call WARN,Failed to install openssl-1.1$(comma) continuing...)
 	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
 	# KasmVNC config: SSL disabled (served over SSH port-forward only)

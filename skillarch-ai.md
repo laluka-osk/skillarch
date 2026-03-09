@@ -359,7 +359,7 @@ mullvad-gui            # GUI client
 
 ### Cloud Target (`make cloud` — standalone, NOT part of `make install`)
 
-Installs KasmVNC (`kasmvncserver-bin`). SSL is disabled via config, so no `openssl-1.1` dependency needed.
+Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVNC binary is linked against libssl.so.1.1).
 
 | Service | Status | Start | Purpose |
 |---|---|---|---|
