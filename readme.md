@@ -359,18 +359,18 @@ The following systemd services are installed but **disabled and stopped by defau
 | `nxserver` | `nomachine` | `sudo systemctl start nxserver` | `sudo systemctl enable nxserver` | NoMachine remote desktop |
 | *(user-level)* | `kasmvncserver-bin` | `kasmvncserver :1` | `systemctl --user enable kasmvncserver@:1` | Remote desktop via browser (VNC) |
 
-**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. Runs as a user-level service (no sudo). First create a user with write+read access, then start:
+**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. SSL is disabled by default (config at `~/.vnc/kasmvnc.yaml`) — access it via SSH port-forward only:
 
 ```bash
 # Create VNC user (no sudo! runs as your user)
 kasmvncpasswd -u $USER -w -r
 # Start server
 kasmvncserver :1
-# Access: https://localhost:8443
+# From your local machine, SSH port-forward:
+ssh -L 8443:localhost:8443 user@host
+# Access: http://localhost:8443
 # Stop
 kasmvncserver -kill :1
-# Optional: auto-start via systemd user unit
-systemctl --user enable --now kasmvncserver@:1
 ```
 
 **Mullvad VPN** (`mullvad-vpn-daemon`): Privacy-focused VPN. After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.

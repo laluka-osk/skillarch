@@ -293,23 +293,10 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 install-remote-access: sanity-check ## Install KasmVNC & Mullvad VPN
 	$(call INFO,Installing remote access tools...)
 	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
-	# KasmVNC is built against OpenSSL 1.1 (Debian-based), Arch ships 3.x -- install compat lib
-	$(PACMAN_INSTALL) openssl-1.1
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
-	# Generate self-signed SSL certs for KasmVNC (Arch has no snakeoil certs unlike Debian)
-	if [[ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]] || [[ ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]]; then
-		sudo mkdir -p /etc/ssl/private /etc/ssl/certs
-		sudo openssl req -x509 -nodes -days 3650 \
-			-newkey rsa:2048 \
-			-keyout /etc/ssl/private/ssl-cert-snakeoil.key \
-			-out /etc/ssl/certs/ssl-cert-snakeoil.pem \
-			-subj "/CN=localhost"
-		$(call OK,Self-signed SSL certs generated for KasmVNC)
-	else
-		$(call INFO,SSL snakeoil certs already exist$(comma) skipping generation)
-	fi
-	# Ensure KasmVNC can read the key without root group membership (self-signed localhost cert, no security concern)
-	sudo chmod 644 /etc/ssl/private/ssl-cert-snakeoil.key
+	# KasmVNC config: SSL disabled (served over SSH port-forward only)
+	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
+	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
 	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
 	$(PACMAN_INSTALL) mullvad-vpn-daemon
 	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true

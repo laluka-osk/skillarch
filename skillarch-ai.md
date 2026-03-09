@@ -348,16 +348,17 @@ All services below are **disabled/stopped by default** unless noted:
 | *(user-level)* | `systemctl --user enable kasmvncserver@:1` | `kasmvncserver :1` | KasmVNC remote desktop (yay: `kasmvncserver-bin`) |
 
 ### KasmVNC Usage
+SSL is disabled (config: `~/.vnc/kasmvnc.yaml`). Access via SSH port-forward only.
 ```bash
 # Create VNC user with write+read access (no sudo — runs as your user)
 kasmvncpasswd -u $USER -w -r
 # Start server
 kasmvncserver :1
-# Access: https://localhost:8443
+# From your local machine, SSH port-forward:
+ssh -L 8443:localhost:8443 user@host
+# Access: http://localhost:8443
 # Stop server
 kasmvncserver -kill :1
-# Optional: auto-start via systemd user unit
-systemctl --user enable --now kasmvncserver@:1
 ```
 
 ### Mullvad VPN Usage
@@ -388,6 +389,7 @@ All configs live in `/opt/skillarch/config/` and are symlinked into `$HOME`:
 | `~/.config/kitty/kitty.conf` | `config/kitty/kitty.conf` |
 | `~/.config/picom.conf` | `config/picom.conf` |
 | `~/.config/rofi/config.rasi` | `config/rofi/config.rasi` |
+| `~/.vnc/kasmvnc.yaml` | `config/kasmvnc.yaml` |
 | `/etc/X11/xorg.conf.d/30-touchpad.conf` | `config/xorg.conf.d/30-touchpad.conf` |
 
 ---
