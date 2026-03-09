@@ -318,6 +318,7 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 	sudo sed -i 's/^#\?\s*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 	[[ ! -f /.dockerenv ]] && sudo systemctl reload sshd.service || true
+	sudo ufw allow 22/tcp comment 'SSH' || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
 cloud-export: ## Export a GNOME Boxes VM to a clean qcow2 (for Proxmox/DO import)
