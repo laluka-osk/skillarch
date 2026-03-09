@@ -293,6 +293,8 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 install-remote-access: sanity-check ## Install KasmVNC & Mullvad VPN
 	$(call INFO,Installing remote access tools...)
 	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
+	# KasmVNC is built against OpenSSL 1.1 (Debian-based), Arch ships 3.x -- install compat lib
+	$(PACMAN_INSTALL) openssl-1.1
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
 	# Generate self-signed SSL certs for KasmVNC (Arch has no snakeoil certs unlike Debian)
 	if [[ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]] || [[ ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]]; then
