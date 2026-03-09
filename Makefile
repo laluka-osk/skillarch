@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -c
-.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening cloud update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
+.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening cloud cloud-export update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
 
 # -- Colors & UX Helpers --
 C_RST   := \033[0m
@@ -119,7 +119,7 @@ install-cli-tools: sanity-check ## Install CLI tools & runtimes
 	# Install mise and all php-build dependencies
 	$(PACMAN_INSTALL) mise libedit libffi libjpeg-turbo libpcap libpng libxml2 libzip postgresql-libs php-gd
 	# mise self-update # Currently broken, wait for upstream fix, pinged on 17/03/2025
-	for package in uv usage pdm rust terraform golang python nodejs; do \
+	for package in uv usage pdm rust terraform golang python nodejs opencode; do \
 		for attempt in 1 2 3; do \
 			mise use -g "$$package@latest" && break || { \
 				$(call WARN,mise install $$package failed (attempt $$attempt/3)$(comma) retrying in 5s...) ; \
@@ -312,6 +312,78 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 	# Preserve the existing user instead of creating a default "arch" user
 	sudo sed -i 's/^\(\s*name:\s*\).*/\1'"$$USER"'/' /etc/cloud/cloud.cfg 2>/dev/null || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
+
+cloud-export: ## Export a GNOME Boxes VM to a clean qcow2 (for Proxmox/DO import)
+	@$(call INFO,Scanning GNOME Boxes VMs via virsh...)
+	echo ""
+	# ── Discover VMs ──
+	VM_LIST=$$(virsh -c qemu:///session list --all --name | sed '/^$$/d')
+	[[ -z "$$VM_LIST" ]] && $(call ERR,No VMs found in qemu:///session) && exit 1
+	# ── Build a nice picker ──
+	i=0
+	declare -A VM_MAP
+	while IFS= read -r vm; do \
+		((i++)) || true ; \
+		STATE=$$(virsh -c qemu:///session domstate "$$vm" 2>/dev/null | head -1) ; \
+		VCPUS=$$(virsh -c qemu:///session dominfo "$$vm" 2>/dev/null | awk '/CPU\(s\)/{print $$2}') ; \
+		RAM=$$(virsh -c qemu:///session dominfo "$$vm" 2>/dev/null | awk '/Max memory/{printf "%.0fG", $$3/1048576}') ; \
+		DISK=$$(virsh -c qemu:///session domblklist "$$vm" --details 2>/dev/null | awk '/disk/{print $$4}') ; \
+		DISK_SIZE=$$(qemu-img info "$$DISK" 2>/dev/null | awk '/virtual size/{print $$3, $$4}' || echo "?") ; \
+		SNAPS=$$(virsh -c qemu:///session snapshot-list "$$vm" --name 2>/dev/null | sed '/^$$/d' | wc -l) ; \
+		TITLE=$$(virsh -c qemu:///session dumpxml "$$vm" 2>/dev/null | grep -oP '(?<=<title>).*(?=</title>)' || echo "") ; \
+		[[ -n "$$TITLE" ]] && LABEL="$$TITLE ($$vm)" || LABEL="$$vm" ; \
+		printf "  $(C_BOLD)%d)$(C_RST)  %-30s  $(C_INFO)%-10s$(C_RST)  %s vCPU  %s RAM  %s  %d snapshot(s)\n" \
+			"$$i" "$$LABEL" "[$$STATE]" "$$VCPUS" "$$RAM" "$$DISK_SIZE" "$$SNAPS" ; \
+		VM_MAP[$$i]="$$vm" ; \
+	done <<< "$$VM_LIST"
+	echo ""
+	# ── Interactive pick ──
+	read -rp "Select VM number: " PICK
+	VM_NAME="$${VM_MAP[$$PICK]:-}"
+	[[ -z "$$VM_NAME" ]] && $(call ERR,Invalid selection) && exit 1
+	# ── Ensure VM is shut off ──
+	VM_STATE=$$(virsh -c qemu:///session domstate "$$VM_NAME" | head -1)
+	[[ "$$VM_STATE" != "shut off" ]] && $(call ERR,VM \"$$VM_NAME\" is $$VM_STATE — please shut it down first) && exit 1
+	# ── Locate source disk ──
+	SRC_DISK=$$(virsh -c qemu:///session domblklist "$$VM_NAME" --details | awk '/disk/{print $$4}')
+	[[ ! -f "$$SRC_DISK" ]] && $(call ERR,Disk image not found: $$SRC_DISK) && exit 1
+	SNAP_COUNT=$$(virsh -c qemu:///session snapshot-list "$$VM_NAME" --name 2>/dev/null | sed '/^$$/d' | wc -l)
+	$(call INFO,Source disk: $$SRC_DISK)
+	$(call INFO,Snapshots to flatten: $$SNAP_COUNT)
+	# ── Output path ──
+	OUT_DIR="/DATA/VMs/exports"
+	mkdir -p "$$OUT_DIR"
+	TIMESTAMP=$$(date +%Y%m%d-%H%M%S)
+	OUT_FILE="$$OUT_DIR/skillarch-$$TIMESTAMP.qcow2"
+	# ── Flatten snapshots + convert to clean qcow2 ──
+	$(call INFO,Converting to clean qcow2 (flattening all snapshots)...)
+	$(call WARN,This may take a while depending on disk size...)
+	qemu-img convert -p -O qcow2 "$$SRC_DISK" "$$OUT_FILE"
+	# ── Sparsify to reclaim zeroed blocks ──
+	$(call INFO,Sparsifying to shrink the image...)
+	virt-sparsify --in-place "$$OUT_FILE"
+	# ── Sysprep: clean machine-id, logs, SSH host keys for fresh cloud-init boot ──
+	$(call INFO,Sysprep: cleaning machine-id$(comma) SSH host keys$(comma) logs...)
+	virt-sysprep -a "$$OUT_FILE" \
+		--operations machine-id,ssh-hostkeys,logfiles,tmp-files,bash-history,customize \
+		--run-command 'truncate -s0 /etc/machine-id' \
+		--run-command 'rm -f /var/lib/cloud/instance /var/lib/cloud/instances/* 2>/dev/null; true'
+	# ── Summary ──
+	FINAL_SIZE=$$(du -h "$$OUT_FILE" | cut -f1)
+	echo ""
+	$(call OK,Export complete!)
+	echo ""
+	echo "  File:   $$OUT_FILE"
+	echo "  Size:   $$FINAL_SIZE"
+	echo "  Format: qcow2 (no snapshots$(comma) BIOS/GRUB$(comma) cloud-init ready)"
+	echo ""
+	echo "  Import to Proxmox:"
+	echo "    scp $$OUT_FILE root@proxmox:/var/lib/vz/images/"
+	echo "    qm importdisk <VMID> /var/lib/vz/images/$$(basename $$OUT_FILE) local-lvm"
+	echo ""
+	echo "  Import to DigitalOcean:"
+	echo "    doctl compute image create skillarch --image-url <upload-url> --region nyc1"
+	echo ""
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
 	@[[ -n "$$(git status --porcelain)" ]] && echo "Error: git state is dirty, please \"git stash\" your changes before updating" && exit 1 || true

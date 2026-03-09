@@ -288,7 +288,7 @@ openssl-1.1 kasmvncserver-bin
 com.obsproject.Studio org.gnome.Snapshot
 
 # Mise tools
-uv usage pdm rust terraform golang python nodejs
+uv usage pdm rust terraform golang python nodejs opencode
 
 # Mise golang tools
 sw33tLie/sns glitchedgitz/cook x90skysn3k/brutespray sensepost/gowitness
