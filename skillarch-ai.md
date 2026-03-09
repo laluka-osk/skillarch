@@ -60,6 +60,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `ska-update-simple` | `ska && make update && make install` |
 | `ska-update-advanced` | Print git merge workflow for forked setups |
 | `ska-sudo-unlock` | Reset faillock after 3 bad sudo attempts |
+| `ska-vnc` | Prompt for VNC password, set it, start KasmVNC on :1 |
 | `ska-vbox-install-guestutils` | Install VirtualBox guest utils |
 | `fastfetch` / `neofetch` / `hifetch` | fastfetch with SkillArch logo |
 

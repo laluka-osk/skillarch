@@ -115,6 +115,7 @@ make help
 | `ska-sudo-unlock` | Unlock current user after 3 sudo fails |
 | `ska-update-simple` | Update SkillArch repo & starts install |
 | `ska-update-advanced` | Helper to Pull Upstream & merge |
+| `ska-vnc` | Set VNC password & start KasmVNC server |
 
 ### MISC Gotchas
 
