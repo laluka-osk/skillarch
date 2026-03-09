@@ -124,7 +124,6 @@ make help
 - The docker `full` image contains GUI stuff and wordlists
 - Why `sleep` in `Makefile`? Building TOO fast was triggering github limit-rate
 - No [CachyOs on ARM](https://discuss.cachyos.org/t/arm-future-for-cachyos/727), therefore no SkillArch on ARM.
-- Extensions are installed for VsCode. Cursor packaging is weird, so while it's open: `ctrl+shift+p` > `Import VsCode Extensions`
 - Chrome extensions are not installed by default. Have a look to [/config/chrome-extensions.lst](/config/chrome-extensions.lst)
 
 ### VM & VirtualBox Stuff
@@ -267,7 +266,6 @@ bindsym $mod+w exec XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi
 bindsym $mod+n exec nautilus
 bindsym $mod+v exec vlc
 bindsym $mod+c exec code
-bindsym $mod+k exec cursor
 ```
 
 ### Installed Packages, Plugins, Tools
@@ -276,10 +274,10 @@ bindsym $mod+k exec cursor
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl burpsuite bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer mullvad-vpn-daemon ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
 
 # Yay packages
-ffuf gau pdtm-bin waybackurls cursor-bin fswebcam i3-battery-popup-git rofi-power-menu fabric-ai-bin
+ffuf gau pdtm-bin waybackurls fswebcam kasmvncserver-bin i3-battery-popup-git rofi-power-menu fabric-ai-bin
 
 # Flatpak packages
 com.obsproject.Studio org.gnome.Snapshot
@@ -348,10 +346,27 @@ https://github.com/tarraschk/richelieu
 https://github.com/p0dalirius/webapp-wordlists
 ```
 
+### Services
+
+The following systemd services are installed but **disabled and stopped by default**. Enable only what you need:
+
+| Service | Package | Start | Enable at Boot | Purpose |
+|---------|---------|-------|---------------|---------|
+| `docker` | `docker` | auto-started on install (bare metal) | yes (bare metal) | Container runtime |
+| `opensnitchd` | `opensnitch` | `sudo systemctl start opensnitchd` | `sudo systemctl enable opensnitchd` | Egress firewall (opt-in) |
+| `kasmvncd` | `kasmvncserver-bin` | `sudo systemctl start kasmvncd` | `sudo systemctl enable kasmvncd` | Remote desktop via browser (VNC) |
+| `mullvad-daemon` | `mullvad-vpn-daemon` | `sudo systemctl start mullvad-daemon` | `sudo systemctl enable mullvad-daemon` | Mullvad VPN daemon |
+| `nxserver` | `nomachine` | `sudo systemctl start nxserver` | `sudo systemctl enable nxserver` | NoMachine remote desktop |
+
+**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. After starting the service, configure with `kasmvncpasswd` and access via `https://localhost:8444`. Useful for remote GUI access without a VPN client.
+
+**Mullvad VPN** (`mullvad-vpn`): Privacy-focused VPN. After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.
+
 ### Security
 
-- `opensnitch` is here to help you block outgoing packets and connections
+- `opensnitch` is here to help you block outgoing packets and connections (opt-in, start manually)
 - `ufw` is here to help you block incoming packets and requests
+- `mullvad-vpn` daemon installed for VPN connectivity (kept disabled, start manually)
 - Be careful though, [docker iptables shenanigans bypass ufw rules](https://richincapie.medium.com/docker-ufw-and-iptables-a-security-flaw-you-need-to-solve-now-40c85587b563)
 
 ---
