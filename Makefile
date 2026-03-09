@@ -311,6 +311,13 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 		|| echo 'datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
 	# Preserve the existing user instead of creating a default "arch" user
 	sudo sed -i 's/^\(\s*name:\s*\).*/\1'"$$USER"'/' /etc/cloud/cloud.cfg 2>/dev/null || true
+	# SSH server: enable and allow password + key auth for both user and root
+	$(PACMAN_INSTALL) openssh
+	[[ ! -f /.dockerenv ]] && sudo systemctl enable --now sshd.service || true
+	sudo sed -i 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+	sudo sed -i 's/^#\?\s*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+	[[ ! -f /.dockerenv ]] && sudo systemctl reload sshd.service || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
 cloud-export: ## Export a GNOME Boxes VM to a clean qcow2 (for Proxmox/DO import)
