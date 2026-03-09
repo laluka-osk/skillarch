@@ -92,6 +92,7 @@ make help
 #   install-offensive   Install offensive tools
 #   install-wordlists   Install wordlists
 #   install-hardening   Install hardening tools
+#   install-remote-access Install KasmVNC & Mullvad VPN
 #   update              Update SkillArch
 #   docker-build        Build lite docker image locally
 #   docker-build-full   Build full docker image locally
@@ -354,19 +355,31 @@ The following systemd services are installed but **disabled and stopped by defau
 |---------|---------|-------|---------------|---------|
 | `docker` | `docker` | auto-started on install (bare metal) | yes (bare metal) | Container runtime |
 | `opensnitchd` | `opensnitch` | `sudo systemctl start opensnitchd` | `sudo systemctl enable opensnitchd` | Egress firewall (opt-in) |
-| `kasmvncd` | `kasmvncserver-bin` | `sudo systemctl start kasmvncd` | `sudo systemctl enable kasmvncd` | Remote desktop via browser (VNC) |
 | `mullvad-daemon` | `mullvad-vpn-daemon` | `sudo systemctl start mullvad-daemon` | `sudo systemctl enable mullvad-daemon` | Mullvad VPN daemon |
 | `nxserver` | `nomachine` | `sudo systemctl start nxserver` | `sudo systemctl enable nxserver` | NoMachine remote desktop |
+| *(user-level)* | `kasmvncserver-bin` | `kasmvncserver :1` | `systemctl --user enable kasmvncserver@:1` | Remote desktop via browser (VNC) |
 
-**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. After starting the service, configure with `kasmvncpasswd` and access via `https://localhost:8444`. Useful for remote GUI access without a VPN client.
+**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. Runs as a user-level service (no sudo). First create a user with write+read access, then start:
 
-**Mullvad VPN** (`mullvad-vpn`): Privacy-focused VPN. After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.
+```bash
+# Create VNC user (no sudo! runs as your user)
+kasmvncpasswd -u $USER -w -r
+# Start server
+kasmvncserver :1
+# Access: https://localhost:8443
+# Stop
+kasmvncserver -kill :1
+# Optional: auto-start via systemd user unit
+systemctl --user enable --now kasmvncserver@:1
+```
+
+**Mullvad VPN** (`mullvad-vpn-daemon`): Privacy-focused VPN. After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.
 
 ### Security
 
 - `opensnitch` is here to help you block outgoing packets and connections (opt-in, start manually)
 - `ufw` is here to help you block incoming packets and requests
-- `mullvad-vpn` daemon installed for VPN connectivity (kept disabled, start manually)
+- `mullvad-vpn-daemon` installed for VPN connectivity (kept disabled, start manually)
 - Be careful though, [docker iptables shenanigans bypass ufw rules](https://richincapie.medium.com/docker-ufw-and-iptables-a-security-flaw-you-need-to-solve-now-40c85587b563)
 
 ---

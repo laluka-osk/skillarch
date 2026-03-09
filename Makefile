@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -c
-.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
+.PHONY: help install sanity-check install-base install-cli-tools install-shell install-docker install-gui install-gui-tools install-offensive install-wordlists install-hardening install-remote-access update docker-build docker-build-full docker-run docker-run-full clean test test-lite test-full doctor list-tools backup
 
 # -- Colors & UX Helpers --
 C_RST   := \033[0m
@@ -41,7 +41,7 @@ install: ## Install SkillArch (full)
 	echo "" > $(SKA_LOG)
 	exec > >(tee -a $(SKA_LOG)) 2>&1
 	curStep=1
-	numSteps=9
+	numSteps=10
 	$(call STEP,$$((curStep++)),$$numSteps,Installing base packages)
 	$(MAKE) install-base
 	$(call STEP,$$((curStep++)),$$numSteps,Installing CLI tools & runtimes)
@@ -60,6 +60,8 @@ install: ## Install SkillArch (full)
 	$(MAKE) install-wordlists
 	$(call STEP,$$((curStep++)),$$numSteps,Installing hardening tools)
 	$(MAKE) install-hardening
+	$(call STEP,$$((curStep++)),$$numSteps,Installing remote access tools)
+	$(MAKE) install-remote-access
 	
 	$(MAKE) clean
 	$(MAKE) test
@@ -208,16 +210,12 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 	$(call INFO,Installing GUI applications...)
 	# Pre-create flatpak repo dir so post-install hooks don't fail in Docker (flatpak may be pulled as a dependency)
 	[[ -f /.dockerenv ]] && sudo mkdir -p /var/lib/flatpak/repo || true
-	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome mullvad-vpn-daemon
+	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
 	[[ ! -f /.dockerenv ]] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio && flatpak install -y flathub org.gnome.Snapshot || true
 	# Do not start services in docker
 	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now nxserver.service || true
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
-	for pkg in fswebcam kasmvncserver-bin; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
-	# KasmVNC: remote desktop server - kept disabled, start manually with: sudo systemctl start kasmvncd
-	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now kasmvncd 2>/dev/null || true
-	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
-	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
+	for pkg in fswebcam; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 	sudo ln -sf /usr/bin/google-chrome-stable /usr/local/bin/gog
 	$(call DONE,GUI applications installed!)
 
@@ -291,6 +289,28 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# OPT-IN opensnitch as an egress firewall
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
+
+install-remote-access: sanity-check ## Install KasmVNC & Mullvad VPN
+	$(call INFO,Installing remote access tools...)
+	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
+	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
+	# Generate self-signed SSL certs for KasmVNC (Arch has no snakeoil certs unlike Debian)
+	if [[ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem ]] || [[ ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]]; then
+		sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+		sudo openssl req -x509 -nodes -days 3650 \
+			-newkey rsa:2048 \
+			-keyout /etc/ssl/private/ssl-cert-snakeoil.key \
+			-out /etc/ssl/certs/ssl-cert-snakeoil.pem \
+			-subj "/CN=localhost"
+		sudo chmod 644 /etc/ssl/private/ssl-cert-snakeoil.key
+		$(call OK,Self-signed SSL certs generated for KasmVNC)
+	else
+		$(call INFO,SSL snakeoil certs already exist$(comma) skipping generation)
+	fi
+	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
+	$(PACMAN_INSTALL) mullvad-vpn-daemon
+	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
+	$(call DONE,Remote access tools installed! Start KasmVNC with: kasmvncserver :1)
 
 update: sanity-check ## Update SkillArch (pull & prompt reinstall)
 	@[[ -n "$$(git status --porcelain)" ]] && echo "Error: git state is dirty, please \"git stash\" your changes before updating" && exit 1 || true

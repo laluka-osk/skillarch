@@ -26,10 +26,11 @@ make install-cli-tools  # CLI tools, mise runtimes (Python/Node/Go/Rust), uv too
 make install-shell      # Zsh, oh-my-zsh, fzf, tmux, vim, dotfile symlinks
 make install-docker     # Docker + Docker Compose, user added to docker group
 make install-gui        # i3, polybar, kitty, rofi, picom, touchpad config
-make install-gui-tools  # Chrome, VSCode, Ghidra, Burp, Discord, VLC, Wireshark, KasmVNC, Mullvad VPN
+make install-gui-tools  # Chrome, VSCode, Ghidra, Burp, Discord, VLC, Wireshark
 make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools
 make install-wordlists  # All wordlists to /opt/lists/
 make install-hardening  # opensnitch (installed, opt-in)
+make install-remote-access # KasmVNC + snakeoil SSL certs, Mullvad VPN daemon (both disabled by default)
 make update             # git pull + prompt to re-run make install
 make test               # Full smoke tests
 make test-lite          # Lite Docker image smoke tests
@@ -342,15 +343,21 @@ All services below are **disabled/stopped by default** unless noted:
 |---|---|---|---|
 | `docker` | enabled (bare metal) | auto | Container runtime |
 | `opensnitchd` | disabled (opt-in) | `sudo systemctl start opensnitchd` | Egress firewall |
-| `kasmvncd` | disabled | `sudo systemctl start kasmvncd` | Browser-based VNC remote desktop |
 | `mullvad-daemon` | disabled | `sudo systemctl start mullvad-daemon` | Mullvad VPN (pacman: `mullvad-vpn-daemon`) |
 | `nxserver` | disabled | `sudo systemctl start nxserver` | NoMachine remote desktop |
+| *(user-level)* | `systemctl --user enable kasmvncserver@:1` | `kasmvncserver :1` | KasmVNC remote desktop (yay: `kasmvncserver-bin`) |
 
 ### KasmVNC Usage
 ```bash
-sudo systemctl start kasmvncd
-kasmvncpasswd          # Set password
-# Access: https://localhost:8444
+# Create VNC user with write+read access (no sudo — runs as your user)
+kasmvncpasswd -u $USER -w -r
+# Start server
+kasmvncserver :1
+# Access: https://localhost:8443
+# Stop server
+kasmvncserver -kill :1
+# Optional: auto-start via systemd user unit
+systemctl --user enable --now kasmvncserver@:1
 ```
 
 ### Mullvad VPN Usage
