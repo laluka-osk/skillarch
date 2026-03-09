@@ -221,9 +221,8 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 
 install-offensive: sanity-check ## Install offensive & security tools
 	$(call INFO,Installing offensive tools...)
-	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk burpsuite hashcat bettercap
-	sudo sed -i 's#$$JAVA_HOME#/usr/lib/jvm/java-21-openjdk#g' /usr/bin/burpsuite
-	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
+	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap
+	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin caido-desktop caido-cli; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 
 	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
 	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null &
@@ -524,7 +523,7 @@ list-tools: ## List installed offensive tools & versions
 	ska_ver "hashcat"    "hashcat --version 2>&1 | head -1"
 	ska_ver "bettercap"  "bettercap -version"
 	ska_ver "gitleaks"   "gitleaks version 2>&1"
-	ska_ver "burpsuite"  "burpsuite --version" ## "echo 'installed (GUI)'"
+	ska_ver "caido"      "caido --version 2>&1 | head -1"
 	ska_ver "ghidra"     "cat /opt/ghidra/bom.json| jq -r '.components[].version'|head -1" ## "echo 'installed (GUI)'"
 	ska_ver "wireshark"  "wireshark --version 2>&1 | head -1"
 	$(call BOLD,\n--- uv Tools ---)

@@ -26,7 +26,7 @@ make install-cli-tools  # CLI tools, mise runtimes (Python/Node/Go/Rust), uv too
 make install-shell      # Zsh, oh-my-zsh, fzf, tmux, vim, dotfile symlinks
 make install-docker     # Docker + Docker Compose, user added to docker group
 make install-gui        # i3, polybar, kitty, rofi, picom, touchpad config
-make install-gui-tools  # Chrome, VSCode, Ghidra, Burp, Discord, VLC, Wireshark
+make install-gui-tools  # Chrome, VSCode, Ghidra, Discord, VLC, Wireshark
 make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools
 make install-wordlists  # All wordlists to /opt/lists/
 make install-hardening  # opensnitch (installed, opt-in)
@@ -116,7 +116,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `cfu-clean-url` | URLs only from cfu-clean |
 | `crl` | curl with real browser UA |
 | `crli` | crl + dump response headers to stderr |
-| `crlix` | crli proxied through Burp (127.0.0.1:8080) |
+| `crlix` | crli proxied through Caido (127.0.0.1:8080) |
 | `probe-urls` | Bulk HTTP probe from URL list file |
 
 ### Web Recon
@@ -285,10 +285,10 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 `bat`, `eza`, `fzf`, `ripgrep`, `fd`, `jq`, `glow`, `jless`, `gron`, `htmlq`, `qsv`, `viu`, `superfile`, `fastfetch`, `asciinema`, `bottom`, `htop`, `tmux`, `git-delta`, `lazygit`, `fq`, `fx`, `websocat`, `cloc`, `tree`, `rlwrap`, `parallel`, `tmate`, `trash-cli`, `sysstat`, `inotify-tools`
 
 ### Security / Offensive (pacman)
-`metasploit` (msfconsole, msfvenom), `burpsuite`, `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`
+`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`
 
 ### Security / Offensive (yay/AUR)
-`ffuf`, `gau`, `pdtm-bin`, `waybackurls`, `fabric-ai-bin`, `gobypass403` (GitHub release), `wpprobe` (GitHub release)
+`ffuf`, `gau`, `pdtm-bin`, `waybackurls`, `fabric-ai-bin`, `caido-desktop`, `caido-cli`, `gobypass403` (GitHub release), `wpprobe` (GitHub release)
 
 ### pdtm Tools (Project Discovery)
 `aix`, `alterx`, `asnmap`, `cdncheck`, `chaos-client`, `cloudlist`, `cvemap`, `dnsx`, `httpx`, `interactsh-client`, `interactsh-server`, `katana`, `mapcidr`, `naabu`, `notify`, `nuclei`, `proxify`, `shuffledns`, `simplehttpserver`, `subfinder`, `tldfinder`, `tlsx`, `tunnelx`, `uncover`, `urlfinder`
@@ -325,7 +325,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `SecLists/` | danielmiessler/SecLists | Comprehensive security lists |
 | `PayloadsAllTheThings/` | swisskyrepo/PayloadsAllTheThings | Web attack payloads |
 | `BruteX/` | 1N3/BruteX | Brute-force wordlists |
-| `IntruderPayloads/` | 1N3/IntruderPayloads | Burp intruder payloads |
+| `IntruderPayloads/` | 1N3/IntruderPayloads | Fuzzing/intruder payloads |
 | `Probable-Wordlists/` | berzerk0/Probable-Wordlists | Statistically likely passwords |
 | `Open-Redirect-Payloads/` | cujanovic/Open-Redirect-Payloads | Open redirect bypass list |
 | `Pwdb-Public/` | ignis-sec/Pwdb-Public | Pwned passwords DB |
@@ -410,7 +410,7 @@ lfu -u https://target.com/FUZZ -w /opt/lists/SecLists/Discovery/Web-Content/raft
 cfu fu-output.json
 ```
 
-### Curl + Burp Proxy
+### Curl + Caido Proxy
 ```bash
 crlix https://target.com/api/endpoint -d '{"foo":"bar"}'
 # crlix = curl + headers dump + proxy to 127.0.0.1:8080
