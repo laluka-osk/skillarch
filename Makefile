@@ -325,6 +325,10 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	# Polkit: allow wheel group to act without password — VNC sessions have no local seat for polkit prompts
 	sudo tee /etc/polkit-1/rules.d/49-nopasswd-wheel.rules > /dev/null <<< 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; } });'
 
+	# ── tmux: cloud theme (dark purple-blue status bar) ──
+	sed -i "s|^set-option -g status-bg.*|set-option -g status-bg '#1e1e2e'  # deep dark purple-blue|" /opt/skillarch/config/tmux.conf
+	sed -i "s|^set-option -g status-fg.*|set-option -g status-fg '#cba6f7'  # soft lavender|" /opt/skillarch/config/tmux.conf
+
 	# ── cloud-init ──
 	# Replace gnu-netcat with openbsd-netcat (cloud-init dependency, nothing depends on gnu-netcat)
 	sudo pacman -Rdd --noconfirm gnu-netcat 2>/dev/null || true
