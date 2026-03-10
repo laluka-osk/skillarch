@@ -289,16 +289,30 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
 
-cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remote desktop — NOT part of make install
+cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init for cloud/remote desktop — NOT part of make install
 	$(call INFO,Installing cloud/remote desktop tools...)
+
+	# ── KasmVNC ──
 	# openssl-1.1: KasmVNC binary is linked against libssl.so.1.1
 	yay --noconfirm --needed -S openssl-1.1 || $(call WARN,Failed to install openssl-1.1$(comma) continuing...)
 	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
-	# KasmVNC config: SSL disabled (served over SSH port-forward only)
-	[[ ! -d ~/.vnc ]] && mkdir -p ~/.vnc || true
+
+	# ── KDE Plasma X11 (VNC desktop) ──
+	# mutter/GNOME dropped X11 session support in v49+, so we use KDE Plasma with kwin_x11
+	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin
+
+	# ── KasmVNC config ──
+	mkdir -p ~/.vnc
 	$(call ska-link,/opt/skillarch/config/kasmvnc.yaml,$$HOME/.vnc/kasmvnc.yaml)
-	# cloud-init: VM provisioning for Proxmox, DigitalOcean, AWS, GCP, etc.
+	$(call ska-link,/opt/skillarch/config/vnc-xstartup,$$HOME/.vnc/xstartup)
+	# Self-signed SSL cert (one-time)
+	[[ ! -f ~/.vnc/self.pem ]] && openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+		-keyout ~/.vnc/self.key -out ~/.vnc/self.pem -subj "/CN=vnc" 2>/dev/null && chmod 600 ~/.vnc/self.key || true
+	# Dummy kasmpasswd (KasmVNC refuses to start without it; -DisableBasicAuth makes it unused)
+	[[ ! -f ~/.kasmpasswd ]] && echo -e "x\nx" | kasmvncpasswd -u dummy -w -ow ~/.kasmpasswd 2>/dev/null && chmod 600 ~/.kasmpasswd || true
+
+	# ── cloud-init ──
 	# Replace gnu-netcat with openbsd-netcat (cloud-init dependency, nothing depends on gnu-netcat)
 	sudo pacman -Rdd --noconfirm gnu-netcat 2>/dev/null || true
 	$(PACMAN_INSTALL) cloud-init
@@ -311,7 +325,11 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 		|| echo 'datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
 	# Preserve the existing user instead of creating a default "arch" user
 	sudo sed -i 's/^\(\s*name:\s*\).*/\1'"$$USER"'/' /etc/cloud/cloud.cfg 2>/dev/null || true
-	# SSH server: enable and allow password + key auth for both user and root
+
+	# ── Sudoers (passwordless sudo for hacker) ──
+	echo 'hacker ALL=(ALL:ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/99-hacker > /dev/null && sudo chmod 440 /etc/sudoers.d/99-hacker
+
+	# ── SSH ──
 	$(PACMAN_INSTALL) openssh
 	[[ ! -f /.dockerenv ]] && sudo systemctl enable --now sshd.service || true
 	sudo sed -i 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config

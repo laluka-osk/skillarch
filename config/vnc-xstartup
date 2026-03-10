@@ -1,0 +1,17 @@
+#!/bin/sh
+export XDG_SESSION_TYPE=x11
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
+
+echo -n "changeme" | gnome-keyring-daemon --unlock --start --components=secrets,pkcs11 2>/dev/null || true
+
+# Sleep/idle prevention (xset for X11 DPMS)
+xset s off 2>/dev/null || true
+xset s noblank 2>/dev/null || true
+xset -dpms 2>/dev/null || true
+
+# Propagate VNC display to systemd user session so KDE units find the right DISPLAY
+systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_TYPE 2>/dev/null
+# Unset Wayland vars from GDM greeter to avoid confusion
+systemctl --user unset-environment WAYLAND_DISPLAY GNOME_SETUP_DISPLAY 2>/dev/null
+
+exec startplasma-x11

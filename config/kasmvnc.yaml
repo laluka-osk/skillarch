@@ -8,4 +8,5 @@ network:
   websocket_port: 8443
   interface: 127.0.0.1
   ssl:
-    require_ssl: false
+    pem_certificate: /home/hacker/.vnc/self.pem
+    pem_key: /home/hacker/.vnc/self.key
