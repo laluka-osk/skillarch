@@ -115,7 +115,7 @@ make help
 | `ska-sudo-unlock` | Unlock current user after 3 sudo fails |
 | `ska-update-simple` | Update SkillArch repo & starts install |
 | `ska-update-advanced` | Helper to Pull Upstream & merge |
-| `ska-vnc` | Set VNC password & start KasmVNC server |
+| `ska-vnc` | Start KDE Plasma desktop via KasmVNC (browser at https://127.0.0.1:8443) |
 
 ### MISC Gotchas
 
@@ -364,30 +364,33 @@ The following systemd services are installed but **disabled and stopped by defau
 
 **Mullvad VPN** (`mullvad-vpn-daemon`): Privacy-focused VPN, installed by `make install-offensive` (disabled by default). After starting the daemon, use the CLI: `mullvad account login <token>`, `mullvad connect`, `mullvad status`. GUI: `mullvad-gui`.
 
-### Cloud Target (standalone — `make cloud`)
+### Cloud Target (standalone -- `make cloud`)
 
-> **Not part of `make install`** — this is a standalone target for maintainer/cloud use only.
+> **Not part of `make install`** -- this is a standalone target for cloud/remote desktop VMs.
 
-Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVNC binary is linked against libssl.so.1.1).
+Installs KasmVNC + KDE Plasma X11 + cloud-init + SSH. After `make cloud`, the `ska-vnc` alias starts a full KDE Plasma desktop accessible from a browser.
 
 | Service | Package | Start | Purpose |
 |---------|---------|-------|---------|
-| *(user-level)* | `kasmvncserver-bin` | `ska-vnc` or `kasmvncserver :1` | Remote desktop via browser (VNC) |
+| *(user-level)* | `kasmvncserver-bin` | `ska-vnc` | KDE Plasma desktop via browser (VNC over websocket) |
+| `sshd` | `openssh` | auto-enabled | SSH access |
+| `cloud-init` | `cloud-init` | auto-enabled | VM auto-config (network, SSH keys, hostname) |
 
-**KasmVNC** (`kasmvncserver-bin`): Browser-based VNC remote desktop. SSL is disabled by default (config at `~/.vnc/kasmvnc.yaml`) — access it via SSH port-forward only:
+**Quick start:**
 
 ```bash
-# Quick start (prompts for password, starts server):
 ska-vnc
-# Or manual setup:
-kasmvncpasswd -u $USER -w -r
-kasmvncserver :1 -config ~/.vnc/kasmvnc.yaml
-# From your local machine, SSH port-forward:
+# KasmVNC running on https://127.0.0.1:8443 (no auth)
+
+# From your local machine, SSH port-forward then open in browser:
 ssh -L 8443:localhost:8443 user@host
-# Access: http://localhost:8443
-# Stop
-kasmvncserver -kill :1
+# Access: https://localhost:8443
+
+# Stop:
+vncserver -kill :1
 ```
+
+**How it works:** KasmVNC's Xvnc has no GLX extension, so KDE Plasma 6 can't use OpenGL. The `vnc-xstartup` script sets `QT_QUICK_BACKEND=software` to force Qt's software rasterizer. kwin runs without compositing but still manages windows and decorations. See `kasm-pls.md` for the full workaround details.
 
 ### Security
 

@@ -300,8 +300,15 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
 
 	# ── KDE Plasma X11 (VNC desktop) ──
-	# KDE Plasma with kwin_x11 for VNC desktop (X11 session)
-	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin
+	# Plasma 6 + kwin_x11. Xvnc has no GLX, so vnc-xstartup sets QT_QUICK_BACKEND=software
+	# for Qt/QML rendering and LIBGL_ALWAYS_SOFTWARE=1 as Mesa fallback. See kasm-pls.md.
+	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin alacritty
+	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
+	mkdir -p ~/.config
+	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
+	if [[ -f "$$PLASMA_RC" ]]; then \
+		sed -i 's|^launchers=.*|launchers=applications:systemsettings.desktop,applications:google-chrome.desktop,applications:org.kde.dolphin.desktop,applications:Alacritty.desktop|' "$$PLASMA_RC" ; \
+	fi
 
 	# ── KasmVNC config ──
 	mkdir -p ~/.vnc
@@ -310,8 +317,13 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	# Self-signed SSL cert (one-time)
 	[[ ! -f ~/.vnc/self.pem ]] && openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
 		-keyout ~/.vnc/self.key -out ~/.vnc/self.pem -subj "/CN=vnc" 2>/dev/null && chmod 600 ~/.vnc/self.key || true
-	# Dummy kasmpasswd (KasmVNC refuses to start without it; -DisableBasicAuth makes it unused)
-	[[ ! -f ~/.kasmpasswd ]] && echo -e "x\nx" | kasmvncpasswd -u dummy -w -ow ~/.kasmpasswd 2>/dev/null && chmod 600 ~/.kasmpasswd || true
+	# Dummy kasmpasswd — KasmVNC refuses to start without one; -DisableBasicAuth makes it unused.
+	# Password MUST be >= 6 chars or kasmvncpasswd silently fails.
+	[[ ! -f ~/.kasmpasswd ]] && echo -e "kasmvnc\nkasmvnc" | kasmvncpasswd -u dummy -w -ow ~/.kasmpasswd 2>/dev/null && chmod 600 ~/.kasmpasswd || true
+	# Mark DE as already selected — xstartup is pre-configured; skips interactive DE picker
+	touch ~/.vnc/.de-was-selected
+	# Polkit: allow wheel group to act without password — VNC sessions have no local seat for polkit prompts
+	sudo tee /etc/polkit-1/rules.d/49-nopasswd-wheel.rules > /dev/null <<< 'polkit.addRule(function(action, subject) { if (subject.isInGroup("wheel")) { return polkit.Result.YES; } });'
 
 	# ── cloud-init ──
 	# Replace gnu-netcat with openbsd-netcat (cloud-init dependency, nothing depends on gnu-netcat)
