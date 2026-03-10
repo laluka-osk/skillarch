@@ -260,8 +260,8 @@ bindsym $mod+a scratchpad show
 # Custom Apps & Settings
 bindsym $mod+p exec flameshot gui
 bindsym $mod+Shift+p exec flameshot full -p ~/Pictures/
-bindsym $mod+s exec pavucontrol
-bindsym $mod+shift+s exec systemsettings
+bindsym $mod+s exec systemsettings kcm_pulseaudio
+bindsym $mod+shift+s exec pavucontrol
 bindsym $mod+e exec emote
 bindsym $mod+b exec blueman-manager
 bindsym $mod+w exec systemsettings kcm_networkmanagement

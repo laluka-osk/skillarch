@@ -238,8 +238,8 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `$mod+v` | VLC |
 | `$mod+p` | Flameshot GUI (screenshot) |
 | `$mod+Shift+p` | Flameshot full → ~/Pictures/ |
-| `$mod+s` | PulseAudio volume control |
-| `$mod+Shift+s` | KDE System Settings |
+| `$mod+s` | KDE Sound settings (Plasma audio panel) |
+| `$mod+Shift+s` | PulseAudio volume control (pavucontrol) |
 | `$mod+e` | Emote (emoji picker) |
 | `$mod+b` | Blueman (Bluetooth) |
 | `$mod+w` | KDE WiFi/Network settings |
