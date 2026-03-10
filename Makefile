@@ -177,6 +177,7 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 	$(PACMAN_INSTALL) xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	plasma-apply-colorscheme BreezeDark 2>/dev/null || true
+	plasma-apply-wallpaperimage /opt/skillarch/assets/bg.jpg 2>/dev/null || true
 
 	# i3 config
 	[[ ! -d ~/.config/i3 ]] && mkdir -p ~/.config/i3 || true
