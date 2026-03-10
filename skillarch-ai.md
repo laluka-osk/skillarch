@@ -345,7 +345,7 @@ All services below are **disabled/stopped by default** unless noted:
 | `docker` | enabled (bare metal) | auto | Container runtime |
 | `opensnitchd` | disabled (opt-in) | `sudo systemctl start opensnitchd` | Egress firewall |
 | `mullvad-daemon` | disabled | `sudo systemctl start mullvad-daemon` | Mullvad VPN — installed via `install-offensive` (pacman: `mullvad-vpn-daemon`) |
-| `nxserver` | disabled | `sudo systemctl start nxserver` | NoMachine remote desktop |
+
 
 ### Mullvad VPN Usage
 ```bash
