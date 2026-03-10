@@ -239,11 +239,11 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `$mod+p` | Flameshot GUI (screenshot) |
 | `$mod+Shift+p` | Flameshot full → ~/Pictures/ |
 | `$mod+s` | PulseAudio volume control |
-| `$mod+Shift+s` | GNOME control center |
+| `$mod+Shift+s` | KDE System Settings |
 | `$mod+e` | Emote (emoji picker) |
 | `$mod+b` | Blueman (Bluetooth) |
-| `$mod+w` | GNOME WiFi settings |
-| `$mod+n` | Nautilus file manager |
+| `$mod+w` | KDE WiFi/Network settings |
+| `$mod+n` | Dolphin file manager |
 | `$mod+m` | Toggle microphone mute |
 
 ### Help

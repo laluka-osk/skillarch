@@ -18,7 +18,7 @@
 [![](https://img.youtube.com/vi/HB1hxJgGoDo/0.jpg)](https://youtu.be/HB1hxJgGoDo)
 
 - First, download the `Desktop Edition` at https://cachyos.org/download/
-- Install it, pick the `Gnome` flavor
+- Install it, pick the `Plasma` flavor
 - Then open `Console` and install SkillArch 🥂
 
 ```bash
@@ -130,7 +130,7 @@ make help
 
 ### VM & VirtualBox Stuff
 
-> I've had tons of issues with VirtualBox laterly, and things worked PERFECTLY on Gnome Boxes (from `qemu-full` and `gnome-extra`), I strongly suggest using it instead, see the install guide above.
+> I've had tons of issues with VirtualBox laterly, and things worked PERFECTLY on `virt-manager` (from `qemu-full` and `virt-manager`), I strongly suggest using it instead, see the install guide above.
 
 - The `ska-vbox-install-guestutils` alias will auto-install `virtualbox-guest-utils`
 - In `VirtualBox`, when i3 starts it will run `VBoxClient-all` for clipboard & goodies
@@ -261,11 +261,11 @@ bindsym $mod+a scratchpad show
 bindsym $mod+p exec flameshot gui
 bindsym $mod+Shift+p exec flameshot full -p ~/Pictures/
 bindsym $mod+s exec pavucontrol
-bindsym $mod+shift+s exec XDG_CURRENT_DESKTOP=GNOME gnome-control-center
+bindsym $mod+shift+s exec systemsettings
 bindsym $mod+e exec emote
 bindsym $mod+b exec blueman-manager
-bindsym $mod+w exec XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi
-bindsym $mod+n exec nautilus
+bindsym $mod+w exec systemsettings kcm_networkmanagement
+bindsym $mod+n exec dolphin
 bindsym $mod+v exec vlc
 bindsym $mod+c exec code
 ```
@@ -276,7 +276,7 @@ bindsym $mod+c exec code
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer mullvad-vpn-daemon ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-gnome
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer mullvad-vpn-daemon ncurses neovim net-tools ngrep nm-connection-editor nmap nomachine okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-kde-agent dolphin kamoso
 
 # Yay packages
 ffuf gau pdtm-bin waybackurls fswebcam caido-desktop caido-cli i3-battery-popup-git rofi-power-menu fabric-ai-bin
@@ -285,7 +285,7 @@ ffuf gau pdtm-bin waybackurls fswebcam caido-desktop caido-cli i3-battery-popup-
 openssl-1.1 kasmvncserver-bin
 
 # Flatpak packages
-com.obsproject.Studio org.gnome.Snapshot
+com.obsproject.Studio
 
 # Mise tools
 uv usage pdm rust terraform golang python nodejs opencode
@@ -404,7 +404,7 @@ kasmvncserver -kill :1
 |------|-----------|-----------|
 | OS | Ubuntu | Arch |
 | Install time | 60mn | 20mn |
-| Terminal | Gnome | Kitty |
+| Terminal | Gnome Terminal | Kitty |
 | i3 config | regolith | homemade |
 | Install tool | ansible | Makefile |
 | Img builds | packer | docker |

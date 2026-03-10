@@ -176,7 +176,7 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
 	[[ ! -f /etc/machine-id ]] && sudo systemd-machine-id-setup || true
 	$(PACMAN_INSTALL) xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
-	gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+	plasma-apply-colorscheme BreezeDark 2>/dev/null || true
 
 	# i3 config
 	[[ ! -d ~/.config/i3 ]] && mkdir -p ~/.config/i3 || true
@@ -208,8 +208,8 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 	$(call INFO,Installing GUI applications...)
 	# Pre-create flatpak repo dir so post-install hooks don't fail in Docker (flatpak may be pulled as a dependency)
 	[[ -f /.dockerenv ]] && sudo mkdir -p /var/lib/flatpak/repo || true
-	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-gnome
-	[[ ! -f /.dockerenv ]] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio && flatpak install -y flathub org.gnome.Snapshot || true
+	$(PACMAN_INSTALL) vlc vlc-plugin-ffmpeg arandr blueman visual-studio-code-bin discord dunst filezilla flameshot ghex google-chrome gparted kdenlive kompare libreoffice-fresh meld okular qbittorrent torbrowser-launcher wireshark-qt ghidra signal-desktop dragon-drop-git nomachine emote guvcview audacity polkit-kde-agent dolphin kamoso
+	[[ ! -f /.dockerenv ]] && $(PACMAN_INSTALL) flatpak && flatpak install -y flathub com.obsproject.Studio || true
 	# Do not start services in docker
 	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now nxserver.service || true
 	xargs -n1 -I{} code --install-extension {} --force < config/extensions.txt
@@ -299,7 +299,7 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
 
 	# ── KDE Plasma X11 (VNC desktop) ──
-	# mutter/GNOME dropped X11 session support in v49+, so we use KDE Plasma with kwin_x11
+	# KDE Plasma with kwin_x11 for VNC desktop (X11 session)
 	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin
 
 	# ── KasmVNC config ──
@@ -339,8 +339,8 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	sudo ufw allow 22/tcp comment 'SSH' || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
-cloud-export: ## Export a GNOME Boxes VM to a clean qcow2 (for Proxmox/DO import)
-	@$(call INFO,Scanning GNOME Boxes VMs via virsh...)
+cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
+	@$(call INFO,Scanning libvirt VMs via virsh...)
 	echo ""
 	# ── Discover VMs ──
 	VM_LIST=$$(virsh -c qemu:///session list --all --name | sed '/^$$/d')
