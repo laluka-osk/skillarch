@@ -411,10 +411,13 @@ cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
 	$(call INFO,Sparsifying to shrink the image...)
 	virt-sparsify --in-place "$$OUT_FILE"
 	# ── Sysprep: clean machine-id, logs, SSH host keys for fresh cloud-init boot ──
+	# btrfs subvols cause virt-sysprep to detect multiple OS roots → runs ops twice →
+	# second run hits read-only FS on random-seed write. Force mount to subvol=@ to fix.
 	$(call INFO,Sysprep: cleaning machine-id$(comma) SSH host keys$(comma) logs...)
 	virt-sysprep -a "$$OUT_FILE" \
 		--operations ssh-hostkeys,logfiles,tmp-files,bash-history,customize \
 		--no-selinux-relabel \
+		--mount-options "/@:subvol=@" \
 		--run-command 'truncate -s0 /etc/machine-id || true' \
 		--run-command 'rm -f /var/lib/cloud/instance /var/lib/cloud/instances/* 2>/dev/null; true'
 	# ── Summary ──
