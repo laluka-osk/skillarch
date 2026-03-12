@@ -357,8 +357,6 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	sudo sed -i 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 	sudo sed -i 's/^#\?\s*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
-	# cloud-init drops sshd_config.d overrides that disable PasswordAuthentication — remove them
-	sudo rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
 	[[ ! -f /.dockerenv ]] && sudo systemctl restart sshd.service || true
 	sudo ufw allow 22/tcp comment 'SSH' || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
