@@ -417,7 +417,7 @@ cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
 		sh 'if btrfs property get / ro | grep -q "true"; then btrfs property set / ro false; fi' || true
 	# ── Sysprep: clean machine-id, logs, SSH host keys for fresh cloud-init boot ──
 	$(call INFO,Sysprep: cleaning machine-id$(comma) SSH host keys$(comma) logs...)
-	virt-sysprep --rw -a "$$OUT_FILE" \
+	virt-sysprep -a "$$OUT_FILE" \
 		--operations ssh-hostkeys,logfiles,tmp-files,bash-history,customize \
 		--no-selinux-relabel \
 		--run-command 'truncate -s0 /etc/machine-id || true' \
