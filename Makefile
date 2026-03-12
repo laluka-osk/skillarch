@@ -342,6 +342,11 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 		|| echo 'datasource_list: [NoCloud, ConfigDrive, DigitalOcean, None]' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
 	# Preserve the existing user instead of creating a default "arch" user
 	sudo sed -i 's/^\(\s*name:\s*\).*/\1'"$$USER"'/' /etc/cloud/cloud.cfg 2>/dev/null || true
+	# Allow password & root SSH login via cloud-init (prevents 50-cloud-init.conf from disabling them on boot)
+	grep -q '^ssh_pwauth' /etc/cloud/cloud.cfg && sudo sed -i 's/^#\?\s*ssh_pwauth:.*/ssh_pwauth: true/' /etc/cloud/cloud.cfg \
+		|| echo 'ssh_pwauth: true' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
+	grep -q '^disable_root' /etc/cloud/cloud.cfg && sudo sed -i 's/^#\?\s*disable_root:.*/disable_root: false/' /etc/cloud/cloud.cfg \
+		|| echo 'disable_root: false' | sudo tee -a /etc/cloud/cloud.cfg > /dev/null
 
 	# ── Sudoers (passwordless sudo for hacker) ──
 	echo 'hacker ALL=(ALL:ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/99-hacker > /dev/null && sudo chmod 440 /etc/sudoers.d/99-hacker
@@ -352,7 +357,9 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	sudo sed -i 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 	sudo sed -i 's/^#\?\s*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
-	[[ ! -f /.dockerenv ]] && sudo systemctl reload sshd.service || true
+	# cloud-init drops sshd_config.d overrides that disable PasswordAuthentication — remove them
+	sudo rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
+	[[ ! -f /.dockerenv ]] && sudo systemctl restart sshd.service || true
 	sudo ufw allow 22/tcp comment 'SSH' || true
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
@@ -408,8 +415,9 @@ cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
 	# ── Sysprep: clean machine-id, logs, SSH host keys for fresh cloud-init boot ──
 	$(call INFO,Sysprep: cleaning machine-id$(comma) SSH host keys$(comma) logs...)
 	virt-sysprep -a "$$OUT_FILE" \
-		--operations machine-id,ssh-hostkeys,logfiles,tmp-files,bash-history,customize \
-		--run-command 'truncate -s0 /etc/machine-id' \
+		--operations ssh-hostkeys,logfiles,tmp-files,bash-history,customize \
+		--no-selinux-relabel \
+		--run-command 'truncate -s0 /etc/machine-id || true' \
 		--run-command 'rm -f /var/lib/cloud/instance /var/lib/cloud/instances/* 2>/dev/null; true'
 	# ── Summary ──
 	FINAL_SIZE=$$(du -h "$$OUT_FILE" | cut -f1)
