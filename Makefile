@@ -359,6 +359,13 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 	[[ ! -f /.dockerenv ]] && sudo systemctl restart sshd.service || true
 	sudo ufw allow 22/tcp comment 'SSH' || true
+
+	# ── Delete all Snapper snapshots ──
+	# Snapper read-only snapshots cause libguestfs to detect multiple OS roots,
+	# breaking virt-sysprep during cloud-export. Clean slate for smaller exports too.
+	$(call INFO,Deleting all Snapper snapshots...)
+	sudo snapper delete $$(sudo snapper list --columns number | tail -n +4 | tr -d ' ' | tr '\n' ' ') 2>/dev/null || true
+
 	$(call DONE,Cloud tools installed! Start KasmVNC with: ska-vnc)
 
 cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
@@ -410,11 +417,6 @@ cloud-export: ## Export a libvirt VM to a clean qcow2 (for Proxmox/DO import)
 	# ── Sparsify to reclaim zeroed blocks ──
 	$(call INFO,Sparsifying to shrink the image...)
 	virt-sparsify --in-place "$$OUT_FILE"
-	# ── FIX: Btrfs Read-Only Snapshot ──
-	# Snapper snapshots are btrfs read-only by default. Toggle root to RW so virt-sysprep can write.
-	$(call INFO,Ensuring filesystem is writable...)
-	guestfish --rw -a "$$OUT_FILE" -i : \
-		sh 'if btrfs property get / ro | grep -q "true"; then btrfs property set / ro false; fi' || true
 	# ── Sysprep: clean machine-id, logs, SSH host keys for fresh cloud-init boot ──
 	$(call INFO,Sysprep: cleaning machine-id$(comma) SSH host keys$(comma) logs...)
 	virt-sysprep -a "$$OUT_FILE" \
