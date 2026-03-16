@@ -91,13 +91,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Run Trivy in fs mode
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
           scanners: 'misconfig,secret'
       - name: Run Trivy in image mode
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/skillarch:latest'
           format: 'table'
