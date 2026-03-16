@@ -27,7 +27,7 @@ make install-shell      # Zsh, oh-my-zsh, fzf, tmux, vim, dotfile symlinks
 make install-docker     # Docker + Docker Compose, user added to docker group
 make install-gui        # i3, polybar, kitty, rofi, picom, touchpad config
 make install-gui-tools  # Chrome, VSCode, Ghidra, Discord, VLC, Wireshark
-make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools, Mullvad VPN
+make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools
 make install-wordlists  # All wordlists to /opt/lists/
 make install-hardening  # opensnitch (installed, opt-in)
 make update             # git pull + prompt to re-run make install
@@ -286,7 +286,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 `bat`, `eza`, `fzf`, `ripgrep`, `fd`, `jq`, `glow`, `jless`, `gron`, `htmlq`, `qsv`, `viu`, `superfile`, `fastfetch`, `asciinema`, `bottom`, `htop`, `tmux`, `git-delta`, `lazygit`, `fq`, `fx`, `websocat`, `cloc`, `tree`, `rlwrap`, `parallel`, `tmate`, `trash-cli`, `sysstat`, `inotify-tools`
 
 ### Security / Offensive (pacman)
-`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`, `mullvad-vpn-daemon`
+`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`
 
 ### Security / Offensive (yay/AUR)
 `ffuf`, `gau`, `pdtm-bin`, `waybackurls`, `fabric-ai-bin`, `caido-desktop`, `caido-cli`, `gobypass403` (GitHub release), `wpprobe` (GitHub release)
@@ -344,19 +344,6 @@ All services below are **disabled/stopped by default** unless noted:
 |---|---|---|---|
 | `docker` | enabled (bare metal) | auto | Container runtime |
 | `opensnitchd` | disabled (opt-in) | `sudo systemctl start opensnitchd` | Egress firewall |
-| `mullvad-daemon` | disabled | `sudo systemctl start mullvad-daemon` | Mullvad VPN — installed via `install-offensive` (pacman: `mullvad-vpn-daemon`) |
-
-
-### Mullvad VPN Usage
-```bash
-sudo systemctl start mullvad-daemon
-mullvad account login <account-token>
-mullvad connect
-mullvad status
-mullvad disconnect
-mullvad-gui            # GUI client
-```
-
 ### Cloud Target (`make cloud` — standalone, NOT part of `make install`)
 
 Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVNC binary is linked against libssl.so.1.1).

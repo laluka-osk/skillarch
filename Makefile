@@ -220,7 +220,7 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 
 install-offensive: sanity-check ## Install offensive & security tools
 	$(call INFO,Installing offensive tools...)
-	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap mullvad-vpn-daemon
+	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin caido-desktop caido-cli; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 
 	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
@@ -260,8 +260,6 @@ install-offensive: sanity-check ## Install offensive & security tools
 	ska_clone https://github.com/laluka/pty4all &
 	ska_clone https://github.com/laluka/pypotomux &
 	wait
-	# Mullvad VPN daemon - kept disabled, start manually with: sudo systemctl start mullvad-daemon
-	[[ ! -f /.dockerenv ]] && sudo systemctl disable --now mullvad-daemon 2>/dev/null || true
 	$(call DONE,Offensive tools installed!)
 
 install-wordlists: sanity-check ## Install wordlists (SecLists, rockyou, etc.)
