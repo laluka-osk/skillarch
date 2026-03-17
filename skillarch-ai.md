@@ -8,7 +8,7 @@
 
 - **OS**: CachyOS (Arch Linux, performance-tuned)
 - **Shell**: Zsh + Oh-My-Zsh + Powerlevel10k (`af-magic` theme)
-- **WM**: i3-gaps + Polybar + Rofi + Picom + Kitty terminal
+- **WM/DE**: i3-gaps + Polybar + Rofi + Picom + Kitty terminal + KDE Plasma X11
 - **Editors**: Neovim (LazyVim), VS Code (`code`)
 - **Install root**: `/opt/skillarch/` — all dotfiles symlinked from here
 - **Data root**: `/DATA/` — long-lived user data
@@ -25,13 +25,13 @@ make install-base       # Repo setup, pacman config, chaotic-aur, /DATA dir
 make install-cli-tools  # CLI tools, mise runtimes (Python/Node/Go/Rust), uv tools, neovim+LazyVim
 make install-shell      # Zsh, oh-my-zsh, fzf, tmux, vim, dotfile symlinks
 make install-docker     # Docker + Docker Compose, user added to docker group
-make install-gui        # i3, polybar, kitty, rofi, picom, touchpad config
+make install-gui        # i3, polybar, kitty, rofi, picom, KDE Plasma, touchpad config
 make install-gui-tools  # Chrome, VSCode, Ghidra, Discord, VLC, Wireshark
 make install-offensive  # Metasploit, ffuf, pdtm tools, go binaries, GitHub releases, cloned tools
 make install-wordlists  # All wordlists to /opt/lists/
 make install-hardening  # opensnitch (installed, opt-in)
 make update             # git pull + prompt to re-run make install
-make cloud              # (Standalone, NOT in make install) KasmVNC for cloud/remote desktop
+make cloud              # (Standalone, NOT in make install) KasmVNC + cloud-init for cloud/remote desktop
 make test               # Full smoke tests
 make test-lite          # Lite Docker image smoke tests
 make test-full          # Full Docker image smoke tests (GUI + wordlists)

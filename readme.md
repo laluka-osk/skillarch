@@ -87,8 +87,8 @@ make help
 #   install-cli-tools   Install system packages
 #   install-shell       Install shell packages
 #   install-docker      Install docker
-#   install-gui         Install gui, i3, polybar, kitty, rofi, picom
-#   install-gui-tools   Install system packages
+#   install-gui         Install i3, polybar, kitty, rofi, picom, KDE Plasma
+#   install-gui-tools   Install GUI apps (Chrome, VSCode, Ghidra, etc.)
 #   install-offensive   Install offensive tools
 #   install-wordlists   Install wordlists
 #   install-hardening   Install hardening tools
@@ -276,7 +276,7 @@ bindsym $mod+c exec code
 
 ```bash
 # Pacman Packages
-arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-kde-agent dolphin kamoso
+arandr asciinema base-devel bat bettercap bison blueman bottom brightnessctl bzip2 ca-certificates cloc cmake visual-studio-code-bin curl discord dmenu docker docker-compose dos2unix dragon-drop-git dunst emote eza expect fastfetch feh ffmpeg filezilla flameshot foremost fq fx gdb ghex ghidra git git-delta gitleaks glow gnupg google-chrome gparted gron guvcview hashcat htmlq htop hwinfo xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status icu inotify-tools iproute2 jless jq kdenlive kitty kompare lazygit libedit libffi libjpeg-turbo libpcap libpng libreoffice-fresh libxml2 libzip llvm lsof ltrace make meld metasploit mise mlocate mplayer ncurses neovim net-tools ngrep nm-connection-editor nmap okular opensnitch openssh openssl parallel perl-image-exiftool php-gd picom pkgconf polybar postgresql-libs python-virtualenv qbittorrent re2c readline ripgrep rlwrap rofi signal-desktop socat sqlite sshpass superfile sysstat tmate tmux tor torbrowser-launcher traceroute trash-cli tree unzip vbindiff veracrypt vim viu vlc vlc-plugin-ffmpeg flatpak websocat wget wireshark-qt xclip qsv xz yay zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-theme-powerlevel10k cronie tree-sitter audacity xorg-xhost archlinux-keyring jdk21-openjdk polkit-kde-agent dolphin kamoso plasma-desktop plasma-x11-session kwin-x11 konsole alacritty
 
 # Yay packages
 ffuf gau pdtm-bin waybackurls fswebcam caido-desktop caido-cli i3-battery-popup-git rofi-power-menu fabric-ai-bin
@@ -363,7 +363,7 @@ The following systemd services are installed but **disabled and stopped by defau
 
 > **Not part of `make install`** -- this is a standalone target for cloud/remote desktop VMs.
 
-Installs KasmVNC + KDE Plasma X11 + cloud-init + SSH. After `make cloud`, the `ska-vnc` alias starts a full KDE Plasma desktop accessible from a browser.
+Installs KasmVNC + cloud-init + SSH. KDE Plasma is installed by `make install-gui`. After `make cloud`, the `ska-vnc` alias starts a full KDE Plasma desktop accessible from a browser.
 
 | Service | Package | Start | Purpose |
 |---------|---------|-------|---------|
