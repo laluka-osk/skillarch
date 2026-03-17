@@ -70,7 +70,7 @@ sanity-check:
 	set -x
 	# Ensure we are in /opt/skillarch or /opt/skillarch-original (maintainer only)
 	[[ "$$(pwd)" != "/opt/skillarch" ]] && [[ "$$(pwd)" != "/opt/skillarch-original" ]] && $(call ERR,You must be in /opt/skillarch or /opt/skillarch-original to run this command) && exit 1 || true
-	sudo -v || ($(call ERR,Error: sudo access is required) ; exit 1)
+	@sudo true || { $(call ERR,Error: sudo access is required) ; exit 1; }
 	[[ ! -f /.dockerenv ]] && { systemd-inhibit --what sleep:idle sleep 3600 & } || true
 
 install-base: sanity-check ## Install base packages
@@ -171,13 +171,21 @@ install-docker: sanity-check ## Install Docker & Docker Compose
 	[[ ! -f /.dockerenv ]] && sudo systemctl enable --now docker || true
 	$(call DONE,Docker installed!)
 
-install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom
+install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	$(call INFO,Installing GUI & window manager...)
 	[[ ! -f /etc/machine-id ]] && sudo systemd-machine-id-setup || true
-	$(PACMAN_INSTALL) xorg-server i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
+	$(PACMAN_INSTALL) xorg-server cachyos-kde-settings plasma-meta i3-gaps i3blocks i3lock i3lock-fancy-git i3status dmenu feh rofi nm-connection-editor picom polybar kitty brightnessctl xorg-xhost
+	# KDE Plasma X11 — Plasma 6 + kwin_x11, also used by cloud VNC target
+	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin alacritty
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
 	plasma-apply-colorscheme BreezeDark 2>/dev/null || true
 	plasma-apply-wallpaperimage /opt/skillarch/assets/bg.jpg 2>/dev/null || true
+	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
+	mkdir -p ~/.config
+	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
+	if [[ -f "$$PLASMA_RC" ]]; then \
+		sed -i 's|^launchers=.*|launchers=applications:systemsettings.desktop,applications:google-chrome.desktop,applications:org.kde.dolphin.desktop,applications:Alacritty.desktop|' "$$PLASMA_RC" ; \
+	fi
 
 	# i3 config
 	[[ ! -d ~/.config/i3 ]] && mkdir -p ~/.config/i3 || true
@@ -288,7 +296,7 @@ install-hardening: sanity-check ## Install hardening tools (opensnitch)
 	# sudo systemctl enable --now opensnitchd.service
 	$(call DONE,Hardening tools installed!)
 
-cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init for cloud/remote desktop — NOT part of make install
+cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remote desktop — NOT part of make install
 	$(call INFO,Installing cloud/remote desktop tools...)
 
 	# ── KasmVNC ──
@@ -296,17 +304,6 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + KDE Plasma + cloud-init fo
 	yay --noconfirm --needed -S openssl-1.1 || $(call WARN,Failed to install openssl-1.1$(comma) continuing...)
 	# KasmVNC: browser-based VNC remote desktop (per-user, no systemd daemon)
 	yay --noconfirm --needed -S kasmvncserver-bin || $(call WARN,Failed to install kasmvncserver-bin$(comma) continuing...)
-
-	# ── KDE Plasma X11 (VNC desktop) ──
-	# Plasma 6 + kwin_x11. Xvnc has no GLX, so vnc-xstartup sets QT_QUICK_BACKEND=software
-	# for Qt/QML rendering and LIBGL_ALWAYS_SOFTWARE=1 as Mesa fallback. See kasm-pls.md.
-	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin alacritty
-	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
-	mkdir -p ~/.config
-	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
-	if [[ -f "$$PLASMA_RC" ]]; then \
-		sed -i 's|^launchers=.*|launchers=applications:systemsettings.desktop,applications:google-chrome.desktop,applications:org.kde.dolphin.desktop,applications:Alacritty.desktop|' "$$PLASMA_RC" ; \
-	fi
 
 	# ── KasmVNC config ──
 	mkdir -p ~/.vnc
