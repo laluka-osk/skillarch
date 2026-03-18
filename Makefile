@@ -192,6 +192,8 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	# GTK 3/4 — sync dark theme so GTK apps (Firefox, etc.) also go dark
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-3.0/settings.ini
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-4.0/settings.ini
+	# QT_QPA_PLATFORMTHEME=kde — ensures Qt apps read kdeglobals under i3 (not just Plasma)
+	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.profile
 	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
 	mkdir -p ~/.config
 	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
@@ -218,9 +220,6 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	# kitty config
 	[[ ! -d ~/.config/kitty ]] && mkdir -p ~/.config/kitty || true
 	$(call ska-link,/opt/skillarch/config/kitty/kitty.conf,$$HOME/.config/kitty/kitty.conf)
-
-	# xprofile — QT_QPA_PLATFORMTHEME=kde so Qt apps use BreezeDark under i3
-	$(call ska-link,/opt/skillarch/config/xprofile,$$HOME/.xprofile)
 
 	# touchpad config
 	[[ ! -d /etc/X11/xorg.conf.d ]] && sudo mkdir -p /etc/X11/xorg.conf.d || true
