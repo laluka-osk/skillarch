@@ -178,8 +178,22 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	# KDE Plasma X11 — Plasma 6 + kwin_x11, also used by cloud VNC target
 	$(PACMAN_INSTALL) plasma-desktop plasma-x11-session kwin-x11 konsole dolphin alacritty
 	yay --noconfirm --needed -S rofi-power-menu i3-battery-popup-git
+	# ── KDE Dark Theme (BreezeDark) ──
+	# plasma-apply-colorscheme needs a running Plasma session (D-Bus); during install
+	# it usually fails silently. Write kdeglobals + GTK configs directly as fallback.
 	plasma-apply-colorscheme BreezeDark 2>/dev/null || true
 	plasma-apply-wallpaperimage /opt/skillarch/assets/bg.jpg 2>/dev/null || true
+	mkdir -p ~/.config ~/.config/gtk-3.0 ~/.config/gtk-4.0
+	# kdeglobals — force BreezeDark color scheme + Breeze icons for all KDE/Qt apps
+	kwriteconfig6 --file ~/.config/kdeglobals --group General --key ColorScheme BreezeDark 2>/dev/null || true
+	kwriteconfig6 --file ~/.config/kdeglobals --group General --key Name "Breeze Dark" 2>/dev/null || true
+	kwriteconfig6 --file ~/.config/kdeglobals --group Icons --key Theme breeze-dark 2>/dev/null || true
+	kwriteconfig6 --file ~/.config/kdeglobals --group KDE --key LookAndFeelPackage org.kde.breezedark.desktop 2>/dev/null || true
+	# GTK 3/4 — sync dark theme so GTK apps (Firefox, etc.) also go dark
+	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-3.0/settings.ini
+	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-4.0/settings.ini
+	# QT_QPA_PLATFORMTHEME=kde — ensures Qt apps read kdeglobals under i3 (not just Plasma)
+	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.profile
 	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
 	mkdir -p ~/.config
 	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
