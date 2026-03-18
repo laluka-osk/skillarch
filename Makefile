@@ -193,7 +193,7 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-3.0/settings.ini
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-4.0/settings.ini
 	# QT_QPA_PLATFORMTHEME=kde — ensures Qt apps read kdeglobals under i3 (not just Plasma)
-	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.profile
+	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.xprofile
 	# Pin default taskbar launchers (systemsettings, chrome, dolphin, alacritty)
 	mkdir -p ~/.config
 	PLASMA_RC=~/.config/plasma-org.kde.plasma.desktop-appletsrc ; \
