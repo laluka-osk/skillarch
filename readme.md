@@ -146,11 +146,13 @@ make help
 1. Open arandr & set your screen layout: Drag & Drop
 1. Set your Primary screen: Right Click > Check `Primary`
 1. Save your layout: Layout > Save As > `arandr-main-layout.sh`
-1. Auto apply layout at login time:
+1. Auto apply layout at login time — uncomment the arandr line in `~/.xprofile` (symlinked to `/opt/skillarch/config/xprofile`):
 
 ```bash
-echo "$HOME/.screenlayout/arandr-main-layout.sh &" > ~/.xprofile
-chmod +x ~/.xprofile
+# Edit the managed xprofile:
+vim /opt/skillarch/config/xprofile
+# Uncomment and adjust the arandr line:
+#   $HOME/.screenlayout/arandr-main-layout.sh &
 # Logout, Login, should work first try!
 ```
 

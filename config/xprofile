@@ -1,0 +1,7 @@
+# SkillArch X session environment — sourced by display managers before i3/Plasma
+# KDE/Qt platform integration: ensures Qt apps read kdeglobals (BreezeDark theme)
+# even when running under i3 instead of a full Plasma session.
+export QT_QPA_PLATFORMTHEME=kde
+
+# Arandr monitor layout — uncomment after saving a layout with arandr:
+# $HOME/.screenlayout/arandr-main-layout.sh &
