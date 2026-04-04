@@ -369,6 +369,9 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 	[[ ! -f /.dockerenv ]] && sudo systemctl restart sshd.service || true
 	sudo ufw allow 22/tcp comment 'SSH' || true
 
+	# ── bore: TCP tunnel to expose local ports through NAT (https://github.com/ekzhang/bore) ──
+	$(PACMAN_INSTALL) bore
+
 	# ── Delete all Snapper snapshots ──
 	# Snapper read-only snapshots cause libguestfs to detect multiple OS roots,
 	# breaking virt-sysprep during cloud-export. Clean slate for smaller exports too.

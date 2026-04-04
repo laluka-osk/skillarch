@@ -351,6 +351,7 @@ Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVN
 | Service | Status | Start | Purpose |
 |---|---|---|---|
 | *(user-level)* | not installed by default | `ska-vnc` or `kasmvncserver :1` | KasmVNC remote desktop (yay: `kasmvncserver-bin`) |
+| *(user-level)* | installed | `bore local <PORT> --to bore.pub` | TCP tunnel through NAT ([github.com/ekzhang/bore](https://github.com/ekzhang/bore)) |
 
 #### KasmVNC Usage
 SSL is disabled (config: `~/.vnc/kasmvnc.yaml`). Access via SSH port-forward only.

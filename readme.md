@@ -370,6 +370,7 @@ Installs KasmVNC + cloud-init + SSH. KDE Plasma is installed by `make install-gu
 | *(user-level)* | `kasmvncserver-bin` | `ska-vnc` | KDE Plasma desktop via browser (VNC over websocket) |
 | `sshd` | `openssh` | auto-enabled | SSH access |
 | `cloud-init` | `cloud-init` | auto-enabled | VM auto-config (network, SSH keys, hostname) |
+| *(user-level)* | `bore` | `bore local <PORT> --to bore.pub` | TCP tunnel through NAT via [bore.pub](https://github.com/ekzhang/bore) |
 
 **Quick start:**
 
