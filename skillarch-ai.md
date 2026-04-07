@@ -243,7 +243,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `$mod+e` | Emote (emoji picker) |
 | `$mod+b` | Blueman (Bluetooth) |
 | `$mod+w` | KDE WiFi/Network settings |
-| `$mod+n` | Dolphin file manager |
+| `$mod+n` | Thunar file manager |
 | `$mod+m` | Toggle microphone mute |
 
 ### Help
