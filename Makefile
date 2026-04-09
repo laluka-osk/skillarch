@@ -192,8 +192,8 @@ install-gui: sanity-check ## Install i3, polybar, kitty, rofi, picom, KDE Plasma
 	# GTK 3/4 — sync dark theme so GTK apps (Firefox, etc.) also go dark
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-3.0/settings.ini
 	echo -e '[Settings]\ngtk-theme-name=Breeze-Dark\ngtk-icon-theme-name=breeze-dark\ngtk-application-prefer-dark-theme=true' > ~/.config/gtk-4.0/settings.ini
-	# QT_QPA_PLATFORMTHEME=kde — ensures Qt apps read kdeglobals under i3 (not just Plasma)
-	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.xprofile
+	echo "export QT_QPA_PLATFORMTHEME=kde" > ~/.xprofile # Ensures Qt apps read kdeglobals under i3 (not just Plasma)
+	echo "export XDG_SESSION_TYPE=x11" >> ~/.xprofile # Ensure other other apps rely on x11 instead of wayland
 	# ── MIME defaults: image=eog, video/audio=vlc, pdf/html=chrome, text=kate, dir=thunar ──
 	# GTK file managers (Thunar, Nautilus, etc.) and xdg-open read ~/.config/mimeapps.list.
 	# We use Thunar instead of Dolphin because KIO's portal-based launcher hangs under i3.
