@@ -37,14 +37,23 @@ ska-update-advanced() {
     git --no-pager log --graph --decorate --oneline main..upstream/main
     echo; echo "── Overall diff stat ──"
     git --no-pager diff --stat main upstream/main
-    echo; echo "── Full incoming patch (press 'q' to quit pager) ──"
-    git log --patch --stat main..upstream/main
+    echo; echo "── Full incoming patch ──"
+    git --no-pager log --patch --stat main..upstream/main
     # 3. Merge
     printf "\nMerge upstream/main into main? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] || { echo "Abort."; return 1; }
     git merge upstream/main || { echo "Merge conflict — resolve$(:) then push + ska-update-simple manually."; return 1; }
-    # 4. Push + reapply
-    printf "Push merge to origin/main? [Y/n] "; read -r ans
+    # 4. Post-merge preview — what's about to leave your fork
+    echo; echo "── Merge result (last 10 commits on main) ──"
+    git --no-pager log --graph --decorate --oneline -n 10
+    echo; echo "── Outgoing commits (origin/main..HEAD) ──"
+    git --no-pager log --oneline origin/main..HEAD
+    echo; echo "── Outgoing diff stat vs origin/main ──"
+    git --no-pager diff --stat origin/main..HEAD
+    echo; echo "── Full outgoing patch ──"
+    git --no-pager diff origin/main..HEAD
+    # 5. Push + reapply
+    printf "\nPush merge to origin/main? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] && { git push origin main || return 1; }
     printf "Run ska-update-simple to reapply install? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] && ska-update-simple
