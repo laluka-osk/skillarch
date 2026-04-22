@@ -312,6 +312,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `/opt/exploitdb` | exploit-database/exploitdb | ExploitDB (GitLab mirror) |
 | `/opt/pty4all` | laluka/pty4all | PTY helper for shells |
 | `/opt/pypotomux` | laluka/pypotomux | tmux session multiplexer |
+| `/opt/HExHTTP` | c0dejump/HExHTTP | HTTP header vuln / cache-poisoning scanner (isolated venv, `hexhttp -u https://target.tld/`) |
 
 ### Runtimes (mise)
 `python` (latest), `nodejs` (latest), `golang` (latest), `rust` (latest), `uv`, `pdm`, `terraform`
