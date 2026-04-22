@@ -18,6 +18,10 @@ ska-update-advanced() {
     git remote get-url upstream >/dev/null 2>&1 || { echo "Add upstream first:  git remote add upstream https://github.com/laluka/skillarch.git"; return 1; }
     [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || { echo "Not on main — switch first."; return 1; }
     local ans msg incoming
+    # Loud banner for the heavy full-patch sections
+    _skau_banner() {
+        printf '\n\033[1;35m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n┃  %-69s  ┃\n┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m\n\n' "$1"
+    }
     # 1. Local changes → offer to commit + push
     if [[ -n "$(git status --porcelain)" ]]; then
         echo "── Local changes ──"; git status --short
@@ -37,7 +41,7 @@ ska-update-advanced() {
     git --no-pager log --graph --decorate --oneline main..upstream/main
     echo; echo "── Overall diff stat ──"
     git --no-pager diff --stat main upstream/main
-    echo; echo "── Full incoming patch ──"
+    _skau_banner "FULL INCOMING PATCH   (main..upstream/main)"
     git --no-pager log --patch --stat main..upstream/main
     # 3. Merge
     printf "\nMerge upstream/main into main? [Y/n] "; read -r ans
@@ -50,7 +54,7 @@ ska-update-advanced() {
     git --no-pager log --oneline origin/main..HEAD
     echo; echo "── Outgoing diff stat vs origin/main ──"
     git --no-pager diff --stat origin/main..HEAD
-    echo; echo "── Full outgoing patch ──"
+    _skau_banner "FULL OUTGOING PATCH   (origin/main..HEAD)"
     git --no-pager diff origin/main..HEAD
     # 5. Push + reapply
     printf "\nPush merge to origin/main? [Y/n] "; read -r ans
@@ -62,8 +66,9 @@ ska-update-advanced() {
     git --no-pager log --oneline upstream/main..HEAD
     echo; echo "── Drift diff stat vs upstream/main ──"
     git --no-pager diff --stat upstream/main..HEAD
-    echo; echo "── Full drift patch vs upstream/main ──"
+    _skau_banner "FULL DRIFT PATCH      (upstream/main..HEAD)"
     git --no-pager diff upstream/main..HEAD
+    unfunction _skau_banner
     echo
     echo "── Stay in the loop ──"
     echo "Join the SkillArch channel on OffenSkill's Discord for news, help & latest tweaks:"
