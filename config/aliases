@@ -11,7 +11,40 @@ alias ska-help-bindings='i3-msg -t get_config | grep -vF "#bindsym" | grep -oP "
 alias ska-help-aliases='alias | fzf'
 alias ska-help-packages='pacman -Q | fzf'
 alias ska-update-simple='ska && make update && make install'
-alias ska-update-advanced='echo "# SAVE your changes on your repo" ; echo "git add foo ; git commit -m i-added-foo ; git push" ; echo "# Then, from a CLEAN git state" ; echo "ska && git status" ; echo "# PULL & CHECKOUT upstream changes" ; echo "git fetch upstream && git checkout main" ; echo "# MERGE upstream changes" ; echo "git merge upstream/main" ; echo "# SAVE your new current state" ; echo "git push origin main" ; echo "# Check & Compare your current drift from upstream" ; echo "git diff upstream/main" ; echo "# Reapply with latest changes" ; echo "ska-update-simple"'
+unalias ska-update-advanced 2>/dev/null # shed any stale alias from a prior source
+ska-update-advanced() {
+    # Interactive upstream-merge workflow for forked SkillArch setups.
+    cd /opt/skillarch 2>/dev/null || { echo "No /opt/skillarch — clone your fork there first."; return 1; }
+    git remote get-url upstream >/dev/null 2>&1 || { echo "Add upstream first:  git remote add upstream https://github.com/laluka/skillarch.git"; return 1; }
+    [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || { echo "Not on main — switch first."; return 1; }
+    local ans msg incoming
+    # 1. Local changes → offer to commit + push
+    if [[ -n "$(git status --porcelain)" ]]; then
+        echo "── Local changes ──"; git status --short
+        printf "Commit + push these first? [Y/n] "; read -r ans
+        if [[ -z "$ans" || "$ans" == [Yy]* ]]; then
+            printf "Commit message: "; read -r msg
+            git add -A && git commit -m "${msg:-wip: local changes}" && git push origin main || return 1
+        else
+            echo "Abort — stash or commit first."; return 1
+        fi
+    fi
+    # 2. Fetch + preview incoming
+    git fetch upstream || return 1
+    incoming=$(git log --oneline main..upstream/main)
+    if [[ -z "$incoming" ]]; then echo "Already up to date with upstream/main."; return 0; fi
+    echo "── Incoming commits ──"; echo "$incoming"
+    echo; echo "── Diff stat ──"; git --no-pager diff main upstream/main --stat
+    # 3. Merge
+    printf "\nMerge upstream/main into main? [Y/n] "; read -r ans
+    [[ -z "$ans" || "$ans" == [Yy]* ]] || { echo "Abort."; return 1; }
+    git merge upstream/main || { echo "Merge conflict — resolve$(:) then push + ska-update-simple manually."; return 1; }
+    # 4. Push + reapply
+    printf "Push merge to origin/main? [Y/n] "; read -r ans
+    [[ -z "$ans" || "$ans" == [Yy]* ]] && { git push origin main || return 1; }
+    printf "Run ska-update-simple to reapply install? [Y/n] "; read -r ans
+    [[ -z "$ans" || "$ans" == [Yy]* ]] && ska-update-simple
+}
 alias ska-vbox-install-guestutils='sudo pacman -S virtualbox-guest-utils && sudo usermod -aG vboxsf "$USER"'
 alias ska-vbox-install='sudo pacman -S virtualbox virtualbox-host-dkms && echo -e "\n\n\nNow reboot to load the vbox drivers"'
 alias ska-sudo-unlock='su -c "faillock --user $USER --reset"'

@@ -58,7 +58,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 | `ska-help-bindings` | fzf fuzzy-search i3 keybindings |
 | `ska-help-packages` | fzf fuzzy-search installed pacman packages |
 | `ska-update-simple` | `ska && make update && make install` |
-| `ska-update-advanced` | Print git merge workflow for forked setups |
+| `ska-update-advanced` | Interactive upstream-merge for forks (commit local → fetch → preview → merge → push → reapply, all Y/n-prompted) |
 | `ska-sudo-unlock` | Reset faillock after 3 bad sudo attempts |
 | `ska-vnc` | Prompt for VNC password, set it, start KasmVNC on :1 |
 | `ska-vbox-install-guestutils` | Install VirtualBox guest utils |

@@ -42,24 +42,16 @@ ska-update-simple
 1. When you'll want to `add a tweak` or  `update your setup` 🫶
 
 ```bash
-# Update by running this command (simply follow the process):
+# Interactive upstream-merge — just follow the Y/n prompts:
 ska-update-advanced
 
-# "The process" is mostly like below:
-# SAVE your changes on your repo
-git add foo ; git commit -m i-added-foo ; git push
-# Then, from a CLEAN git state
-ska && git status
-# PULL & CHECKOUT upstream changes
-git fetch upstream && git checkout main
-# MERGE upstream changes
-git merge upstream/main
-# SAVE your new current state
-git push origin main
-# Check & Compare your current drift from upstream
-git diff upstream/main
-# Reapply with latest changes
-ska-update-simple
+# Under the hood it walks you through:
+#   1. detect local changes → prompt to commit + push
+#   2. git fetch upstream
+#   3. show incoming commits + diff stat
+#   4. prompt to merge upstream/main
+#   5. prompt to push origin/main
+#   6. prompt to reapply via ska-update-simple (make update && make install)
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
@@ -114,7 +106,7 @@ make help
 | `ska-help-packages` | Fuzzy-find installed packages |
 | `ska-sudo-unlock` | Unlock current user after 3 sudo fails |
 | `ska-update-simple` | Update SkillArch repo & starts install |
-| `ska-update-advanced` | Helper to Pull Upstream & merge |
+| `ska-update-advanced` | Interactive upstream-merge for forks (prompts at each step) |
 | `ska-vnc` | Start KDE Plasma desktop via KasmVNC (browser at https://127.0.0.1:8443) |
 
 ### MISC Gotchas
