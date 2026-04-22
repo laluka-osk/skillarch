@@ -252,7 +252,7 @@ install-offensive: sanity-check ## Install offensive & security tools
 	# HExHTTP: HTTP header vuln/cache-poisoning scanner — clone + isolated venv + PATH shim.
 	# Upstream pyproject entrypoint is broken (hexhttp.py not packaged); bypass with a direct wrapper.
 	[[ ! -d /opt/HExHTTP ]] && git clone --depth=1 https://github.com/c0dejump/HExHTTP /tmp/HExHTTP && sudo mv /tmp/HExHTTP /opt/HExHTTP && sudo chown -R "$$USER:$$USER" /opt/HExHTTP || true
-	[[ -d /opt/HExHTTP && ! -d /opt/HExHTTP/.venv ]] && uv venv -q /opt/HExHTTP/.venv && VIRTUAL_ENV=/opt/HExHTTP/.venv uv pip install -q -r <(sed -n '/^dependencies = \[/,/^\]/p' /opt/HExHTTP/pyproject.toml | grep -oP '"\K[^"]+(?=")' | grep -v 'darwin') || true
+	[[ -d /opt/HExHTTP && ! -d /opt/HExHTTP/.venv ]] && mise exec -- uv venv -q /opt/HExHTTP/.venv && VIRTUAL_ENV=/opt/HExHTTP/.venv mise exec -- uv pip install -q -r <(sed -n '/^dependencies = \[/,/^\]/p' /opt/HExHTTP/pyproject.toml | grep -oP '"\K[^"]+(?=")' | grep -v 'darwin') || true
 	sudo tee /usr/local/bin/hexhttp > /dev/null <<-'SHIM'
 		#!/usr/bin/env bash
 		exec /opt/HExHTTP/.venv/bin/python /opt/HExHTTP/hexhttp.py "$$@"
