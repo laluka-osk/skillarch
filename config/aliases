@@ -33,8 +33,12 @@ ska-update-advanced() {
     git fetch upstream || return 1
     incoming=$(git log --oneline main..upstream/main)
     if [[ -z "$incoming" ]]; then echo "Already up to date with upstream/main."; return 0; fi
-    echo "── Incoming commits ──"; echo "$incoming"
-    echo; echo "── Diff stat ──"; git --no-pager diff main upstream/main --stat
+    echo "── Incoming commits (graph) ──"
+    git --no-pager log --graph --decorate --oneline main..upstream/main
+    echo; echo "── Overall diff stat ──"
+    git --no-pager diff --stat main upstream/main
+    echo; echo "── Full incoming patch (press 'q' to quit pager) ──"
+    git log --patch --stat main..upstream/main
     # 3. Merge
     printf "\nMerge upstream/main into main? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] || { echo "Abort."; return 1; }
@@ -44,6 +48,10 @@ ska-update-advanced() {
     [[ -z "$ans" || "$ans" == [Yy]* ]] && { git push origin main || return 1; }
     printf "Run ska-update-simple to reapply install? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] && ska-update-simple
+    echo
+    echo "── Stay in the loop ──"
+    echo "Join the SkillArch channel on OffenSkill's Discord for news, help & latest tweaks:"
+    echo "  https://discord.gg/QmBfFkge"
 }
 alias ska-vbox-install-guestutils='sudo pacman -S virtualbox-guest-utils && sudo usermod -aG vboxsf "$USER"'
 alias ska-vbox-install='sudo pacman -S virtualbox virtualbox-host-dkms && echo -e "\n\n\nNow reboot to load the vbox drivers"'
