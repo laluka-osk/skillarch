@@ -249,6 +249,16 @@ install-offensive: sanity-check ## Install offensive & security tools
 	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin caido-desktop caido-cli; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 
+	# HExHTTP: HTTP header vuln/cache-poisoning scanner — clone + isolated venv + PATH shim.
+	# Upstream pyproject entrypoint is broken (hexhttp.py not packaged); bypass with a direct wrapper.
+	[[ ! -d /opt/HExHTTP ]] && git clone --depth=1 https://github.com/c0dejump/HExHTTP /tmp/HExHTTP && sudo mv /tmp/HExHTTP /opt/HExHTTP && sudo chown -R "$$USER:$$USER" /opt/HExHTTP || true
+	[[ -d /opt/HExHTTP && ! -d /opt/HExHTTP/.venv ]] && uv venv -q /opt/HExHTTP/.venv && VIRTUAL_ENV=/opt/HExHTTP/.venv uv pip install -q -r <(sed -n '/^dependencies = \[/,/^\]/p' /opt/HExHTTP/pyproject.toml | grep -oP '"\K[^"]+(?=")' | grep -v 'darwin') || true
+	sudo tee /usr/local/bin/hexhttp > /dev/null <<-'SHIM'
+		#!/usr/bin/env bash
+		exec /opt/HExHTTP/.venv/bin/python /opt/HExHTTP/hexhttp.py "$$@"
+	SHIM
+	sudo chmod +x /usr/local/bin/hexhttp
+
 	# Hide stdout and Keep stderr for CI builds -- run go installs in parallel
 	mise exec -- go install github.com/sw33tLie/sns@latest > /dev/null &
 	mise exec -- go install github.com/glitchedgitz/cook/v2/cmd/cook@latest > /dev/null &
@@ -492,6 +502,7 @@ test: ## Validate installation (smoke tests)
 		ska_check "$$bin" "which $$bin"
 	done
 	ska_check "sqlmap"      "which sqlmap || [[ -f ~/.local/bin/sqlmap ]]"
+	ska_check "hexhttp"     "which hexhttp || [[ -f ~/.local/bin/hexhttp ]]"
 	ska_check "nuclei"      "which nuclei || [[ -f ~/.pdtm/go/bin/nuclei ]]"
 	ska_check "httpx"       "which httpx || [[ -f ~/.pdtm/go/bin/httpx ]]"
 	ska_check "subfinder"   "which subfinder || [[ -f ~/.pdtm/go/bin/subfinder ]]"
@@ -542,6 +553,7 @@ test-lite: ## Validate lite Docker image install
 	for bin in ffuf hashcat bettercap msfconsole gobypass403 wpprobe; do
 		ska_check "$$bin" "which $$bin"
 	done
+	ska_check "hexhttp"   "which hexhttp || [[ -f ~/.local/bin/hexhttp ]]"
 	ska_check "nuclei"    "which nuclei || [[ -f ~/.pdtm/go/bin/nuclei ]]"
 	ska_check "httpx"     "which httpx || [[ -f ~/.pdtm/go/bin/httpx ]]"
 	ska_check "gef"       "[[ -f ~/.gdbinit-gef.py ]]"
@@ -675,6 +687,7 @@ list-tools: ## List installed offensive tools & versions
 	ska_ver "httpx"      "httpx -version 2>&1 | tail -1"
 	ska_ver "subfinder"  "subfinder -version 2>&1 | head -1"
 	ska_ver "sqlmap"     "sqlmap --version 2>&1 | head -1"
+	ska_ver "hexhttp"    "hexhttp --version 2>&1 | head -1"
 	ska_ver "msfconsole" "msfconsole --version 2>&1 | head -1"
 	ska_ver "hashcat"    "hashcat --version 2>&1 | head -1"
 	ska_ver "bettercap"  "bettercap -version"
