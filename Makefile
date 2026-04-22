@@ -246,7 +246,7 @@ install-gui-tools: sanity-check ## Install GUI apps (Chrome, VSCode, Ghidra, etc
 
 install-offensive: sanity-check ## Install offensive & security tools
 	$(call INFO,Installing offensive tools...)
-	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap
+	$(PACMAN_INSTALL) metasploit fx lazygit fq gitleaks jdk21-openjdk hashcat bettercap bore
 	for pkg in ffuf gau pdtm-bin waybackurls fabric-ai-bin caido-desktop caido-cli; do yay --noconfirm --needed -S "$$pkg" || $(call WARN,Failed to install $$pkg$(comma) continuing...); done
 
 	# HExHTTP: HTTP header vuln/cache-poisoning scanner — clone + isolated venv + PATH shim.
@@ -382,9 +382,6 @@ cloud: sanity-check ## (Standalone) Install KasmVNC + cloud-init for cloud/remot
 	sudo sed -i 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 	[[ ! -f /.dockerenv ]] && sudo systemctl restart sshd.service || true
 	sudo ufw allow 22/tcp comment 'SSH' || true
-
-	# ── bore: TCP tunnel to expose local ports through NAT (https://github.com/ekzhang/bore) ──
-	$(PACMAN_INSTALL) bore
 
 	# ── Delete all Snapper snapshots ──
 	# Snapper read-only snapshots cause libguestfs to detect multiple OS roots,

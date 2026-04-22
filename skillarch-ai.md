@@ -286,7 +286,7 @@ make clean              # Docker-only: clear caches (pacman, yay, pip, mise, go,
 `bat`, `eza`, `fzf`, `ripgrep`, `fd`, `jq`, `glow`, `jless`, `gron`, `htmlq`, `qsv`, `viu`, `superfile`, `fastfetch`, `asciinema`, `bottom`, `htop`, `tmux`, `git-delta`, `lazygit`, `fq`, `fx`, `websocat`, `cloc`, `tree`, `rlwrap`, `parallel`, `tmate`, `trash-cli`, `sysstat`, `inotify-tools`
 
 ### Security / Offensive (pacman)
-`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`
+`metasploit` (msfconsole, msfvenom), `hashcat`, `bettercap`, `nmap`, `wireshark-qt`, `ghidra`, `gdb+gef`, `gitleaks`, `opensnitch`, `bore` (TCP NAT tunnel — `bore local <PORT> --to bore.pub`)
 
 ### Security / Offensive (yay/AUR)
 `ffuf`, `gau`, `pdtm-bin`, `waybackurls`, `fabric-ai-bin`, `caido-desktop`, `caido-cli`, `gobypass403` (GitHub release), `wpprobe` (GitHub release)
@@ -352,7 +352,6 @@ Installs KasmVNC (`kasmvncserver-bin`) + `openssl-1.1` (AUR, required — KasmVN
 | Service | Status | Start | Purpose |
 |---|---|---|---|
 | *(user-level)* | not installed by default | `ska-vnc` or `kasmvncserver :1` | KasmVNC remote desktop (yay: `kasmvncserver-bin`) |
-| *(user-level)* | installed | `bore local <PORT> --to bore.pub` | TCP tunnel through NAT ([github.com/ekzhang/bore](https://github.com/ekzhang/bore)) |
 
 #### KasmVNC Usage
 SSL is disabled (config: `~/.vnc/kasmvnc.yaml`). Access via SSH port-forward only.
