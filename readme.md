@@ -48,10 +48,11 @@ ska-update-advanced
 # Under the hood it walks you through:
 #   1. detect local changes → prompt to commit + push
 #   2. git fetch upstream
-#   3. show incoming commits + diff stat
+#   3. show incoming commit graph + overall diff-stat + FULL patch (pager)
 #   4. prompt to merge upstream/main
 #   5. prompt to push origin/main
 #   6. prompt to reapply via ska-update-simple (make update && make install)
+#   7. nudge you toward the SkillArch Discord channel
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
