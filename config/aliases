@@ -57,6 +57,13 @@ ska-update-advanced() {
     [[ -z "$ans" || "$ans" == [Yy]* ]] && { git push origin main || return 1; }
     printf "Run ska-update-simple to reapply install? [Y/n] "; read -r ans
     [[ -z "$ans" || "$ans" == [Yy]* ]] && ska-update-simple
+    # 6. Final drift vs upstream — your fork's divergence after the merge
+    echo; echo "── Final drift: your commits not in upstream/main ──"
+    git --no-pager log --oneline upstream/main..HEAD
+    echo; echo "── Drift diff stat vs upstream/main ──"
+    git --no-pager diff --stat upstream/main..HEAD
+    echo; echo "── Full drift patch vs upstream/main ──"
+    git --no-pager diff upstream/main..HEAD
     echo
     echo "── Stay in the loop ──"
     echo "Join the SkillArch channel on OffenSkill's Discord for news, help & latest tweaks:"

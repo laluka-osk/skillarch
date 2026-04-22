@@ -52,7 +52,8 @@ ska-update-advanced
 #   4. prompt to merge upstream/main
 #   5. prompt to push origin/main
 #   6. prompt to reapply via ska-update-simple (make update && make install)
-#   7. nudge you toward the SkillArch Discord channel
+#   7. show your final drift vs upstream (commits + stat + full patch)
+#   8. nudge you toward the SkillArch Discord channel
 ```
 
 > ⚠️ Remember to NEVER add secrets in your dotfiles 🙏\
