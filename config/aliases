@@ -7,6 +7,9 @@
 # preserving everything else (oh-my-zsh's `gp`, `gst`, `gco`, …).
 unalias ${(f)"$(grep -oP '^[a-zA-Z_][a-zA-Z0-9_-]*(?=\(\))' ${(%):-%x})"} 2>/dev/null
 
+# oh-my-zsh git plugin overwrites gau (getallurls) → unalias it
+unalias gau 2>/dev/null
+
 # ────────────────────────────────────────
 #  SkillArch Helpers
 # ────────────────────────────────────────
@@ -188,6 +191,34 @@ alias mcrypt-enc='f(){ PASS=$(cat /dev/urandom | base64 | head -c 20) && echo "$
 alias mcrypt-dec='mdecrypt'
 alias get-meteo='curl https://wttr.in/'
 alias fab='fabric-ai -s'
+alias fzf-h='print -z $(builtin fc -n -l 1|fzf --height=50% --tac --prompt="Command from history > " --preview="print {}" --preview-window="down:3:wrap")'
+xh() { [[ -z "$1" ]] && return ||  xxd "${@: -1}" | head "${@: 1:#-1}"; }
+bindkey -s '^h' "fzf-h\n"
+cmd_picker_select() {
+    local md_file="${1:-/opt/skillarch/commands.md}"
+    grep '|' "$md_file" | grep -v '^\s*|[-|]\+' | sed 's/\\|/\x00/g; s/``/\x01/g' \
+    | awk -F'|' 'NF>=3 {
+        cmd=$2; desc=$3;
+        gsub(/^ +| +$/, "", cmd);  gsub(/^ +| +$/, "", desc); gsub(/\x00/, "|", desc);
+        # Colorize in blue strings between backticks (single or double)
+        while (match(desc, /\x01[^\x01]+\x01|`[^`]+`/)) {
+            inner = substr(desc, RSTART+1, RLENGTH-2)
+            desc = substr(desc, 1, RSTART-1) "\033[34m" inner "\033[0m" substr(desc, RSTART+RLENGTH)
+        }
+        if (cmd != "" && cmd != "Function/Alias") printf "%-28s\t%s\n", cmd, desc
+    }' \
+    | fzf --ansi --height=50% --reverse --prompt="Command > " --delimiter='\t' --with-nth=1,2 --nth=1,2 --preview='printf "%s" {2}' --preview-window='down:3:wrap' \
+    | awk -F'\t' '{print $1}' | xargs
+}
+cmd_picker() { local s=$(cmd_picker_select); [[ -n "$s" ]] && print -z "$s"; }
+_cmd_picker_widget() {
+  local b="$LBUFFER"
+  local s=$(cmd_picker_select)
+  [[ -n "$s" ]] && LBUFFER="${b}${s}"
+  zle reset-prompt
+}
+zle -N _cmd_picker_widget
+bindkey '^f' _cmd_picker_widget
 
 # ────────────────────────────────────────
 #  Python
