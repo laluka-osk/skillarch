@@ -287,9 +287,10 @@ install-offensive: sanity-check ## Install offensive & security tools
 	# Install GitHub binary releases -- gobypass403 & wpprobe (sequential)
 	( wget -q "$$(curl -sL https://api.github.com/repos/slicingmelon/gobypass403/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')" -O /tmp/gobypass403 \
 		&& chmod +x /tmp/gobypass403 && sudo mv /tmp/gobypass403 /usr/local/bin/gobypass403 ) || true
-	( wget -q "$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url')" -O /tmp/wpprobe \
-		&& chmod +x /tmp/wpprobe && sudo mv /tmp/wpprobe /usr/local/bin/wpprobe \
-		&& wpprobe update-db ) || true
+	# wpprobe: disabled -- upstream (Chocapikk) GitHub account temporarily suspended, release URL 404s. Restore when back.
+	# ( wget -q "$$(curl -sL https://api.github.com/repos/Chocapikk/wpprobe/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url')" -O /tmp/wpprobe \
+	# 	&& chmod +x /tmp/wpprobe && sudo mv /tmp/wpprobe /usr/local/bin/wpprobe \
+	# 	&& wpprobe update-db ) || true
 
 	# massdns: required by shuffledns (PD tool) - Build from source into ~/.local/bin
 	ska_clone https://github.com/blechschmidt/massdns && make -C /opt/massdns 2>/dev/null && cp /opt/massdns/bin/massdns $$HOME/.local/bin/ || true
@@ -520,7 +521,7 @@ test: ## Validate installation (smoke tests)
 	done
 	ska_check "fzf"        "which fzf || [[ -f ~/.fzf/bin/fzf ]]"
 	$(call BOLD,\n--- Offensive Tools ---)
-	for bin in nmap ffuf msfconsole hashcat bettercap gobypass403 wpprobe; do
+	for bin in nmap ffuf msfconsole hashcat bettercap gobypass403; do
 		ska_check "$$bin" "which $$bin"
 	done
 	ska_check "sqlmap"      "which sqlmap || [[ -f ~/.local/bin/sqlmap ]]"
@@ -572,7 +573,7 @@ test-lite: ## Validate lite Docker image install
 		ska_check "$$bin" "which $$bin"
 	done
 	$(call BOLD,\n--- Offensive Tools ---)
-	for bin in ffuf hashcat bettercap msfconsole gobypass403 wpprobe; do
+	for bin in ffuf hashcat bettercap msfconsole gobypass403; do
 		ska_check "$$bin" "which $$bin"
 	done
 	ska_check "hexhttp"   "which hexhttp || [[ -f ~/.local/bin/hexhttp ]]"
